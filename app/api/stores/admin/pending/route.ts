@@ -1,0 +1,24 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { backendFetch } from '@/lib/backend-client'
+
+// GET /stores/admin/pending — first-review queue (admin only). Query string
+// forwarded verbatim (page, limit, sortOrder).
+
+export async function GET(req: NextRequest) {
+  const authorization = req.headers.get('Authorization')
+
+  if (!authorization) {
+    return NextResponse.json(
+      { statusCode: 401, message: 'Authentication required', error: 'Unauthorized' },
+      { status: 401 },
+    )
+  }
+
+  const search = req.nextUrl.search
+  const { status, data } = await backendFetch(`/stores/admin/pending${search}`, {
+    method: 'GET',
+    headers: { Authorization: authorization },
+  })
+
+  return NextResponse.json(data, { status })
+}

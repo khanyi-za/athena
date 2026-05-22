@@ -11,37 +11,48 @@ async function doFetch(url: string, options: RequestInit, token: string | null):
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  return fetch(url, { ...options, headers })
+  return fetch(url, { ...options, headers, credentials: 'include' })
+}
+
+function redirectToLogin() {
+  if (typeof window !== 'undefined') window.location.href = '/login'
 }
 
 export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const { accessToken, setAuth, clearAuth } = useAuthStore.getState()
+  const { accessToken, setAccessToken, clearAuth } = useAuthStore.getState()
 
   let response = await doFetch(url, options, accessToken)
 
-  // Handle 401 — check whether it's an expired token or a hard auth failure
   if (response.status === 401) {
     const data = await response.json().catch(() => ({})) as { message?: string }
+    const message = data?.message ?? ''
 
-    if (data?.message === 'Access token has expired') {
-      // Attempt a single silent refresh
-      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' })
+    if (message === 'Access token has expired') {
+      // Attempt a single silent refresh then retry. The refresh response carries a
+      // slim user — we deliberately do NOT overwrite the full /auth/me user already
+      // in the store. Components that need fresh profile data refetch /auth/me
+      // explicitly (e.g., on tab focus while in PENDING_REVIEW).
+      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
 
       if (refreshRes.ok) {
-        const { accessToken: newToken, user } = await refreshRes.json()
-        setAuth(newToken, user)
-        // Retry the original request once with the new token
+        const { accessToken: newToken } = await refreshRes.json()
+        setAccessToken(newToken)
         response = await doFetch(url, options, newToken)
       } else {
         clearAuth()
-        if (typeof window !== 'undefined') window.location.href = '/login'
+        redirectToLogin()
         throw Object.assign(new Error('Session expired'), { status: 401 })
       }
-    } else {
-      // Any other 401 — invalid token, no token, suspended account
+    } else if (message === 'Account is inactive or does not exist') {
+      // Account suspended mid-session — clear state and redirect with context
       clearAuth()
-      if (typeof window !== 'undefined') window.location.href = '/login'
-      throw Object.assign(new Error(data?.message ?? 'Unauthorized'), { status: 401 })
+      if (typeof window !== 'undefined') window.location.href = '/login?reason=suspended'
+      throw Object.assign(new Error(message), { status: 401 })
+    } else {
+      // "Authentication required" or "Invalid access token" — hard auth failure
+      clearAuth()
+      redirectToLogin()
+      throw Object.assign(new Error(message || 'Unauthorized'), { status: 401 })
     }
   }
 

@@ -5,7 +5,7 @@ import { COOKIE_NAME } from '@/lib/server-config'
 const AUTH_ONLY_ROUTES = ['/login', '/register']
 
 // Route prefixes that require authentication
-const PROTECTED_PREFIXES = ['/dashboard', '/onboarding']
+const PROTECTED_PREFIXES = ['/dashboard', '/onboarding', '/admin']
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl

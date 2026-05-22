@@ -1,16 +1,35 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { useAuthStore } from '@/store/auth-store'
+import { fetchAuthMe } from '@/lib/fetch-auth-me'
+import { pathForView, resolveDashboardView } from '@/lib/routing-matrix'
+import { isSafeReturnUrl } from '@/lib/safe-return-url'
 
 export default function LoginPage() {
+  // Suspense is required because LoginPageInner reads useSearchParams.
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const setAuth = useAuthStore((s) => s.setAuth)
+
+  // Pull a safe returnUrl from the query string. When set (e.g. coming from
+  // the invite-accept page), we skip the post-login routing matrix and route
+  // directly to the returnUrl — the user has an explicit destination in mind.
+  const rawReturnUrl = searchParams.get('returnUrl')
+  const safeReturnUrl = isSafeReturnUrl(rawReturnUrl) ? rawReturnUrl : null
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,6 +45,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       })
 
@@ -44,8 +64,19 @@ export default function LoginPage() {
         return
       }
 
-      setAuth(data.accessToken, data.user)
-      router.push('/dashboard')
+      // Login returns the slim user (no `store`). Fetch /auth/me to hydrate the
+      // full profile before routing so the matrix sees store/accountStatus.
+      const fullUser = await fetchAuthMe(data.accessToken)
+      const userToStore = fullUser ?? data.user
+      setAuth(data.accessToken, userToStore)
+
+      // returnUrl wins over the post-login matrix. The matrix is the default
+      // when there's no explicit destination from the prior page.
+      if (safeReturnUrl) {
+        router.push(safeReturnUrl)
+        return
+      }
+      router.push(pathForView(resolveDashboardView(userToStore)))
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
@@ -100,10 +131,28 @@ export default function LoginPage() {
 
       <p className="text-center text-sm text-zinc-500">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-medium text-zinc-950 hover:underline">
+        <Link
+          href={
+            safeReturnUrl
+              ? `/register?returnUrl=${encodeURIComponent(safeReturnUrl)}`
+              : '/register'
+          }
+          className="font-medium text-zinc-950 hover:underline"
+        >
           Create one
         </Link>
       </p>
+    </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="flex flex-col items-center gap-3 py-8">
+      <div
+        aria-hidden
+        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+      />
     </div>
   )
 }

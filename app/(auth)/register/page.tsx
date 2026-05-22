@@ -1,10 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
+import {
+  isSafeReturnUrl,
+  persistPendingReturnUrl,
+} from '@/lib/safe-return-url'
 
 const passwordChecks = {
   length: (p: string) => p.length >= 8,
@@ -21,10 +26,27 @@ const requirements = [
 ]
 
 export default function RegisterPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <RegisterPageInner />
+    </Suspense>
+  )
+}
+
+function RegisterPageInner() {
+  const searchParams = useSearchParams()
+
+  // Prefill email from query (used by the invite-accept flow). The field is
+  // NOT locked — users may want to use a different account. Helper text below
+  // makes the intent explicit.
+  const prefilledEmail = searchParams.get('email') ?? ''
+  const rawReturnUrl = searchParams.get('returnUrl')
+  const safeReturnUrl = isSafeReturnUrl(rawReturnUrl) ? rawReturnUrl : null
+
   const [fields, setFields] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    email: prefilledEmail,
     password: '',
   })
   const [error, setError] = useState<string | null>(null)
@@ -45,6 +67,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(fields),
       })
 
@@ -66,6 +89,14 @@ export default function RegisterPage() {
         return
       }
 
+      // Persist returnUrl so verify-email can honour it after the user clicks
+      // the link in their email. The link itself can't carry the returnUrl
+      // (it's generated server-side without that context), so we stash it
+      // locally and the verify-email page consumes it on success.
+      if (safeReturnUrl) {
+        persistPendingReturnUrl(safeReturnUrl)
+      }
+
       setRegisteredEmail(fields.email)
     } catch {
       setError('Something went wrong. Please try again.')
@@ -84,10 +115,17 @@ export default function RegisterPage() {
             <span className="font-medium text-zinc-950">{registeredEmail}</span>. Click the link in
             the email to activate your account.
           </p>
-          <p className="mt-2 text-xs text-zinc-400">Verification links expire after 24 hours.</p>
+          <p className="mt-2 text-xs text-zinc-400">
+            Verification links expire after 24 hours.
+            {safeReturnUrl && ' Open the link on this device to continue where you left off.'}
+          </p>
         </div>
         <Link
-          href="/login"
+          href={
+            safeReturnUrl
+              ? `/login?returnUrl=${encodeURIComponent(safeReturnUrl)}`
+              : '/login'
+          }
           className="text-center text-sm font-medium text-zinc-950 hover:underline"
         >
           Back to sign in
@@ -133,17 +171,25 @@ export default function RegisterPage() {
           />
         </div>
 
-        <Input
-          id="email"
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          autoComplete="email"
-          value={fields.email}
-          onChange={update('email')}
-          disabled={loading}
-          required
-        />
+        <div className="flex flex-col gap-1.5">
+          <Input
+            id="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            value={fields.email}
+            onChange={update('email')}
+            disabled={loading}
+            required
+          />
+          {prefilledEmail && (
+            <p className="text-xs text-zinc-500">
+              This email matches the invite. You can change it if you&apos;d
+              rather use a different account.
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col gap-2">
           <Input
@@ -182,10 +228,28 @@ export default function RegisterPage() {
 
       <p className="text-center text-sm text-zinc-500">
         Already have an account?{' '}
-        <Link href="/login" className="font-medium text-zinc-950 hover:underline">
+        <Link
+          href={
+            safeReturnUrl
+              ? `/login?returnUrl=${encodeURIComponent(safeReturnUrl)}`
+              : '/login'
+          }
+          className="font-medium text-zinc-950 hover:underline"
+        >
           Sign in
         </Link>
       </p>
+    </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="flex flex-col items-center gap-3 py-8">
+      <div
+        aria-hidden
+        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+      />
     </div>
   )
 }

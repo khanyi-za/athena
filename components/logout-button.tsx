@@ -13,23 +13,18 @@ export function LogoutButton() {
   async function handleLogout() {
     setLoading(true)
 
-    // Clear local state immediately — logout must feel instant
+    // Clear local state and redirect immediately — server revocation is fire-and-forget
     clearAuth()
-
-    // Best-effort server-side token revocation
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
-      })
-    } catch {
-      // Ignore — local state is already cleared
-    }
-
     router.push('/login')
+
+    fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+    }).catch(() => null)
   }
 
   return (

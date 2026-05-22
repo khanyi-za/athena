@@ -1,27 +1,24 @@
-export type StoreStatus = 'DRAFT' | 'PENDING_REVIEW' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED'
+import type { z } from 'zod'
+import type {
+  accountStatusSchema,
+  apiErrorBodySchema,
+  authResponseSchema,
+  roleSchema,
+  slimUserSchema,
+  storeStatusSchema,
+  userSchema,
+  userStoreSchema,
+} from '@/lib/schemas/auth'
 
-export interface UserStore {
-  id: string
-  status: StoreStatus
-}
+// Single source of truth: lib/schemas/auth.ts.
+// Types here are inferred from the zod schemas so the runtime guard and the
+// TypeScript surface never drift.
 
-export interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  role: 'BUYER' | 'MERCHANT' | 'ADMIN'
-  avatarUrl: string | null
-  store: UserStore | null
-}
-
-export interface AuthResponse {
-  accessToken: string
-  user: User
-}
-
-export interface ApiErrorBody {
-  statusCode: number
-  message: string | string[]
-  error: string
-}
+export type StoreStatus = z.infer<typeof storeStatusSchema>
+export type AccountStatus = z.infer<typeof accountStatusSchema>
+export type Role = z.infer<typeof roleSchema>
+export type UserStore = z.infer<typeof userStoreSchema>
+export type User = z.infer<typeof userSchema>
+export type SlimUser = z.infer<typeof slimUserSchema>
+export type AuthResponse = z.infer<typeof authResponseSchema>
+export type ApiErrorBody = z.infer<typeof apiErrorBodySchema>

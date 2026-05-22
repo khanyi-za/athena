@@ -22,16 +22,11 @@ export async function POST() {
     return response
   }
 
-  const { accessToken, refreshToken: newRefreshToken } = data as {
+  const { accessToken, refreshToken: newRefreshToken, user } = data as {
     accessToken: string
     refreshToken: string
+    user: unknown
   }
-
-  // Fetch full user profile including store status
-  const { ok: meOk, data: meData } = await backendFetch('/auth/me', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
-  const user = meOk ? meData : (data as { user: unknown }).user
 
   const response = NextResponse.json({ accessToken, user })
   response.cookies.set(COOKIE_NAME, newRefreshToken, {

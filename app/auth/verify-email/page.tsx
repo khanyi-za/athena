@@ -4,16 +4,11 @@ import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth-store'
-import type { User } from '@/types/auth'
+import { fetchAuthMe } from '@/lib/fetch-auth-me'
+import { pathForView, resolveDashboardView } from '@/lib/routing-matrix'
+import { consumePendingReturnUrl } from '@/lib/safe-return-url'
 
 type VerifyStatus = 'loading' | 'success' | 'error'
-
-function resolveRedirect(user: User): string {
-  if (user.role === 'MERCHANT' || user.role === 'ADMIN') return '/dashboard'
-  if (user.store?.status === 'ACTIVE') return '/dashboard'
-  // Brand new BUYER — send to onboarding intent screen
-  return '/onboarding'
-}
 
 function VerifyEmailInner() {
   const searchParams = useSearchParams()
@@ -33,17 +28,31 @@ function VerifyEmailInner() {
     fetch('/api/auth/verify-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ token }),
     })
       .then(async (res) => {
-        if (res.ok) {
-          const { accessToken, user } = await res.json()
-          setAuth(accessToken, user)
-          setStatus('success')
-          router.replace(resolveRedirect(user))
-        } else {
+        if (!res.ok) {
           setStatus('error')
+          return
         }
+
+        const { accessToken, user: slimUser } = await res.json()
+
+        // Verify-email returns the slim user — hydrate the full profile before
+        // routing so the matrix sees store/accountStatus.
+        const fullUser = await fetchAuthMe(accessToken)
+        const userToStore = fullUser ?? slimUser
+        setAuth(accessToken, userToStore)
+        setStatus('success')
+
+        // returnUrl wins over the matrix. Registered via the invite-accept
+        // flow? Take them back to /invites/accept where they can submit the
+        // accept form. Otherwise route by post-login matrix as usual.
+        const pendingReturnUrl = consumePendingReturnUrl()
+        router.replace(
+          pendingReturnUrl ?? pathForView(resolveDashboardView(userToStore)),
+        )
       })
       .catch(() => setStatus('error'))
   }, [searchParams, setAuth, router])

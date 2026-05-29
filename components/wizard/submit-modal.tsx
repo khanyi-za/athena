@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 
@@ -27,14 +28,7 @@ export function SubmitModal({ open, onCancel, onConfirm, loading, error }: Submi
   }, [open, loading, onCancel])
 
   // Lock body scroll while the modal is open.
-  useEffect(() => {
-    if (!open) return
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [open])
+  useBodyScrollLock(open)
 
   if (!open) return null
 

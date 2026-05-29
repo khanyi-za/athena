@@ -1,19 +1,26 @@
 import { apiFetch } from '@/lib/api-client'
 import {
+  addBannerMediaBodySchema,
   adminReviewBodySchema,
   adminReviewResponseSchema,
+  bannerMediaListSchema,
+  bannerMediaSchema,
   createStoreBodySchema,
   paginatedAdminPendingGoLiveStoresSchema,
   paginatedAdminPendingStoresSchema,
+  reorderBannerMediaBodySchema,
   storeMeSchema,
   storeSchema,
   updateStoreBodySchema,
+  type AddBannerMediaBody,
   type AdminQueueFilters,
   type AdminReviewBody,
   type AdminReviewResponse,
+  type BannerMedia,
   type CreateStoreBody,
   type PaginatedAdminPendingGoLiveStores,
   type PaginatedAdminPendingStores,
+  type ReorderBannerMediaBody,
   type Store,
   type StoreMe,
   type UpdateStoreBody,
@@ -91,6 +98,72 @@ export async function requestGoLive(id: string): Promise<Store> {
     method: 'POST',
   })
   return storeSchema.parse(data)
+}
+
+// ----------------------------------------------------------------------------
+// Banner media — multi-item store banner per M9
+// ----------------------------------------------------------------------------
+
+/**
+ * POST /stores/:storeId/banner-media — add a single item to the gallery.
+ *
+ * Backend appends at the end of the gallery (next sortOrder). Returns the
+ * created BannerMedia row. Rejects with 400 if the gallery is at the 5-item
+ * cap or the URL prefix doesn't match the configured Cloudinary cloud.
+ */
+export async function addBannerMedia(
+  storeId: string,
+  body: AddBannerMediaBody,
+): Promise<BannerMedia> {
+  const validated = addBannerMediaBodySchema.parse(body)
+  const data = await apiFetch<unknown>(
+    `/api/stores/${storeId}/banner-media`,
+    {
+      method: 'POST',
+      body: JSON.stringify(validated),
+    },
+  )
+  return bannerMediaSchema.parse(data)
+}
+
+/**
+ * DELETE /stores/:storeId/banner-media/:id — remove a single item.
+ *
+ * Remaining items renumbered to keep sortOrder contiguous; cover (isPrimary)
+ * is reassigned to the next item if the removed one was primary. For
+ * PENDING_GO_LIVE and ACTIVE stores, removing the last item is blocked with
+ * a 400.
+ */
+export async function removeBannerMedia(
+  storeId: string,
+  id: string,
+): Promise<void> {
+  await apiFetch<unknown>(
+    `/api/stores/${storeId}/banner-media/${id}`,
+    { method: 'DELETE' },
+  )
+}
+
+/**
+ * PATCH /stores/:storeId/banner-media/reorder — bulk reorder.
+ *
+ * The `ids` array must contain the exact set of the gallery's current items
+ * in the desired order. Index 0 becomes the cover. Backend rejects any
+ * miscount, duplicate, or unknown id with a 400.
+ */
+export async function reorderBannerMedia(
+  storeId: string,
+  body: ReorderBannerMediaBody,
+): Promise<BannerMedia[]> {
+  const validated = reorderBannerMediaBodySchema.parse(body)
+  const data = await apiFetch<unknown>(
+    `/api/stores/${storeId}/banner-media/reorder`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(validated),
+    },
+  )
+  return bannerMediaListSchema.parse(data)
 }
 
 // ----------------------------------------------------------------------------

@@ -59,6 +59,9 @@ export default function AdminGoLiveDetailPage({ params }: PageProps) {
         reason: welcomeNote,
       })
       invalidateQueues()
+      // Close modal explicitly before navigation so the user sees an
+      // immediate UI response if the route transition takes a moment.
+      setModal({ kind: 'none' })
       router.push('/admin/go-live')
     } catch (err) {
       handleDecisionError(err)
@@ -77,6 +80,7 @@ export default function AdminGoLiveDetailPage({ params }: PageProps) {
         reason,
       })
       invalidateQueues()
+      setModal({ kind: 'none' })
       router.push('/admin/go-live')
     } catch (err) {
       handleDecisionError(err)
@@ -118,13 +122,13 @@ export default function AdminGoLiveDetailPage({ params }: PageProps) {
           href="/admin/go-live"
           className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
         >
-          ← Back to go-live queue
+          ← Back to launch queue
         </Link>
       </div>
 
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-semibold text-zinc-950">
-          Go-live review · {store.displayName}
+          Launch review · {store.displayName}
         </h1>
         <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
           PENDING_GO_LIVE
@@ -144,7 +148,7 @@ export default function AdminGoLiveDetailPage({ params }: PageProps) {
             setModal({ kind: 'rejecting' })
           }}
         >
-          Reject go-live
+          Reject launch
         </Button>
         <Button
           type="button"
@@ -154,7 +158,7 @@ export default function AdminGoLiveDetailPage({ params }: PageProps) {
             setModal({ kind: 'approving' })
           }}
         >
-          Approve & go live
+          Approve & launch
         </Button>
       </div>
 
@@ -215,7 +219,7 @@ function NotInQueueState({ reason }: { reason: 'error' | 'not-found' }) {
         href="/admin/go-live"
         className="mt-2 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
       >
-        Back to go-live queue
+        Back to launch queue
       </Link>
     </div>
   )

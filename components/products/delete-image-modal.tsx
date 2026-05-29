@@ -1,12 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { CldImage } from 'next-cloudinary'
 
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { deleteProductImage } from '@/lib/api/products'
-import { SQUARE_THUMB_500_RECIPE } from '@/lib/cloudinary-transforms'
+import {
+  SQUARE_THUMB_500_RECIPE,
+  videoFrameAtSecond,
+} from '@/lib/cloudinary-transforms'
 import type { ProductImage } from '@/lib/schemas/product'
 
 // Two-state delete confirmation per product-frontend-flows §4.3.
@@ -45,13 +49,7 @@ export function DeleteImageModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onClose])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   async function handleConfirm() {
     setLoading(true)
@@ -114,19 +112,41 @@ export function DeleteImageModal({
           </>
         ) : (
           <>
-            <h2 className="text-lg font-semibold text-zinc-950">Remove this image?</h2>
+            <h2 className="text-lg font-semibold text-zinc-950">
+              Remove this {image.mediaType === 'VIDEO' ? 'video' : 'image'}?
+            </h2>
 
             <div className="mt-4 flex items-start gap-3">
-              <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
-                <CldImage
-                  src={image.url}
-                  {...SQUARE_THUMB_500_RECIPE}
-                  alt={image.altText ?? 'Product image'}
-                  className="h-full w-full object-cover"
-                />
+              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+                {image.mediaType === 'VIDEO' ? (
+                  <>
+                    <CldImage
+                      src={image.url}
+                      assetType="video"
+                      {...videoFrameAtSecond(2, 500, 500)}
+                      alt="Product video frame"
+                      className="h-full w-full object-cover"
+                    />
+                    <span
+                      aria-hidden
+                      className="absolute bottom-1 right-1 rounded-full bg-zinc-950/80 px-1.5 py-0.5 text-[10px] font-medium text-white"
+                    >
+                      ▶
+                    </span>
+                  </>
+                ) : (
+                  <CldImage
+                    src={image.url}
+                    {...SQUARE_THUMB_500_RECIPE}
+                    alt={image.altText ?? 'Product image'}
+                    className="h-full w-full object-cover"
+                  />
+                )}
               </div>
               <p className="text-sm text-zinc-600">
-                Buyers won&apos;t see this image anymore. This can&apos;t be undone.
+                Buyers won&apos;t see this{' '}
+                {image.mediaType === 'VIDEO' ? 'video' : 'image'} anymore. This
+                can&apos;t be undone.
               </p>
             </div>
 

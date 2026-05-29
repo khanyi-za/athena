@@ -5,6 +5,24 @@ import { storeStatusSchema } from '@/lib/schemas/auth'
 // docs/Api-frontend-contracts/store-module-api.md.
 
 // ----------------------------------------------------------------------------
+// Banner media — multi-item store banner (≤5 items, image+video mix)
+// ----------------------------------------------------------------------------
+// Replaces the legacy bannerUrl single-string field per M9. See
+// store-module-api.md §"Banner Media Object" and §"Banner Media".
+
+export const bannerMediaTypeSchema = z.enum(['IMAGE', 'VIDEO'])
+
+export const bannerMediaSchema = z.object({
+  id: z.string(),
+  storeId: z.string(),
+  url: z.string(),
+  mediaType: bannerMediaTypeSchema,
+  sortOrder: z.number().int(),
+  isPrimary: z.boolean(),
+  createdAt: z.string(),
+})
+
+// ----------------------------------------------------------------------------
 // Core resources
 // ----------------------------------------------------------------------------
 
@@ -21,7 +39,9 @@ export const storeSchema = z.object({
   story: z.string().nullable(),
   websiteUrl: z.string().nullable(),
   logoUrl: z.string().nullable(),
-  bannerUrl: z.string().nullable(),
+  // Multi-media banner — see bannerMediaSchema above. Ordered by sortOrder asc.
+  // Empty array for freshly created stores. Replaces the legacy bannerUrl.
+  bannerMedia: z.array(bannerMediaSchema),
   status: storeStatusSchema,
   rejectionReason: z.string().nullable(),
   contactEmail: z.string().nullable(),
@@ -32,10 +52,13 @@ export const storeSchema = z.object({
   bankAccountNo: z.string().nullable(),
   bankBranchCode: z.string().nullable(),
   bankAccountType: z.string().nullable(),
-  totalSales: z.number(),
-  totalRevenue: z.number(),
-  averageRating: z.number(),
-  followerCount: z.number(),
+  // Decimal-backed columns serialize as JSON strings from Prisma/Postgres
+  // (e.g. `"0"` rather than `0`). z.coerce.number() accepts both, so the
+  // schema stays correct whether the backend sends a string or a number.
+  totalSales: z.coerce.number(),
+  totalRevenue: z.coerce.number(),
+  averageRating: z.coerce.number(),
+  followerCount: z.coerce.number(),
   createdAt: z.string(),
   updatedAt: z.string(),
 })
@@ -46,6 +69,7 @@ export const storeAddressSchema = z.object({
   streetNumber: z.string(),
   streetName: z.string(),
   buildingName: z.string().nullable(),
+  suburb: z.string().nullable(),
   city: z.string(),
   postalCode: z.string(),
   createdAt: z.string(),
@@ -111,9 +135,13 @@ export const createStoreBodySchema = z.object({
 //
 // `slug` is intentionally absent — it's auto-generated from displayName.
 //
-// `logoUrl` / `bannerUrl` accept any string here at the type level; the backend
-// validates the URL begins with https://res.cloudinary.com/<configuredCloudName>/.
-// Don't .url() these — the validator is delegated to the backend.
+// `bannerUrl` is intentionally absent — banner is multi-item now and managed
+// through the dedicated /banner-media endpoints (see below). Backend rejects
+// any `bannerUrl` field here with a 400 via forbidNonWhitelisted.
+//
+// `logoUrl` accepts any string here at the type level; the backend validates
+// the URL begins with https://res.cloudinary.com/<configuredCloudName>/. Don't
+// .url() these — the validator is delegated to the backend.
 export const updateStoreBodySchema = z.object({
   companyName: z.string().min(2).max(150).optional(),
   displayName: z.string().min(2).max(100).optional(),
@@ -121,7 +149,6 @@ export const updateStoreBodySchema = z.object({
   story: z.string().max(2000).optional(),
   websiteUrl: z.string().url().optional(),
   logoUrl: z.string().optional(),
-  bannerUrl: z.string().optional(),
   contactEmail: z.string().email().optional(),
   contactPhone: z.string().optional(),
   businessRegNo: z.string().optional(),
@@ -133,15 +160,37 @@ export const updateStoreBodySchema = z.object({
 })
 
 // ----------------------------------------------------------------------------
+// Banner media DTOs
+// ----------------------------------------------------------------------------
+
+// POST /stores/:storeId/banner-media — add a single item. The backend appends
+// at the end of the gallery; the response is the created BannerMedia row.
+export const addBannerMediaBodySchema = z.object({
+  url: z.string(),
+  mediaType: bannerMediaTypeSchema,
+})
+
+// PATCH /stores/:storeId/banner-media/reorder — bulk reorder. The body must
+// contain the *exact set* of current item ids in the desired order. The first
+// id becomes the cover (isPrimary: true).
+export const reorderBannerMediaBodySchema = z.object({
+  ids: z.array(z.string()).min(1),
+})
+
+// PATCH /reorder response — returns the whole gallery in its new order.
+export const bannerMediaListSchema = z.array(bannerMediaSchema)
+
+// ----------------------------------------------------------------------------
 // Address DTOs
 // ----------------------------------------------------------------------------
 
-// POST /stores/:storeId/addresses — all five fields required except buildingName.
-// Char ranges mirror the contract.
+// POST /stores/:storeId/addresses — required: streetNumber, streetName, city,
+// postalCode. Optional: buildingName, suburb. Char ranges mirror the contract.
 export const createAddressBodySchema = z.object({
   streetNumber: z.string().min(1).max(20),
   streetName: z.string().min(2).max(100),
   buildingName: z.string().max(100).optional(),
+  suburb: z.string().max(100).optional(),
   city: z.string().min(2).max(100),
   postalCode: z.string().min(4).max(10),
 })
@@ -151,6 +200,7 @@ export const updateAddressBodySchema = z.object({
   streetNumber: z.string().min(1).max(20).optional(),
   streetName: z.string().min(2).max(100).optional(),
   buildingName: z.string().max(100).optional(),
+  suburb: z.string().max(100).optional(),
   city: z.string().min(2).max(100).optional(),
   postalCode: z.string().min(4).max(10).optional(),
 })
@@ -176,11 +226,16 @@ export const adminPendingStoreSchema = storeSchema.extend({
 
 // Go-live queue item — additionally carries readiness signals so the admin
 // can scan the queue without opening every detail page.
+//
+// `_count.bannerMedia` is the readiness signal for the banner check; the
+// bannerMedia[] array on the inherited Store object is the actual content
+// (rendered in the queue-row thumbnail + the review-detail strip).
 export const adminPendingGoLiveStoreSchema = storeSchema.extend({
   owner: adminQueueOwnerSchema,
   addresses: z.array(storeAddressSchema),
   _count: z.object({
     products: z.number().int(), // active products only on this endpoint per contract
+    bannerMedia: z.number().int(),
   }),
 })
 
@@ -233,6 +288,10 @@ export type CreateStoreBody = z.infer<typeof createStoreBodySchema>
 export type UpdateStoreBody = z.infer<typeof updateStoreBodySchema>
 export type CreateAddressBody = z.infer<typeof createAddressBodySchema>
 export type UpdateAddressBody = z.infer<typeof updateAddressBodySchema>
+export type BannerMedia = z.infer<typeof bannerMediaSchema>
+export type BannerMediaType = z.infer<typeof bannerMediaTypeSchema>
+export type AddBannerMediaBody = z.infer<typeof addBannerMediaBodySchema>
+export type ReorderBannerMediaBody = z.infer<typeof reorderBannerMediaBodySchema>
 export type AdminQueueOwner = z.infer<typeof adminQueueOwnerSchema>
 export type AdminPendingStore = z.infer<typeof adminPendingStoreSchema>
 export type AdminPendingGoLiveStore = z.infer<typeof adminPendingGoLiveStoreSchema>

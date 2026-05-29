@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -41,13 +42,7 @@ export function ApproveStoreModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onCancel])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   const consequences =
     variant === 'go-live'
@@ -78,7 +73,7 @@ export function ApproveStoreModal({
       >
         <h2 id="approve-modal-title" className="text-lg font-semibold text-zinc-950">
           {variant === 'go-live'
-            ? `Approve ${storeDisplayName} to go live?`
+            ? `Approve ${storeDisplayName} to launch?`
             : `Approve ${storeDisplayName}?`}
         </h2>
 
@@ -92,7 +87,7 @@ export function ApproveStoreModal({
           {variant === 'first-review' && (
             <p className="mt-2">
               The store won&apos;t be visible to buyers yet — that&apos;s the next gate
-              (go-live review).
+              (launch review).
             </p>
           )}
         </div>
@@ -115,7 +110,7 @@ export function ApproveStoreModal({
             disabled={loading}
             placeholder={
               variant === 'go-live'
-                ? "Congratulations on going live!"
+                ? "Congratulations on launching!"
                 : 'Love the brand. Welcome to YIIVA!'
             }
             className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
@@ -147,7 +142,7 @@ export function ApproveStoreModal({
             onClick={() => onConfirm(welcomeNote.trim() || undefined)}
             loading={loading}
           >
-            {variant === 'go-live' ? 'Approve and go live' : 'Approve'}
+            {variant === 'go-live' ? 'Approve and launch' : 'Approve'}
           </Button>
         </div>
       </div>

@@ -51,19 +51,22 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-            Banner
+            Banner cover
           </p>
-          {store.bannerUrl ? (
+          {/* First-review submissions don't require a banner. If the gallery
+              has items, show the cover; otherwise note it's still pending.
+              The full multi-item gallery shows in the go-live review (§6.6). */}
+          {store.bannerMedia[0] ? (
             <a
-              href={store.bannerUrl}
+              href={store.bannerMedia[0].url}
               target="_blank"
               rel="noopener noreferrer"
               className="block aspect-[4/1] w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
             >
               <CldImage
-                src={store.bannerUrl}
+                src={store.bannerMedia[0].url}
                 {...STORE_BANNER_RECIPE}
-                alt={`${store.displayName} banner`}
+                alt={`${store.displayName} banner cover`}
                 className="h-full w-full object-cover"
               />
             </a>

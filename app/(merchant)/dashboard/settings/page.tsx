@@ -10,7 +10,7 @@ import { BrandIdentitySection } from '@/components/wizard/sections/brand-identit
 import { ContactSection } from '@/components/wizard/sections/contact'
 import { BusinessRegistrationSection } from '@/components/wizard/sections/business-registration'
 import { PayoutSection } from '@/components/wizard/sections/payout'
-import { BannerSection } from '@/components/approved/banner-section'
+import { BannerMediaSection } from '@/components/approved/banner-media-section'
 import { AddressSection } from '@/components/approved/address-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
@@ -117,7 +117,7 @@ function SettingsForm({ store }: { store: StoreMe }) {
             onSavedRemote={handleSavedRemote}
           />
 
-          <BannerSection store={store} onSavedRemote={handleSavedRemote} />
+          <BannerMediaSection store={store} onSavedRemote={handleSavedRemote} />
 
           <ContactSection
             control={form.control}

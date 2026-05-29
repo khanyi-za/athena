@@ -15,6 +15,7 @@ import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
 const MERCHANT_NAV_ITEMS = [
   { href: '/dashboard', label: 'Home' },
   { href: '/dashboard/products', label: 'Products' },
+  { href: '/dashboard/collections', label: 'Collections' },
   { href: '/dashboard/settings', label: 'Settings' },
   { href: '/dashboard/team', label: 'Team' },
 ]

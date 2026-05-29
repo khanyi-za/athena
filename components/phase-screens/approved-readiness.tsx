@@ -17,7 +17,7 @@ import { requestGoLive } from '@/lib/api/store'
 import type { StoreAddress } from '@/lib/schemas/store'
 
 import { ReadinessChecklist } from '@/components/approved/readiness-checklist'
-import { BannerSection } from '@/components/approved/banner-section'
+import { BannerMediaSection } from '@/components/approved/banner-media-section'
 import { StorySection } from '@/components/approved/story-section'
 import { AddressSection } from '@/components/approved/address-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
@@ -96,10 +96,15 @@ export function ApprovedReadinessScreen() {
       await requestGoLive(store!.id)
       // Success — store flipped from APPROVED to PENDING_GO_LIVE. Refreshing
       // /auth/me re-evaluates the matrix; the dashboard swaps this screen out
-      // for UnderReviewGoLiveScreen automatically.
+      // for UnderReviewGoLiveScreen.
       invalidateStoreMe()
       await refreshAuthMe()
-      // Don't manually close — the screen unmounts on the matrix swap.
+      // Defensively close the modal + router.push to /dashboard. The matrix
+      // should swap the screen on its own, but if refreshAuthMe was slow or
+      // returned stale data the screen could appear stuck — same pattern as
+      // the wizard submit flow we hardened earlier.
+      setModal({ kind: 'none' })
+      router.push('/dashboard')
     } catch (err) {
       handleRequestGoLiveError(err)
     } finally {
@@ -185,7 +190,7 @@ export function ApprovedReadinessScreen() {
         isRequestingGoLive={isRequestingGoLive}
       />
 
-      <BannerSection store={store} onSavedRemote={() => invalidateStoreMe()} />
+      <BannerMediaSection store={store} onSavedRemote={() => invalidateStoreMe()} />
 
       <StorySection store={store} onSavedRemote={() => invalidateStoreMe()} />
 

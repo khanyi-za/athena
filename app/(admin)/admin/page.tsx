@@ -39,7 +39,7 @@ export default function AdminFirstReviewQueuePage() {
       reviewHref={(id) => `/admin/stores/${id}`}
       onPageChange={setPage}
       onSortOrderChange={changeSortOrder}
-      emptyStateCopy="No store applications waiting for review. Check the go-live queue →"
+      emptyStateCopy="No store applications waiting for review. Check the launch queue →"
     />
   )
 }

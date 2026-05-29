@@ -4,13 +4,16 @@ import { parseZAR } from '@/lib/format-money'
 import type { Product } from '@/lib/schemas/product'
 import type { ProductEditorFormValues } from '@/components/products/product-form-values'
 
-// The 5-requirement activation contract from product-frontend-flows §5.1.
+// The 5-requirement activation contract — adapted for M10's collections-first
+// merchant journey. The original spec §5.1 gated activation on "≥1 category",
+// but per the product decision we replaced it with "≥1 collection" so
+// merchants can list and group products without making platform-category
+// calls. Categories are bulk-assigned post-go-live from a future dashboard
+// surface (out of M10 scope).
+//
 // Computed from a mix of:
 // - current FORM values (immediate feedback as the merchant edits title/price)
-// - product cache (sub-resources we don't form-edit: images, categories, variants)
-//
-// The button is rendered here but disabled in C — the actual onClick lands in
-// Checkpoint E.
+// - product cache (sub-resources we don't form-edit: images, collections, variants)
 
 interface ActivationReadinessPanelProps {
   product: Product
@@ -23,7 +26,7 @@ interface ReadinessState {
   title: boolean
   price: boolean
   image: boolean
-  category: boolean
+  collection: boolean
   variantPrices: boolean
 }
 
@@ -31,7 +34,7 @@ const REQUIREMENT_LABELS: Record<keyof ReadinessState, string> = {
   title: 'Has a title',
   price: 'Has a price greater than zero',
   image: 'At least one image',
-  category: 'At least one category',
+  collection: 'In at least one collection',
   variantPrices: 'All variant prices > zero (or inherit)',
 }
 
@@ -97,12 +100,12 @@ export function ActivationReadinessPanel({
           !onActivate
             ? 'Coming next'
             : allReady
-              ? 'Ready to activate'
+              ? 'Ready to launch'
               : 'Fix the missing items above'
         }
         className="mt-4 w-full rounded-lg bg-zinc-950 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isActivating ? 'Activating…' : 'Activate this product'}
+        {isActivating ? 'Launching…' : 'Launch product'}
       </button>
     </div>
   )
@@ -148,7 +151,7 @@ function computeReadiness(
   formValues: Partial<ProductEditorFormValues>,
 ): ReadinessState {
   // Title and price come from the form (immediate feedback as the merchant edits).
-  // Sub-resources (image, category, variants) come from the cached product.
+  // Sub-resources (image, collection, variants) come from the cached product.
   const title = formValues.title ?? product.title
   const priceCents = formValues.priceInput
     ? parseZAR(formValues.priceInput)
@@ -158,7 +161,7 @@ function computeReadiness(
     title: title.trim().length >= 2,
     price: typeof priceCents === 'number' && priceCents > 0,
     image: product.images.some((i) => i.mediaType === 'IMAGE'),
-    category: product.categories.length >= 1,
+    collection: product.collections.length >= 1,
     variantPrices: product.variants.every(
       (v) => v.priceInCents === null || v.priceInCents > 0,
     ),

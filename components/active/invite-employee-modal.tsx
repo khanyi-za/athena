@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,13 +40,7 @@ export function InviteEmployeeModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onCancel])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   function handleBlur() {
     if (email.length === 0) return setFormatError(null)

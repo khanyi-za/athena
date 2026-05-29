@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { deleteAddress } from '@/lib/api/addresses'
@@ -54,14 +55,7 @@ export function DeleteAddressModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [open, loading, onClose])
 
-  useEffect(() => {
-    if (!open) return
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [open])
+  useBodyScrollLock(open)
 
   if (!open || !address) return null
 

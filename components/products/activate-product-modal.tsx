@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -32,13 +33,7 @@ export function ActivateProductModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onCancel])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   return (
     <div
@@ -55,13 +50,13 @@ export function ActivateProductModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="activate-product-title" className="text-lg font-semibold text-zinc-950">
-          Activate &ldquo;{productTitle}&rdquo;?
+          Launch &ldquo;{productTitle}&rdquo;?
         </h2>
 
         <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-zinc-600">
           <p>
-            Once activated, your product will be visible to buyers on YIIVA. You can keep
-            editing it after activation — all changes will be live immediately.
+            Once launched, your product will be visible to buyers on YIIVA. You can keep
+            editing it after launch — all changes will be live immediately.
           </p>
           <p>Make sure your title, price, images, and description are accurate.</p>
         </div>
@@ -83,7 +78,7 @@ export function ActivateProductModal({
             Cancel
           </Button>
           <Button type="button" fullWidth={false} onClick={onConfirm} loading={loading}>
-            Activate
+            Launch
           </Button>
         </div>
       </div>

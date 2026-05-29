@@ -91,24 +91,33 @@ export const productSchema = z.object({
   reservedStock: z.number().int(),
   lowStockThreshold: z.number().int(),
   weightInGrams: z.number().int().nullable(),
-  lengthCm: z.number().nullable(),
-  widthCm: z.number().nullable(),
-  heightCm: z.number().nullable(),
+  // Decimal-backed columns serialize as JSON strings from Prisma/Postgres
+  // (e.g. "0" rather than 0). z.coerce.number() accepts both, so the schema
+  // stays correct whether the backend sends a string or a number. Same
+  // pattern we applied to the store schema's totalRevenue / averageRating.
+  lengthCm: z.coerce.number().nullable(),
+  widthCm: z.coerce.number().nullable(),
+  heightCm: z.coerce.number().nullable(),
   metaTitle: z.string().nullable(),
   metaDescription: z.string().nullable(),
   totalSold: z.number().int(),
   viewCount: z.number().int(),
-  averageRating: z.number(),
+  averageRating: z.coerce.number(),
   reviewCount: z.number().int(),
   isFeatured: z.boolean(),
   publishedAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  images: z.array(productImageSchema),
-  variants: z.array(productVariantSchema),
-  categories: z.array(productCategoryEmbeddedSchema),
-  tags: z.array(productTagEmbeddedSchema),
-  collections: z.array(productCollectionEmbeddedSchema),
+  // Embedded relations default to [] when absent. The backend's POST
+  // /products response omits these arrays entirely on a fresh create (since
+  // a new product has nothing linked yet); GET /products/:id includes them.
+  // Defaulting here keeps the schema usable for both shapes without forcing
+  // a backend contract change.
+  images: z.array(productImageSchema).default([]),
+  variants: z.array(productVariantSchema).default([]),
+  categories: z.array(productCategoryEmbeddedSchema).default([]),
+  tags: z.array(productTagEmbeddedSchema).default([]),
+  collections: z.array(productCollectionEmbeddedSchema).default([]),
 })
 
 // ----------------------------------------------------------------------------

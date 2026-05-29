@@ -13,18 +13,28 @@ export function LogoutButton() {
   async function handleLogout() {
     setLoading(true)
 
-    // Clear local state and redirect immediately — server revocation is fire-and-forget
+    // Await the logout fetch so the Set-Cookie response actually clears the
+    // refresh token cookie BEFORE we navigate. If we redirected immediately,
+    // the middleware would still see the cookie on the /login request and
+    // bounce us back to /dashboard — which then renders <Splash /> forever
+    // because Zustand has user: null.
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+      })
+    } catch {
+      // Best-effort. If the request never lands (network down), still clear
+      // local state and try to navigate — the cookie will eventually expire,
+      // and a manual refresh recovers the user from any in-between state.
+    }
+
     clearAuth()
     router.push('/login')
-
-    fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-    }).catch(() => null)
   }
 
   return (

@@ -10,6 +10,7 @@ import { z } from 'zod'
 export const uploadContextSchema = z.enum([
   'store_logo',
   'store_banner',
+  'store_banner_video',
   'product_image',
   'product_video',
   'collection_image',

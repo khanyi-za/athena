@@ -161,12 +161,18 @@ function celebrationKeyFor(storeId: string): string {
 
 function QuickActions() {
   return (
-    <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
       <ActionCard
         href="/dashboard/products"
         title="Products"
         description="Manage inventory, add new products, activate or archive listings."
         cta="Open products →"
+      />
+      <ActionCard
+        href="/dashboard/collections"
+        title="Collections"
+        description="Curate groupings of your products — Summer 2026, Sale, Featured."
+        cta="Open collections →"
       />
       <ActionCard
         href="/dashboard/settings"

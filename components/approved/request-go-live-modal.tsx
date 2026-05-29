@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 
@@ -34,14 +35,7 @@ export function RequestGoLiveModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [open, loading, onCancel])
 
-  useEffect(() => {
-    if (!open) return
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [open])
+  useBodyScrollLock(open)
 
   if (!open) return null
 
@@ -60,12 +54,12 @@ export function RequestGoLiveModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="go-live-modal-title" className="text-lg font-semibold text-zinc-950">
-          Request to go live?
+          Launch your store?
         </h2>
 
         <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-zinc-600">
           <p>
-            Once you submit, you won&apos;t be able to edit your store until the review
+            Once you launch, you won&apos;t be able to edit your store until the review
             is complete. Final reviews usually take 2–3 business days.
           </p>
           <p>We&apos;ll email you as soon as we have an answer.</p>
@@ -88,7 +82,7 @@ export function RequestGoLiveModal({
             Cancel
           </Button>
           <Button type="button" fullWidth={false} onClick={onConfirm} loading={loading}>
-            Request go-live
+            Launch store
           </Button>
         </div>
       </div>

@@ -79,6 +79,7 @@ function AddressCard({
           {address.buildingName ? `, ${address.buildingName}` : ''}
         </p>
         <p className="text-zinc-500">
+          {address.suburb ? `${address.suburb}, ` : ''}
           {address.city}, {address.postalCode}
         </p>
       </div>

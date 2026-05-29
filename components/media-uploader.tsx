@@ -9,6 +9,7 @@ import {
   type CloudinarySignatureResponse,
   type UploadContext,
 } from '@/lib/schemas/uploads'
+import { useBodyScrollLock } from '@/lib/use-body-scroll-lock'
 
 // Wraps next-cloudinary's <CldUploadWidget> with the Pattern A signing flow:
 // fetch a fresh signature from our backend on click, open the widget pre-loaded
@@ -38,6 +39,11 @@ const PURPOSE_LIMITS: Record<
   store_banner: {
     maxFileSize: 10 * 1024 * 1024,
     clientAllowedFormats: ['jpg', 'png', 'webp'],
+    sources: ['local'],
+  },
+  store_banner_video: {
+    maxFileSize: 50 * 1024 * 1024,
+    clientAllowedFormats: ['mp4', 'webm'],
     sources: ['local'],
   },
   product_image: {
@@ -211,13 +217,44 @@ function SignedWidget({
 }: SignedWidgetProps) {
   const limits = PURPOSE_LIMITS[purpose]
 
+  // Hold the body-scroll counter while the Cloudinary widget is mounted.
+  // The widget manages body overflow itself, but doesn't always restore
+  // cleanly when destroyed (especially after auto-close on single uploads).
+  // By participating in our centralized lock we ensure release on unmount
+  // restores body to whatever state the parent context expects — '' for a
+  // page-level uploader, 'hidden' for an in-modal uploader.
+  useBodyScrollLock()
+
+  // next-cloudinary v6 drops `uploadSignature` if it's a string (see
+  // @cloudinary-util/url-loader's getUploadWidgetOptions — only forwarded when
+  // typeof === 'function'). So we wrap our pre-computed signature in a
+  // callback. The widget calls it, we hand back the value our backend already
+  // signed. paramsToSign is ignored — the upload uses the timestamp + folder
+  // + preset we set in the same options object, which matches what we signed.
+  //
+  // Caveat: chunked uploads (currently only relevant for product_video) would
+  // call this callback per chunk and need fresh per-chunk signatures. That
+  // wants a real signatureEndpoint contract with the backend — flagged as a
+  // backend follow-up when we wire video uploads.
+  const uploadSignatureCallback = (callback: (sig: string) => void) => {
+    callback(signature.signature)
+  }
+
   return (
     <CldUploadWidget
       uploadPreset={signature.preset}
+      // cloudName + apiKey must live on `config.cloud` — that's where
+      // @cloudinary-util/url-loader reads them for the signed-mode gate. The
+      // backend hands us both per-signature so we don't need the public env
+      // var NEXT_PUBLIC_CLOUDINARY_API_KEY.
+      config={{
+        cloud: {
+          cloudName: signature.cloudName,
+          apiKey: signature.apiKey,
+        },
+      }}
       options={{
-        apiKey: signature.apiKey,
-        cloudName: signature.cloudName,
-        uploadSignature: signature.signature,
+        uploadSignature: uploadSignatureCallback,
         uploadSignatureTimestamp: signature.timestamp,
         folder: signature.folder,
         resourceType: signature.resourceType,
@@ -253,7 +290,12 @@ function SignedWidget({
       }}
       onClose={onClose}
     >
-      {({ open }) => <AutoOpener open={open} />}
+      {({ open, widget }) => (
+        <AutoOpener
+          open={open as (() => void) | undefined}
+          widgetReady={!!widget}
+        />
+      )}
     </CldUploadWidget>
   )
 }
@@ -262,15 +304,24 @@ function SignedWidget({
 // captured by their click on our outer button. Skipping this would force a
 // second click inside the widget which would be jarring.
 //
-// The ref guards against `open` changing references mid-life (causing the effect
-// to re-run) — we only ever want the widget to open once per mount.
-function AutoOpener({ open }: { open: () => void }) {
+// The render-prop's `open` is always defined as a function, but it internally
+// calls `widget.open()` without guarding against `widget` being undefined while
+// the Cloudinary script is still loading. We wait for `widget` to be truthy
+// before invoking. The ref ensures we still only open once per mount.
+function AutoOpener({
+  open,
+  widgetReady,
+}: {
+  open: (() => void) | undefined
+  widgetReady: boolean
+}) {
   const openedRef = useRef(false)
   useEffect(() => {
     if (openedRef.current) return
+    if (!widgetReady || typeof open !== 'function') return
     openedRef.current = true
     open()
-  }, [open])
+  }, [open, widgetReady])
   return null
 }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
@@ -27,6 +28,7 @@ interface FormState {
   streetNumber: string
   streetName: string
   buildingName: string
+  suburb: string
   city: string
   postalCode: string
 }
@@ -38,6 +40,7 @@ function addressToFormState(address: StoreAddress | null): FormState {
     streetNumber: address?.streetNumber ?? '',
     streetName: address?.streetName ?? '',
     buildingName: address?.buildingName ?? '',
+    suburb: address?.suburb ?? '',
     city: address?.city ?? '',
     postalCode: address?.postalCode ?? '',
   }
@@ -74,14 +77,7 @@ export function AddressFormModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [open, loading, onClose])
 
-  useEffect(() => {
-    if (!open) return
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [open])
+  useBodyScrollLock(open)
 
   if (!open) return null
 
@@ -102,6 +98,7 @@ export function AddressFormModal({
           streetNumber: form.streetNumber.trim() || undefined,
           streetName: form.streetName.trim() || undefined,
           buildingName: form.buildingName.trim() || undefined,
+          suburb: form.suburb.trim() || undefined,
           city: form.city.trim() || undefined,
           postalCode: form.postalCode.trim() || undefined,
         }
@@ -111,6 +108,7 @@ export function AddressFormModal({
           streetNumber: form.streetNumber.trim(),
           streetName: form.streetName.trim(),
           buildingName: form.buildingName.trim() || undefined,
+          suburb: form.suburb.trim() || undefined,
           city: form.city.trim(),
           postalCode: form.postalCode.trim(),
         }
@@ -133,7 +131,9 @@ export function AddressFormModal({
     if (status === 400 && Array.isArray(messageRaw)) {
       const fieldErrors: FieldErrors = {}
       for (const msg of messageRaw) {
-        const match = msg.match(/^(streetNumber|streetName|buildingName|city|postalCode)/i)
+        const match = msg.match(
+          /^(streetNumber|streetName|buildingName|suburb|city|postalCode)/i,
+        )
         if (match) {
           const field = match[1] as keyof FormState
           fieldErrors[field] = cleanValidationMessage(msg)
@@ -220,6 +220,16 @@ export function AddressFormModal({
             value={form.buildingName}
             onChange={(e) => update('buildingName', e.target.value)}
             error={errors.buildingName}
+            disabled={loading}
+          />
+
+          <Input
+            id="suburb"
+            label="Suburb (optional)"
+            placeholder="Rosebank"
+            value={form.suburb}
+            onChange={(e) => update('suburb', e.target.value)}
+            error={errors.suburb}
             disabled={loading}
           />
 

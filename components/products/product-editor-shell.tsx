@@ -22,7 +22,7 @@ import { ActivationReadinessPanel } from '@/components/products/activation-readi
 import { ProductLifecycleActions } from '@/components/products/product-lifecycle-actions'
 import { BasicsSection } from '@/components/products/sections/basics-section'
 import { ImagesSection } from '@/components/products/sections/images-section'
-import { CategoriesSection } from '@/components/products/sections/categories-section'
+import { CollectionsSection } from '@/components/products/sections/collections-section'
 import { ActivateProductModal } from '@/components/products/activate-product-modal'
 import { ArchiveProductModal } from '@/components/products/archive-product-modal'
 import { DeleteProductModal } from '@/components/products/delete-product-modal'
@@ -115,6 +115,11 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
       await activateProduct(storeId, product.id)
       refreshProductAndDependents()
       setModal({ kind: 'none' })
+      // Launch is the moment a product goes live — send the merchant back to
+      // the inventory so they see it sitting at ACTIVE in context with the
+      // rest of their catalogue.
+      router.push('/dashboard/products')
+      return
     } catch (err) {
       const error = err as { status?: number; data?: { message?: string | string[] } }
       const status = error.status
@@ -259,7 +264,7 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
             onSavedRemote={handleSavedRemote}
           />
           <ImagesSection storeId={storeId} product={product} />
-          <CategoriesSection storeId={storeId} product={product} />
+          <CollectionsSection storeId={storeId} product={product} />
         </main>
       </div>
 
@@ -303,8 +308,8 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
 function SectionNav() {
   const items = [
     { href: '#section-basics', label: 'Basics' },
-    { href: '#section-images', label: 'Images' },
-    { href: '#section-categories', label: 'Categories' },
+    { href: '#section-images', label: 'Media' },
+    { href: '#section-collections', label: 'Collections' },
   ]
   return (
     <nav className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">

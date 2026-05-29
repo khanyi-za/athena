@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Button } from '@/components/ui/button'
 
@@ -33,13 +34,7 @@ export function GoLiveCelebrationModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [onDismiss])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   async function copyLink() {
     if (typeof navigator === 'undefined' || !navigator.clipboard) return

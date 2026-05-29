@@ -32,7 +32,7 @@ export default function AdminGoLiveQueuePage() {
 
   return (
     <StoreQueueList
-      title="Go-live queue"
+      title="Launch queue"
       data={data?.data ?? []}
       total={data?.meta.total ?? 0}
       page={data?.meta.page ?? page}
@@ -44,7 +44,7 @@ export default function AdminGoLiveQueuePage() {
       onPageChange={setPage}
       onSortOrderChange={changeSortOrder}
       extraSignals={renderReadinessSignals}
-      emptyStateCopy="No stores waiting to go live. Check the first-review queue →"
+      emptyStateCopy="No stores waiting to launch. Check the first-review queue →"
     />
   )
 }
@@ -58,7 +58,9 @@ function renderReadinessSignals(
 
   const productCount = store._count.products
   const locationCount = store.addresses.length
-  const hasBanner = !!store.bannerUrl
+  // Per M9, banner is multi-item. The admin queue endpoint surfaces
+  // _count.bannerMedia specifically so we can render this signal cheaply.
+  const bannerCount = store._count.bannerMedia
   const hasStory = !!store.story && store.story.trim().length > 0
 
   return (
@@ -71,7 +73,10 @@ function renderReadinessSignals(
         label={`${locationCount} location${locationCount === 1 ? '' : 's'}`}
         ok={locationCount > 0}
       />
-      <Signal label="Banner" ok={hasBanner} />
+      <Signal
+        label={`${bannerCount} banner item${bannerCount === 1 ? '' : 's'}`}
+        ok={bannerCount > 0}
+      />
       <Signal label="Story" ok={hasStory} />
     </div>
   )

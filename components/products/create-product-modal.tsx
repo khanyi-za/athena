@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 import { useRouter } from 'next/navigation'
 
 import { Input } from '@/components/ui/input'
@@ -45,13 +46,7 @@ export function CreateProductModal({ storeId, onClose }: CreateProductModalProps
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onClose])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

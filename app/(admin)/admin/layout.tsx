@@ -20,7 +20,7 @@ import { Splash } from '@/components/ui/splash'
 
 const ADMIN_NAV_ITEMS = [
   { href: '/admin', label: 'Queue' },
-  { href: '/admin/go-live', label: 'Go-Live' },
+  { href: '/admin/go-live', label: 'Launch' },
   { href: '/admin/categories', label: 'Categories' },
 ]
 

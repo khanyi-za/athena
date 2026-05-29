@@ -64,6 +64,9 @@ export default function AdminFirstReviewDetailPage({ params }: PageProps) {
         reason: welcomeNote,
       })
       invalidateQueues()
+      // Close modal explicitly before navigation so the UI responds
+      // immediately, even if the route transition takes a beat.
+      setModal({ kind: 'none' })
       router.push('/admin')
     } catch (err) {
       handleDecisionError(err)
@@ -82,6 +85,7 @@ export default function AdminFirstReviewDetailPage({ params }: PageProps) {
         reason,
       })
       invalidateQueues()
+      setModal({ kind: 'none' })
       router.push('/admin')
     } catch (err) {
       handleDecisionError(err)

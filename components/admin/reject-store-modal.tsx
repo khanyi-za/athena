@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -82,13 +83,7 @@ export function RejectStoreModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onCancel])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   const trimmed = reason.trim()
   const canSubmit = trimmed.length >= 10
@@ -115,12 +110,12 @@ export function RejectStoreModal({
         <div>
           <h2 id="reject-modal-title" className="text-lg font-semibold text-zinc-950">
             {variant === 'go-live'
-              ? `Reject ${storeDisplayName}'s go-live?`
+              ? `Reject ${storeDisplayName}'s launch?`
               : `Reject ${storeDisplayName}'s application?`}
           </h2>
           <p className="mt-2 text-sm text-zinc-500">
             {variant === 'go-live'
-              ? `${ownerFirstName}'s store will return to APPROVED. They keep their dashboard and MERCHANT role — they just need to address your feedback before requesting go-live again.`
+              ? `${ownerFirstName}'s store will return to APPROVED. They keep their dashboard and MERCHANT role — they just need to address your feedback before requesting launch again.`
               : `${ownerFirstName} will be notified by email and can edit and resubmit. Be specific so they know what to fix.`}
           </p>
         </div>

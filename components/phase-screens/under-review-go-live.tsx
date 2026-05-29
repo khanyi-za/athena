@@ -1,16 +1,23 @@
 import type { UserStore } from '@/types/auth'
 
-// Stub for the MERCHANT + PENDING_GO_LIVE view. Real screen lands in Milestone 5 —
-// see docs/Api-frontend-contracts/store-frontend-flows.md §2.7. Same pattern as
-// the first-review wait, with "final review" framing.
+// MERCHANT + PENDING_GO_LIVE view per store-frontend-flows.md §2.7. Read-only
+// waiting state mirroring the first-review wait — admin approval is detected
+// automatically via useAuthMeRefresh on tab focus, the matrix re-evaluates,
+// and the screen swaps in place.
+//
+// Visual: a checkmark in an emerald-tinted circle. The first-review wait uses
+// a neutral zinc tone ("we got it"); this one steps up to emerald to signal
+// "you're almost live" — same icon family, more colour.
 
 export function UnderReviewGoLiveScreen({ store }: { store: UserStore }) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 py-10 text-center">
       <div
         aria-hidden
-        className="h-12 w-12 rounded-full border-2 border-zinc-300 border-t-zinc-950 animate-spin"
-      />
+        className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100"
+      >
+        <CheckIcon />
+      </div>
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold text-zinc-950">Your store is in final review</h1>
         <p className="text-sm text-zinc-600 leading-relaxed">
@@ -22,5 +29,23 @@ export function UnderReviewGoLiveScreen({ store }: { store: UserStore }) {
         </p>
       </div>
     </div>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="text-emerald-700"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
   )
 }

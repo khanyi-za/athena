@@ -74,7 +74,15 @@ export function PayoutSection({
               id="bankBranchCode"
               label="Branch code"
               placeholder="e.g. 250655"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
               {...field}
+              // Branch codes are digits only. Strip anything else so paste/
+              // letters can't sneak in.
+              onChange={(e) =>
+                field.onChange(e.target.value.replace(/\D/g, ''))
+              }
               error={fieldState.error?.message}
             />
           )}

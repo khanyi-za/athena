@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useBodyScrollLock } from "@/lib/use-body-scroll-lock"
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -31,13 +32,7 @@ export function ArchiveProductModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, onCancel])
 
-  useEffect(() => {
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = previous
-    }
-  }, [])
+  useBodyScrollLock()
 
   return (
     <div

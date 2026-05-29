@@ -91,12 +91,12 @@ export function ReadinessChecklist({
           !onRequestGoLive
             ? 'Coming next'
             : allReady
-              ? 'Ready to request go-live'
-              : 'Complete all items above to request go-live'
+              ? 'Ready to launch'
+              : 'Complete all items above to launch your store'
         }
         className="mt-6 w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isRequestingGoLive ? 'Requesting…' : 'Request go-live'}
+        {isRequestingGoLive ? 'Launching…' : 'Launch store'}
       </button>
     </div>
   )
@@ -193,7 +193,9 @@ function computeReadinessState(store: StoreMe, activeProductCount: number): Read
       hasField(store.bankBranchCode) &&
       hasField(store.bankAccountType),
     businessReg: hasField(store.businessRegNo),
-    banner: hasField(store.bannerUrl),
+    // Banner readiness = at least one media item in the gallery. Per M9, the
+    // single bannerUrl field was replaced by a multi-item bannerMedia array.
+    banner: store.bannerMedia.length > 0,
     story: hasField(store.story),
     location: store.addresses.length > 0,
     activeProducts: activeProductCount >= REQUIRED_ACTIVE_PRODUCTS,

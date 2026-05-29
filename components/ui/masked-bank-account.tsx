@@ -10,6 +10,12 @@ import { useEffect, useRef, useState } from 'react'
 //    merchants often compare with their bank app and a timer feels surveillance-y)
 // 3. Confirm-on-edit — explicit "Edit" click required before the field becomes
 //    typable. Prevents accidental edits when the user only wanted to verify.
+//
+// Empty state caveat: when the field has no value yet, the confirm-on-edit
+// pattern provides zero protection (nothing to overwrite) but adds real friction
+// — the small "Add" button is easy to miss. So empty fields render as a plain
+// input. Once the user enters a value and blurs, the masked + Edit pattern
+// takes over for any subsequent change.
 
 interface MaskedBankAccountProps {
   id: string
@@ -70,7 +76,15 @@ export function MaskedBankAccount({
   }
 
   const isEmpty = !value
+  const showInput = editing || isEmpty
   const displayed = revealed ? value : isEmpty ? '' : maskValue(value)
+
+  const inputClassName = [
+    'w-full rounded-lg border bg-white px-3 py-2.5 font-mono text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400',
+    error
+      ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
+      : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+  ].join(' ')
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -78,31 +92,45 @@ export function MaskedBankAccount({
         {label}
       </label>
 
-      {editing ? (
+      {showInput ? (
         <input
-          ref={inputRef}
+          // Only attach the ref for the editing path — empty-state inputs
+          // shouldn't autofocus on mount (would steal focus on form render).
+          ref={editing ? inputRef : undefined}
           id={id}
+          // type="text" with inputMode="numeric" gives a numeric keypad on
+          // mobile without enabling browser-native number stepper UI (which
+          // doesn't make sense for an account number).
           type="text"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commit}
+          inputMode="numeric"
+          autoComplete="off"
+          value={editing ? draft : value}
+          onChange={(e) => {
+            // Bank account numbers are digits only. Strip anything else so
+            // pasted spaces/dashes/letters can't sneak in either.
+            const digits = e.target.value.replace(/\D/g, '')
+            if (editing) {
+              setDraft(digits)
+            } else {
+              // Empty state: typing transitions us into the edit lifecycle so
+              // the existing commit-on-blur / Enter / Escape flow takes over.
+              setDraft(digits)
+              setEditing(true)
+            }
+          }}
+          onBlur={editing ? commit : undefined}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault()
-              commit()
+              if (editing) commit()
             } else if (e.key === 'Escape') {
               e.preventDefault()
-              cancel()
+              if (editing) cancel()
             }
           }}
           disabled={disabled}
           placeholder={placeholder}
-          className={[
-            'w-full rounded-lg border bg-white px-3 py-2.5 font-mono text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400',
-            error
-              ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-              : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
-          ].join(' ')}
+          className={inputClassName}
         />
       ) : (
         <div className="flex items-center gap-2">
@@ -110,25 +138,23 @@ export function MaskedBankAccount({
             id={id}
             className="flex-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5 font-mono text-sm text-zinc-700"
           >
-            {isEmpty ? <span className="text-zinc-400">{placeholder}</span> : displayed}
+            {displayed}
           </div>
-          {!isEmpty && (
-            <button
-              type="button"
-              onClick={() => setRevealed((r) => !r)}
-              disabled={disabled}
-              className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
-            >
-              {revealed ? 'Hide' : 'Show'}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setRevealed((r) => !r)}
+            disabled={disabled}
+            className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
+          >
+            {revealed ? 'Hide' : 'Show'}
+          </button>
           <button
             type="button"
             onClick={startEditing}
             disabled={disabled}
             className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
           >
-            {isEmpty ? 'Add' : 'Edit'}
+            Edit
           </button>
         </div>
       )}

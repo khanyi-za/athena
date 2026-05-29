@@ -156,12 +156,28 @@ Category image (admin):
 The signature is computed over a sorted, ampersand-joined string of the params the frontend will pass to Cloudinary, **excluding** `file`, `cloud_name`, `api_key`, `resource_type`, and `signature` itself. For YIIVA's upload flow that's:
 
 ```
-folder=stores/.../logo&timestamp=1684123456&upload_preset=store_logo
+folder=stores/.../logo&source=uw&timestamp=1684123456&upload_preset=store_logo
 ```
 
 Hashed with `CLOUDINARY_API_SECRET` appended (SHA-1) → the hex digest is the `signature`.
 
+> **`source=uw` is required.** Cloudinary's Upload Widget injects `source=uw` into every upload request automatically and includes it in signature verification. Because YIIVA's frontend uses `<CldUploadWidget>` for **all** upload contexts, the backend must include `source=uw` in the string-to-sign **always**. Omitting it produces `401 Invalid Signature` with `x-cld-error` showing the widget-actual string that includes `source=uw`.
+>
+> If a future non-widget upload path is added (e.g. a direct cURL flow for migrations), that caller is responsible for sending `source=uw` too — or we add a flag to the signature request body. For v1, treat `source=uw` as universal.
+
 **Frontend constraint:** the values of `folder`, `timestamp`, and `upload_preset` passed to Cloudinary must exactly match the values returned in the signature response. Cloudinary rejects mismatches. The frontend cannot, for example, override the folder after receiving the signature.
+
+### `next-cloudinary` v6 wrapper caveat (frontend-side, but worth knowing)
+
+`@cloudinary-util/url-loader` (the wrapper used by `<CldUploadWidget>`) only forwards `uploadSignature` to Cloudinary's underlying widget when it is a `Function`. A `string` is silently dropped — the widget then submits the upload as **unsigned**, and Cloudinary rejects with `Upload preset must be whitelisted for unsigned uploads` (misleading, since the preset is correctly Signed).
+
+The frontend wraps the pre-computed signature in a callback that returns it:
+
+```ts
+uploadSignature: (callback: (sig: string) => void) => callback(signature.signature)
+```
+
+This satisfies the `typeof === 'function'` check in the wrapper while keeping the Pattern A semantics (one signature per click). No backend change required for this wrapper behaviour — it's noted here purely so future devs don't reintroduce a string `uploadSignature` and watch it disappear.
 
 ### Recommended upload flow (Pattern A — pre-fetch the signature)
 

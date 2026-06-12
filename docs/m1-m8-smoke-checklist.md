@@ -14,11 +14,18 @@ End-to-end testing pass covering everything built so far. Roughly 75 scenarios a
 
 ---
 
-## ⏸ Testing pass status — PAUSED
+## ⏸ Testing pass status — PAUSED (last update 2026-06-06)
 
-**Paused at:** boundary between Phase 3 (Wizard / M3, completed) and Phase 4/5 (APPROVED readiness + Products, not yet started).
+**Paused at:** mid-Phase 9. Owner sent first employee invite; invite email URL bug found and shimmed (see backend handoffs); recipient-side accept flow not yet exercised.
 
-**Why:** product requirement landed — **multi-media store banner** (up to 5 image/video items per store). Cleaner to land the schema change before testing the readiness checklist + go-live flow that depend on the banner. Pausing M1–M8 validation to ship the new milestone end-to-end.
+**Resume here next session:**
+1. Click the invite link as the recipient (signed out / different browser profile) — verify the validation screen renders and the "Accept invite" CTA works
+2. Land on welcome screen post-accept; confirm Zustand auth store + localStorage employee-store cache are populated
+3. Back on owner side: verify team list shows the now-Active employee row
+4. Test resend (on a pending row), deactivate / reactivate / remove (on accepted rows), and the 409 "already invited" pivot path
+5. Then Phase 10 (full invite-recipient signed-out + matching + mismatch + returnUrl threading + "Were you invited?" recovery link)
+
+After Phase 9–10, the remaining untouched scope is Phase 5 (archive / delete DRAFT / variant editor / inventory filters), Phase 6 (reject flow with templates, sort toggle, categories CRUD, non-ADMIN soft-redirect), Phase 7 (Active dashboard — first-time celebration modal, metrics, quick-actions), and Phase 8 (Settings page).
 
 **Where we stopped:**
 - ✅ Phase 0 — pre-flight: passed
@@ -33,11 +40,10 @@ End-to-end testing pass covering everything built so far. Roughly 75 scenarios a
 - 🟡 Phase 9 — Team management: JUST STARTED (owner sent first invite; email URL bug found + shimmed; recipient flow + resend + 409 pivot + deactivate/reactivate/remove untouched)
 - ⏸ Phase 10 — Invite recipient: NOT STARTED
 
-**M9 — Multi-media store banner** is being built in parallel during this pause. Spec + backend handoff are in `docs/Api-frontend-contracts/` and `docs/backend-handoffs/store-banner-media.md`. Frontend checkpoints A–E are complete; awaiting backend deploy + migration to validate end-to-end.
-
-**Resume conditions:**
-1. Backend has deployed the M9 schema migration + endpoints
-2. Existing dev test store's `bannerUrl` is backfilled into `bannerMedia[0]` cleanly
+**Milestones shipped during this testing pass (no longer blockers):**
+- **M9 — Multi-media store banner** — landed end-to-end. Backend handoff: `docs/backend-handoffs/store-banner-media.md` (Status: landed).
+- **M10 — Merchant collections + categories removed from product editor** — landed end-to-end. Backend handoff: `docs/backend-handoffs/merchant-collections.md` (Status: landed). Also opened collection + product GETs to admin (handoffs: `admin-read-store-collections.md`, `admin-read-store-products.md`).
+- **UI "Launch" terminology rename** — user-facing copy migrated from "go-live" / "activate" / "request go-live" to "Launch" variants. Internal state-machine names, API paths, hook names, type/variant strings all unchanged (see `project_merchant_ui.md` memory for the rule).
 3. Tester confirms the new gallery loads on the merchant readiness screen with the migrated item visible
 
 **Resume point:** Phase 4 — APPROVED + go-live. The merchant test account from Phase 3 should still be in the APPROVED state (admin approved it before the pause). First items to retest:

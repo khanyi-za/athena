@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CldImage } from 'next-cloudinary'
@@ -37,7 +37,17 @@ type AcceptMode =
 
 const POST_ACCEPT_REDIRECT_MS = 1500
 
+// useSearchParams() requires a Suspense boundary for prerendering — the
+// default export wraps the real page so `next build` can static-shell it.
 export default function InviteAcceptPage() {
+  return (
+    <Suspense fallback={null}>
+      <InviteAcceptContent />
+    </Suspense>
+  )
+}
+
+function InviteAcceptContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const user = useAuthStore((s) => s.user)

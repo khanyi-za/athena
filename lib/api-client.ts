@@ -68,3 +68,47 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
 
   return response.json() as Promise<T>
 }
+
+/**
+ * apiFetch variant for binary responses (e.g. waybill PDFs). Same auth +
+ * silent-refresh behaviour; returns the raw Blob instead of parsing JSON.
+ */
+export async function apiFetchBlob(url: string, options: RequestInit = {}): Promise<Blob> {
+  const { accessToken, setAccessToken, clearAuth } = useAuthStore.getState()
+
+  let response = await doFetch(url, options, accessToken)
+
+  if (response.status === 401) {
+    const data = await response.json().catch(() => ({})) as { message?: string }
+    const message = data?.message ?? ''
+
+    if (message === 'Access token has expired') {
+      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
+      if (refreshRes.ok) {
+        const { accessToken: newToken } = await refreshRes.json()
+        setAccessToken(newToken)
+        response = await doFetch(url, options, newToken)
+      } else {
+        clearAuth()
+        redirectToLogin()
+        throw Object.assign(new Error('Session expired'), { status: 401 })
+      }
+    } else {
+      clearAuth()
+      redirectToLogin()
+      throw Object.assign(new Error(message || 'Unauthorized'), { status: 401 })
+    }
+  }
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({ message: 'Something went wrong. Please try again.' })) as {
+      message?: string | string[]
+    }
+    const message = Array.isArray(data.message)
+      ? data.message.join('. ')
+      : (data.message ?? 'Something went wrong. Please try again.')
+    throw Object.assign(new Error(message), { status: response.status, data })
+  }
+
+  return response.blob()
+}

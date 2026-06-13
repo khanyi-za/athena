@@ -4,6 +4,49 @@ All notable changes to the Athena merchant dashboard are documented here.
 
 ---
 
+## [Unreleased] — 2026-06-12
+
+### Legacy-dashboard alignment (ACTIVE stores) — phases 1–3
+
+Product direction confirmed: once a store is ACTIVE, the merchant dashboard
+becomes the `dashboard-legacy/` interface wired to real data. `CLAUDE.md`
+added to the repo (durable context + this direction).
+
+- **Shell**: new `components/legacy-shell/legacy-dashboard-shell.tsx` — the
+  legacy sidebar chrome with the real store identity in the header (logo,
+  name, link to settings), user + logout preserved, nav at `/dashboard/*`
+  (incl. Collections + Team), honest quick actions. Applied by
+  `dashboard/layout.tsx` only for MERCHANT + ACTIVE; all other states keep
+  the thin header.
+- **Overview**: `ActiveStoreScreen` rebuilt in the legacy design with real
+  data — welcome banner (copy-public-URL), four real stat cards
+  (orders/followers/active products/rating from `/stores/me`), live Recent
+  Orders card, Top Products as a Phalo placeholder. Locations management and
+  the go-live celebration modal preserved.
+- **Orders** (`/dashboard/orders`): full order management — status filter +
+  order-number search + cursor Load-more list; detail modal with items,
+  buyer/shipping, payout breakdown (commission + merchant payout), fulfilment
+  timeline; transitions CONFIRMED→PROCESSING→READY_FOR_DISPATCH; merchant
+  cancel with reason; waybill PDF download (binary BFF passthrough,
+  "not ready yet" state pre-booking). New `apiFetchBlob` in `api-client.ts`.
+- **Messages** (`/dashboard/messages`): merchant chat — two-pane inbox
+  (conversation list with unread badges + live thread). REST via new BFF
+  proxies under `/api/stores/:id/conversations*`; realtime via socket.io
+  straight to the backend `/chat` namespace (`lib/chat-socket.ts`,
+  `NEXT_PUBLIC_API_URL`); optimistic replies with Idempotency-Key; buyer
+  image attachments render. Dep added: `socket.io-client`.
+- **Build fix (pre-existing)**: `/invites/accept` wrapped in a Suspense
+  boundary — `next build` had been failing on its bare `useSearchParams()`.
+
+New BFF routes: stores/[id]/orders (+detail/status/cancel/shipping-label),
+stores/[id]/conversations (+messages/read). New schemas: `order.ts`,
+`chat.ts`. New hooks: `use-store-orders`, `use-store-conversations`.
+
+Remaining on this track: Analytics (waits on Phalo), restyling the wired
+products/collections/team/settings screens to the legacy look.
+
+---
+
 ## [Unreleased] — 2026-05-06
 
 ### Auth — API Contract Alignment

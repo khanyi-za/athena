@@ -5,9 +5,14 @@ import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
 import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
+import { useStoreMe } from '@/hooks/use-store-me'
+import { LegacyDashboardShell } from '@/components/legacy-shell/legacy-dashboard-shell'
 
-// Thin dashboard shell — header (logo + conditional MERCHANT nav + user info)
-// and main content area. Phase screens that need more chrome bring their own.
+// Dashboard chrome. Two modes:
+// - ACTIVE store → the full operating shell (sidebar nav, ported from the
+//   dashboard-legacy design target) via LegacyDashboardShell.
+// - Everything else (wizard, review states, suspended, admins-in-transit) →
+//   the thin header below; phase screens bring their own chrome.
 //
 // Mounts useAuthMeRefresh so every phase screen inherits the focus-refresh
 // behaviour without having to opt in individually.
@@ -25,8 +30,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const user = useAuthStore((s) => s.user)
   const pathname = usePathname()
+  const { data: store } = useStoreMe()
 
   const showMerchantNav = user?.role === 'MERCHANT'
+
+  if (user?.role === 'MERCHANT' && store?.status === 'ACTIVE') {
+    return <LegacyDashboardShell store={store}>{children}</LegacyDashboardShell>
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50">

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
 import { useStoreMe } from '@/hooks/use-store-me'
 import { AppShell } from '@/components/shell/app-shell'
@@ -78,12 +79,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </nav>
             )}
           </div>
-          {user ? (
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">{user.firstName}</span>
-              <LogoutButton />
-            </div>
-          ) : null}
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            {user ? (
+              <>
+                <span className="text-sm text-muted-foreground">{user.firstName}</span>
+                <LogoutButton />
+              </>
+            ) : null}
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 lg:px-8">

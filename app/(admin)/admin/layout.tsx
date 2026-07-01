@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
 import { Splash } from '@/components/ui/splash'
 
@@ -88,7 +89,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               })}
             </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <span className="text-sm text-muted-foreground">{user.firstName}</span>
             <LogoutButton />
           </div>

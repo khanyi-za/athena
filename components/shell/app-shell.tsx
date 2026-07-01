@@ -21,6 +21,7 @@ import {
 
 import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { cn } from '@/lib/utils'
 import type { StoreMe } from '@/lib/schemas/store'
 
@@ -178,6 +179,7 @@ export function AppShell({
             >
               <Bell size={18} />
             </button>
+            <ThemeToggle />
             {user && (
               <div className="flex items-center gap-2 pl-1">
                 <span className="hidden text-sm text-muted-foreground sm:inline">

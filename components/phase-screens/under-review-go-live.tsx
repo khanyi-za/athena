@@ -14,17 +14,17 @@ export function UnderReviewGoLiveScreen({ store }: { store: UserStore }) {
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 py-10 text-center">
       <div
         aria-hidden
-        className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100"
+        className="flex h-16 w-16 items-center justify-center rounded-full bg-success/10"
       >
         <CheckIcon />
       </div>
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold text-zinc-950">Your store is in final review</h1>
-        <p className="text-sm text-zinc-600 leading-relaxed">
+        <h1 className="text-2xl font-semibold text-foreground">Your store is in final review</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           We&apos;re checking that your store is ready to be seen by buyers. Reviews
           usually take 2–3 business days. As soon as we approve, your store will go live.
         </p>
-        <p className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-muted-foreground">
           {store.displayName} · awaiting final approval
         </p>
       </div>
@@ -43,7 +43,7 @@ function CheckIcon() {
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="text-emerald-700"
+      className="text-success"
     >
       <path d="M20 6 9 17l-5-5" />
     </svg>

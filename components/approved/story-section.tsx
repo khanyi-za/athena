@@ -36,12 +36,12 @@ export function StorySection({ store, onSavedRemote }: StorySectionProps) {
   return (
     <section
       id="section-story"
-      className="scroll-mt-6 rounded-xl border border-zinc-200 bg-white p-6"
+      className="scroll-mt-6 rounded-xl border border-border bg-card p-6"
     >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-950">Brand story</h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h2 className="text-lg font-semibold text-foreground">Brand story</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Tell buyers about your journey, what you stand for, what makes your brand
             special. Required for go-live.
           </p>
@@ -51,7 +51,7 @@ export function StorySection({ store, onSavedRemote }: StorySectionProps) {
 
       <div className="mt-6 flex flex-col gap-1.5">
         <div className="flex items-center justify-end">
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs text-muted-foreground">
             {story.length} / {MAX_LENGTH}
           </span>
         </div>
@@ -62,7 +62,7 @@ export function StorySection({ store, onSavedRemote }: StorySectionProps) {
           value={story}
           onChange={(e) => setStory(e.target.value)}
           placeholder="Where you started, what you stand for, what makes you different…"
-          className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+          className="w-full resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
         />
       </div>
     </section>

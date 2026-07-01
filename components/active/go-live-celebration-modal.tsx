@@ -52,40 +52,40 @@ export function GoLiveCelebrationModal({
       role="dialog"
       aria-modal
       aria-labelledby="go-live-celebration-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={onDismiss}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-center text-center">
           <div
             aria-hidden
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl"
           >
             🎉
           </div>
           <h2
             id="go-live-celebration-title"
-            className="mt-4 text-xl font-semibold text-zinc-950"
+            className="mt-4 text-xl font-semibold text-foreground"
           >
             Your store is live
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Buyers can now find {storeDisplayName} on YIIVA. Share your URL to
             start bringing them in.
           </p>
         </div>
 
-        <div className="mt-5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
-          <span className="flex-1 truncate font-mono text-sm text-zinc-700">
+        <div className="mt-5 flex items-center gap-2 rounded-lg border border-border bg-muted p-3">
+          <span className="flex-1 truncate font-mono text-sm text-foreground">
             {publicUrl}
           </span>
           <button
             type="button"
             onClick={copyLink}
-            className="flex-shrink-0 rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100"
+            className="flex-shrink-0 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-accent"
           >
             {copied ? 'Copied!' : 'Copy link'}
           </button>

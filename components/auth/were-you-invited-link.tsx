@@ -6,7 +6,7 @@
 
 export function WereYouInvitedLink() {
   return (
-    <p className="text-center text-xs text-zinc-500">
+    <p className="text-center text-xs text-muted-foreground">
       Were you invited to a store? Find your invite email — the link in there
       will bring you in.
     </p>

@@ -144,15 +144,15 @@ function EmployeeWelcomeScreen({ store }: { store: EmployeeStoreEntry }) {
     <div className="mx-auto flex max-w-md flex-col items-center gap-5 py-16 text-center">
       <div
         aria-hidden
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl"
       >
         ✓
       </div>
       <div className="flex flex-col gap-2">
-        <h1 className="text-xl font-semibold text-zinc-950">
+        <h1 className="text-xl font-semibold text-foreground">
           You&apos;re set up at {store.displayName}.
         </h1>
-        <p className="text-sm leading-relaxed text-zinc-600">
+        <p className="text-sm leading-relaxed text-muted-foreground">
           Your access is registered. The dedicated employee dashboard is on
           its way — for now, the store owner can collaborate with you directly
           on changes, products, and orders.

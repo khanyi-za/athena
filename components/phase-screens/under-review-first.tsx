@@ -14,18 +14,18 @@ export function UnderReviewFirstScreen({ store }: { store: UserStore }) {
     <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 py-10 text-center">
       <div
         aria-hidden
-        className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100"
+        className="flex h-16 w-16 items-center justify-center rounded-full bg-muted"
       >
         <CheckIcon />
       </div>
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold text-zinc-950">Your store is under review</h1>
-        <p className="text-sm text-zinc-600 leading-relaxed">
+        <h1 className="text-2xl font-semibold text-foreground">Your store is under review</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           We&apos;ve received your submission and are checking everything over.
           Reviews usually take 2–3 business days. We&apos;ll email you as soon
           as we have an answer.
         </p>
-        <p className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-muted-foreground">
           {store.displayName} · submitted to YIIVA
         </p>
       </div>
@@ -44,7 +44,7 @@ function CheckIcon() {
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="text-zinc-900"
+      className="text-foreground"
     >
       <path d="M20 6 9 17l-5-5" />
     </svg>

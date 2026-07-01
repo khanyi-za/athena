@@ -44,20 +44,20 @@ export function RequestGoLiveModal({
       role="dialog"
       aria-modal
       aria-labelledby="go-live-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="go-live-modal-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="go-live-modal-title" className="text-lg font-semibold text-foreground">
           Launch your store?
         </h2>
 
-        <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-zinc-600">
+        <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
           <p>
             Once you launch, you won&apos;t be able to edit your store until the review
             is complete. Final reviews usually take 2–3 business days.

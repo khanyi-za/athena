@@ -38,10 +38,10 @@ export function ReadinessChecklist({
   const allReady = Object.values(state).every(Boolean)
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold text-zinc-950">Get ready to go live</h2>
-        <p className="text-sm text-zinc-500">
+        <h2 className="text-lg font-semibold text-foreground">Get ready to go live</h2>
+        <p className="text-sm text-muted-foreground">
           Complete these before you can launch.
         </p>
       </div>
@@ -94,7 +94,7 @@ export function ReadinessChecklist({
               ? 'Ready to launch'
               : 'Complete all items above to launch your store'
         }
-        className="mt-6 w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-6 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isRequestingGoLive ? 'Launching…' : 'Launch store'}
       </button>
@@ -120,7 +120,7 @@ function ChecklistItem({ checked, label, hint, action }: ChecklistItemProps) {
         aria-hidden
         className={[
           'mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md',
-          checked ? 'bg-emerald-500 text-white' : 'border border-zinc-300 bg-white',
+          checked ? 'bg-success text-success-foreground' : 'border border-border bg-card',
         ].join(' ')}
       >
         {checked && <CheckIcon />}
@@ -128,17 +128,17 @@ function ChecklistItem({ checked, label, hint, action }: ChecklistItemProps) {
       <div className="flex flex-1 items-center justify-between gap-3">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <span
-            className={`text-sm ${checked ? 'text-zinc-500' : 'font-medium text-zinc-950'}`}
+            className={`text-sm ${checked ? 'text-muted-foreground' : 'font-medium text-foreground'}`}
           >
             {label}
           </span>
-          {hint && <span className="text-xs text-zinc-500">({hint})</span>}
+          {hint && <span className="text-xs text-muted-foreground">({hint})</span>}
         </div>
         {action && !checked && (
           <button
             type="button"
             onClick={action.onClick}
-            className="text-sm font-medium text-zinc-950 underline-offset-2 hover:underline"
+            className="text-sm font-medium text-foreground underline-offset-2 hover:underline"
           >
             {action.label}
           </button>

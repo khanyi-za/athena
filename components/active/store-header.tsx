@@ -35,8 +35,8 @@ export function StoreHeader({ store }: StoreHeaderProps) {
   }
 
   return (
-    <header className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 sm:flex-row sm:items-center">
-      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+    <header className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6 sm:flex-row sm:items-center">
+      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
         {store.logoUrl ? (
           <CldImage
             src={store.logoUrl}
@@ -45,13 +45,13 @@ export function StoreHeader({ store }: StoreHeaderProps) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="text-xs text-zinc-400">No logo</span>
+          <span className="text-xs text-muted-foreground">No logo</span>
         )}
       </div>
 
       <div className="flex flex-1 flex-col gap-2 min-w-0">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="truncate text-2xl font-semibold text-zinc-950">
+          <h1 className="truncate text-2xl font-semibold text-foreground">
             {store.displayName}
           </h1>
           <StatusPill status={store.status} />
@@ -61,14 +61,14 @@ export function StoreHeader({ store }: StoreHeaderProps) {
             href={publicUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="truncate text-sm text-zinc-600 underline-offset-2 hover:underline"
+            className="truncate text-sm text-muted-foreground underline-offset-2 hover:underline"
           >
             {publicUrl}
           </a>
           <button
             type="button"
             onClick={copyLink}
-            className="flex-shrink-0 rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+            className="flex-shrink-0 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-accent"
           >
             {copied ? 'Copied!' : 'Copy link'}
           </button>

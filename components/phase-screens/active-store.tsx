@@ -14,6 +14,7 @@ import {
   FolderTree,
   Copy,
   Check,
+  TrendingUp,
 } from 'lucide-react'
 
 import { useStoreMe, useInvalidateStoreMe } from '@/hooks/use-store-me'
@@ -28,15 +29,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
+import { RevenueChart } from '@/components/ui/charts'
+import { useStoreAnalytics } from '@/lib/analytics/store-analytics'
 import { ORDER_STATUS } from '@/lib/order-status'
 import { formatZAR } from '@/lib/format-money'
 import type { StoreAddress } from '@/lib/schemas/store'
 import type { MerchantOrderSummary } from '@/lib/schemas/order'
 
 // MERCHANT + ACTIVE overview — YIIVA redesign (shadcn-style primitives + tokens).
-// Stats come from /stores/me; recent orders from the merchant-orders proxy.
-// Revenue trends / sparklines / top-products insights wait on the Phalo analytics
-// engine — those slots are honest placeholders, not fabricated numbers.
+// KPI *values* come from /stores/me; recent orders from the merchant-orders proxy.
+// Revenue chart, trend deltas and sparklines come from useStoreAnalytics, which
+// returns SAMPLE data (isSample → "Sample" badge) until the Phalo analytics
+// engine is wired — swapping to real data changes nothing in this component.
+// Top-products insights remain a placeholder pending Phalo.
 //
 // Functionality preserved: locations management (AddressSection + modals) and the
 // one-time go-live celebration modal.
@@ -54,6 +59,7 @@ export function ActiveStoreScreen() {
     useActiveProductCount(store?.id)
   const ordersQuery = useStoreOrders(store?.id, { take: 5 })
   const invalidateStoreMe = useInvalidateStoreMe()
+  const analytics = useStoreAnalytics(store)
 
   const [modal, setModal] = useState<ModalState>({ kind: 'none' })
 
@@ -75,11 +81,6 @@ export function ActiveStoreScreen() {
   function isOnlyAddress(address: StoreAddress): boolean {
     return store!.addresses.length === 1 && store!.addresses[0].id === address.id
   }
-
-  const notActiveCount =
-    !isActiveCountLoading && store._count.products > (activeProductCount ?? 0)
-      ? store._count.products - (activeProductCount ?? 0)
-      : 0
 
   return (
     <div className="space-y-6">
@@ -117,33 +118,69 @@ export function ActiveStoreScreen() {
         <StatCard
           label="Orders"
           value={store._count.orders.toLocaleString('en-ZA')}
-          hint="All time"
           icon={ShoppingCart}
+          trend={{ pct: analytics.orders.trendPct }}
+          spark={analytics.orders.spark}
         />
         <StatCard
           label="Followers"
           value={store.followerCount.toLocaleString('en-ZA')}
-          hint="On your brand"
           icon={Users}
+          trend={{ pct: analytics.followers.trendPct }}
+          spark={analytics.followers.spark}
+          sparkColor="var(--chart-2)"
         />
         <StatCard
           label="Active products"
           value={isActiveCountLoading ? '—' : (activeProductCount ?? 0).toLocaleString('en-ZA')}
-          hint={notActiveCount > 0 ? `${notActiveCount} not active` : 'In catalog'}
           icon={Package}
+          trend={{ pct: analytics.activeProducts.trendPct }}
+          spark={analytics.activeProducts.spark}
+          sparkColor="var(--chart-3)"
         />
         <StatCard
           label="Avg rating"
           value={store.averageRating > 0 ? store.averageRating.toFixed(1) : '—'}
-          hint={store.averageRating > 0 ? 'Out of 5' : 'No reviews yet'}
           icon={Star}
+          trend={{ pct: analytics.rating.trendPct }}
+          spark={analytics.rating.spark}
+          sparkColor="var(--chart-4)"
         />
       </div>
 
+      {analytics.isSample && (
+        <p className="-mt-2 text-xs text-muted-foreground">
+          Trends and charts show sample data — live analytics arrive with the engine.
+        </p>
+      )}
+
       {/* Body */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Recent orders */}
-        <div className="lg:col-span-2">
+        {/* Revenue + recent orders */}
+        <div className="space-y-6 lg:col-span-2">
+          {/* Revenue hero chart */}
+          <Card>
+            <CardHeader>
+              <div>
+                <CardTitle>Revenue</CardTitle>
+                <p className="mt-1 text-2xl font-semibold tabular-nums text-foreground">
+                  {formatZAR(analytics.revenue.valueInCents)}
+                </p>
+                <p className="text-xs text-muted-foreground">Last 14 days</p>
+              </div>
+              <div className="flex items-center gap-2">
+                {analytics.isSample && <Badge tone="brand">Sample</Badge>}
+                <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
+                  <TrendingUp size={12} /> +{analytics.revenue.trendPct}%
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <RevenueChart data={analytics.revenue.series} />
+            </CardContent>
+          </Card>
+
+          {/* Recent orders */}
           <Card>
             <CardHeader>
               <CardTitle>Recent orders</CardTitle>

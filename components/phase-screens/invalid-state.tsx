@@ -36,15 +36,15 @@ export function InvalidStateScreen({ reason }: { reason: string }) {
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4 py-10 text-center">
-      <h1 className="text-2xl font-semibold text-zinc-950">Something looks off</h1>
-      <p className="text-sm text-zinc-600 leading-relaxed">
+      <h1 className="text-2xl font-semibold text-foreground">Something looks off</h1>
+      <p className="text-sm text-muted-foreground leading-relaxed">
         We&apos;re refreshing your session to get back on track.
       </p>
       <div>
         <button
           type="button"
           onClick={handleRefresh}
-          className="inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition-colors"
+          className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground hover:bg-brand/90 transition-colors"
         >
           Sign in again
         </button>

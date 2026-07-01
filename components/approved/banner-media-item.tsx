@@ -52,8 +52,8 @@ export function BannerMediaItem({
       ref={setNodeRef}
       style={style}
       className={[
-        'relative aspect-square select-none overflow-hidden rounded-lg border bg-zinc-50',
-        isDragging ? 'border-zinc-950 shadow-lg' : 'border-zinc-200',
+        'relative aspect-square select-none overflow-hidden rounded-lg border bg-muted',
+        isDragging ? 'border-brand shadow-lg' : 'border-border',
       ].join(' ')}
       {...attributes}
       {...listeners}
@@ -110,10 +110,10 @@ export function BannerMediaItem({
           if (!deleteDisabled) onDelete(item)
         }}
         className={[
-          'absolute bottom-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-sm font-semibold shadow-sm transition-colors',
+          'absolute bottom-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-card/90 text-sm font-semibold shadow-sm transition-colors',
           deleteDisabled
-            ? 'cursor-not-allowed text-zinc-300'
-            : 'text-zinc-700 hover:bg-white hover:text-red-600',
+            ? 'cursor-not-allowed text-muted-foreground'
+            : 'text-foreground hover:bg-card hover:text-danger',
         ].join(' ')}
       >
         ×

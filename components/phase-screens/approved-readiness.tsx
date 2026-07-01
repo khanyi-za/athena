@@ -172,8 +172,8 @@ export function ApprovedReadinessScreen() {
       )}
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-zinc-950">{store.displayName}</h1>
-        <p className="text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-foreground">{store.displayName}</h1>
+        <p className="text-sm text-muted-foreground">
           Your store is approved. Finish a few things to request to go live.
         </p>
       </header>
@@ -281,7 +281,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -290,8 +290,8 @@ function LoadingState() {
 function ErrorState() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">Couldn&apos;t load your store</h2>
-      <p className="text-sm text-zinc-500">
+      <h2 className="text-lg font-semibold text-foreground">Couldn&apos;t load your store</h2>
+      <p className="text-sm text-muted-foreground">
         Something went wrong on our side. Refresh the page to try again.
       </p>
     </div>

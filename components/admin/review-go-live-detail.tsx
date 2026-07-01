@@ -74,7 +74,7 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
         <Field label="Description" value={store.description} multiline />
         <Field label="Website" value={store.websiteUrl} link />
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Logo
           </p>
           {store.logoUrl ? (
@@ -82,7 +82,7 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
               href={store.logoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block h-24 w-24 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+              className="inline-block h-24 w-24 overflow-hidden rounded-lg border border-border bg-muted"
             >
               <CldImage
                 src={store.logoUrl}
@@ -92,7 +92,7 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
               />
             </a>
           ) : (
-            <p className="text-sm text-zinc-400">No logo uploaded</p>
+            <p className="text-sm text-muted-foreground">No logo uploaded</p>
           )}
         </div>
       </Section>
@@ -101,22 +101,22 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
       <Section title="Story">
         {store.story ? (
           <div className="sm:col-span-2">
-            <p className="whitespace-pre-line text-sm leading-relaxed text-zinc-950">
+            <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">
               {store.story}
             </p>
           </div>
         ) : (
-          <p className="text-sm text-zinc-400">Story not provided</p>
+          <p className="text-sm text-muted-foreground">Story not provided</p>
         )}
       </Section>
 
       {/* Active product preview */}
-      <section className="rounded-xl border border-zinc-200 bg-white p-5">
+      <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Active products
           </h2>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Showing {Math.min(products.length, PREVIEW_LIMIT)} of {totalActive}
           </p>
         </div>
@@ -125,24 +125,24 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
           <div className="mt-4 flex items-center justify-center py-8">
             <div
               aria-hidden
-              className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+              className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-brand"
             />
           </div>
         ) : productsError ? (
           // Most likely cause: GET /stores/:storeId/products is owner-only on
           // the backend, so the admin reviewer 403s. Backend follow-up flagged
           // in docs/backend-handoffs/admin-read-store-products.md.
-          <p className="mt-4 text-sm text-amber-700">
+          <p className="mt-4 text-sm text-warning">
             Couldn&apos;t load the merchant&apos;s products from this account.
             Try opening their public store URL once they&apos;re live, or check
             with the merchant directly.{' '}
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-muted-foreground">
               ({totalActive} {totalActive === 1 ? 'product' : 'products'}{' '}
               marked active by the merchant.)
             </span>
           </p>
         ) : products.length === 0 ? (
-          <p className="mt-4 text-sm text-zinc-400">No active products to preview.</p>
+          <p className="mt-4 text-sm text-muted-foreground">No active products to preview.</p>
         ) : (
           <ul className="mt-4 flex gap-3 overflow-x-auto pb-2">
             {products.map((p) => (
@@ -150,9 +150,9 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
                 <button
                   type="button"
                   onClick={() => setInspectingProductId(p.id)}
-                  className="flex w-40 flex-col gap-2 rounded-lg border border-zinc-200 bg-white p-2 text-left transition-colors hover:border-zinc-400 hover:bg-zinc-50"
+                  className="flex w-40 flex-col gap-2 rounded-lg border border-border bg-card p-2 text-left transition-colors hover:border-brand hover:bg-accent"
                 >
-                  <div className="aspect-square overflow-hidden rounded-md bg-zinc-50">
+                  <div className="aspect-square overflow-hidden rounded-md bg-muted">
                     {p.images[0]?.url ? (
                       <CldImage
                         src={p.images[0].url}
@@ -161,15 +161,15 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-xs text-zinc-400">
+                      <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                         No image
                       </div>
                     )}
                   </div>
-                  <p className="line-clamp-2 text-xs font-medium text-zinc-950">
+                  <p className="line-clamp-2 text-xs font-medium text-foreground">
                     {p.title}
                   </p>
-                  <p className="text-xs text-zinc-500">{formatZAR(p.priceInCents)}</p>
+                  <p className="text-xs text-muted-foreground">{formatZAR(p.priceInCents)}</p>
                 </button>
               </li>
             ))}
@@ -179,19 +179,19 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
 
       <Section title="Locations">
         {store.addresses.length === 0 ? (
-          <p className="text-sm text-zinc-400">No addresses on file.</p>
+          <p className="text-sm text-muted-foreground">No addresses on file.</p>
         ) : (
           <div className="sm:col-span-2 flex flex-col gap-3">
             {store.addresses.map((addr) => (
               <div
                 key={addr.id}
-                className="rounded-lg border border-zinc-200 bg-zinc-50 p-3"
+                className="rounded-lg border border-border bg-muted p-3"
               >
-                <p className="text-sm text-zinc-950">
+                <p className="text-sm text-foreground">
                   {addr.streetNumber} {addr.streetName}
                   {addr.buildingName ? `, ${addr.buildingName}` : ''}
                 </p>
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {addr.city} · {addr.postalCode}
                 </p>
               </div>
@@ -218,7 +218,7 @@ export function ReviewGoLiveDetail({ store }: ReviewGoLiveDetailProps) {
       <Section title="Bank / payout (verified at first review)" defaultOpen={false}>
         <Field label="Bank" value={store.bankName} />
         <div className="flex flex-col gap-1.5">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Account number
           </p>
           <MaskedBankDisplay value={store.bankAccountNo} />
@@ -270,18 +270,18 @@ function BannerMediaPanel({
   const rest = items.slice(1)
 
   return (
-    <section className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+    <section className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="flex items-baseline justify-between gap-3 p-5 pb-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Banner media
         </h2>
         {items.length > 0 && (
-          <span className="text-xs text-zinc-500">{items.length} of 5 items</span>
+          <span className="text-xs text-muted-foreground">{items.length} of 5 items</span>
         )}
       </div>
 
       {!cover ? (
-        <div className="mx-5 mb-5 flex aspect-[4/1] items-center justify-center rounded-lg border border-dashed border-zinc-300 bg-zinc-50 text-sm text-zinc-400">
+        <div className="mx-5 mb-5 flex aspect-[4/1] items-center justify-center rounded-lg border border-dashed border-border bg-muted text-sm text-muted-foreground">
           Banner not uploaded
         </div>
       ) : (
@@ -289,7 +289,7 @@ function BannerMediaPanel({
           <BannerCover item={cover} storeName={storeName} />
           {rest.length > 0 && (
             <div className="p-5 pt-3">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Additional items
               </p>
               <ul className="flex gap-2 overflow-x-auto pb-1">
@@ -351,7 +351,7 @@ function BannerThumb({ item }: { item: BannerMedia }) {
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative block h-24 w-24 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+        className="relative block h-24 w-24 overflow-hidden rounded-lg border border-border bg-muted"
       >
         <CldImage
           src={item.url}

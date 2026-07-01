@@ -28,10 +28,10 @@ export function AutosaveIndicator({ autosave }: AutosaveIndicatorProps) {
 
   if (autosave.state === 'saving') {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500">
+      <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
         <span
           aria-hidden
-          className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-zinc-400"
+          className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-muted-foreground"
         />
         Saving…
       </span>
@@ -40,7 +40,7 @@ export function AutosaveIndicator({ autosave }: AutosaveIndicatorProps) {
 
   if (autosave.state === 'saved') {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700">
+      <span className="inline-flex items-center gap-1.5 text-xs text-success">
         <CheckIcon />
         {formatRelativeTime(autosave.savedAt)}
       </span>
@@ -49,13 +49,13 @@ export function AutosaveIndicator({ autosave }: AutosaveIndicatorProps) {
 
   // error
   return (
-    <span className="inline-flex items-center gap-2 text-xs text-red-600">
+    <span className="inline-flex items-center gap-2 text-xs text-danger">
       Save failed
       {autosave.onRetry && (
         <button
           type="button"
           onClick={autosave.onRetry}
-          className="font-medium underline hover:text-red-700"
+          className="font-medium underline hover:text-danger/80"
         >
           Retry
         </button>

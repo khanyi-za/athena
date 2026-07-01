@@ -64,7 +64,7 @@ function renderReadinessSignals(
   const hasStory = !!store.story && store.story.trim().length > 0
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
       <Signal
         label={`${productCount} active product${productCount === 1 ? '' : 's'}`}
         ok={productCount > 0}
@@ -87,7 +87,7 @@ function Signal({ label, ok }: { label: string; ok: boolean }) {
     <span
       className={[
         'inline-flex items-center gap-1',
-        ok ? 'text-emerald-700' : 'text-amber-700',
+        ok ? 'text-success' : 'text-warning',
       ].join(' ')}
     >
       <span aria-hidden>{ok ? '✓' : '!'}</span>

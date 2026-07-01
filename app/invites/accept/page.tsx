@@ -197,9 +197,9 @@ function LoadingState() {
     <div className="flex flex-col items-center gap-4 py-16 text-center">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
-      <p className="text-sm text-zinc-500">Loading invite…</p>
+      <p className="text-sm text-muted-foreground">Loading invite…</p>
     </div>
   )
 }
@@ -224,12 +224,12 @@ function InvalidState({
         : 'Something went wrong on our side. Refresh the page to try again.'
 
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-zinc-200 bg-white p-8 text-center">
-      <h1 className="text-lg font-semibold text-zinc-950">{title}</h1>
-      <p className="text-sm text-zinc-600">{body}</p>
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-8 text-center">
+      <h1 className="text-lg font-semibold text-foreground">{title}</h1>
+      <p className="text-sm text-muted-foreground">{body}</p>
       <Link
         href="/login"
-        className="mt-4 text-sm font-medium text-zinc-700 underline-offset-2 hover:text-zinc-950 hover:underline"
+        className="mt-4 text-sm font-medium text-foreground underline-offset-2 hover:text-brand hover:underline"
       >
         Back to sign in
       </Link>
@@ -283,7 +283,7 @@ function ValidLanding({
   // continuity but the action cluster becomes the success message.
   if (acceptMode.kind === 'success') {
     return (
-      <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
+      <div className="flex flex-col gap-6 rounded-xl border border-border bg-card p-8 shadow-sm">
         <StoreBrandingCard invite={invite} />
         <SuccessActions result={acceptMode.result} />
       </div>
@@ -291,7 +291,7 @@ function ValidLanding({
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <div className="flex flex-col gap-6 rounded-xl border border-border bg-card p-8 shadow-sm">
       <StoreBrandingCard invite={invite} />
 
       {substate === 'signed-out' && (
@@ -330,7 +330,7 @@ function ValidLanding({
 function StoreBrandingCard({ invite }: { invite: ValidateInviteResponse }) {
   return (
     <div className="flex flex-col items-center gap-4 text-center">
-      <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50">
+      <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-border bg-muted">
         {invite.store.logoUrl ? (
           <CldImage
             src={invite.store.logoUrl}
@@ -339,17 +339,17 @@ function StoreBrandingCard({ invite }: { invite: ValidateInviteResponse }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="text-xs text-zinc-400">No logo</span>
+          <span className="text-xs text-muted-foreground">No logo</span>
         )}
       </div>
       <div>
-        <h1 className="text-xl font-semibold text-zinc-950">
+        <h1 className="text-xl font-semibold text-foreground">
           You&apos;ve been invited to help manage{' '}
           <span className="font-bold">{invite.store.displayName}</span> on YIIVA.
         </h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-muted-foreground">
           This invite was sent to{' '}
-          <span className="font-medium text-zinc-700">{invite.email}</span>.
+          <span className="font-medium text-foreground">{invite.email}</span>.
         </p>
       </div>
     </div>
@@ -367,17 +367,17 @@ function SignedOutActions({
     <div className="flex flex-col gap-3">
       <Link
         href={`/login?returnUrl=${encodeURIComponent(returnUrl)}`}
-        className="inline-flex h-11 items-center justify-center rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="inline-flex h-11 items-center justify-center rounded-lg bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Sign in to accept
       </Link>
       <Link
         href={`/register?email=${encodeURIComponent(invite.email)}&returnUrl=${encodeURIComponent(returnUrl)}`}
-        className="inline-flex h-11 items-center justify-center rounded-lg border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-50"
+        className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent"
       >
         Create a YIIVA account
       </Link>
-      <p className="text-center text-xs text-zinc-500">
+      <p className="text-center text-xs text-muted-foreground">
         Already a buyer or seller on YIIVA? Sign in with that account.
       </p>
     </div>
@@ -399,7 +399,7 @@ function MatchingPreviewActions({
       <Button type="button" onClick={onAcceptCtaClick}>
         Accept invitation
       </Button>
-      <p className="text-center text-xs text-zinc-500">
+      <p className="text-center text-xs text-muted-foreground">
         Joining {invite.store.displayName} won&apos;t change your YIIVA account
         — it just adds you to their team.
       </p>
@@ -440,7 +440,7 @@ function AcceptForm({
         placeholder="e.g. EMP001"
         autoComplete="off"
       />
-      <p className="-mt-2 text-xs text-zinc-500">
+      <p className="-mt-2 text-xs text-muted-foreground">
         Some teams track teammates by employee numbers. You can leave this
         blank.
       </p>
@@ -454,7 +454,7 @@ function AcceptForm({
         type="button"
         onClick={onBack}
         disabled={submitting}
-        className="text-center text-sm text-zinc-500 transition-colors hover:text-zinc-950 disabled:opacity-50"
+        className="text-center text-sm text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
       >
         ← Back
       </button>
@@ -465,16 +465,16 @@ function AcceptForm({
 function SuccessActions({ result }: { result: AcceptInviteResponse }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-2xl">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-success/10 text-2xl">
         🎉
       </div>
-      <p className="text-base font-semibold text-zinc-950">You&apos;re in!</p>
-      <p className="text-sm text-zinc-600">
+      <p className="text-base font-semibold text-foreground">You&apos;re in!</p>
+      <p className="text-sm text-muted-foreground">
         Welcome to {result.store.displayName}. Taking you to your dashboard…
       </p>
       <div
         aria-hidden
-        className="mt-2 h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="mt-2 h-6 w-6 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

@@ -128,7 +128,7 @@ export function CategoryFormModal({
       role="dialog"
       aria-modal
       aria-labelledby="category-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
@@ -136,17 +136,17 @@ export function CategoryFormModal({
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-lg overflow-y-auto rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         style={{ maxHeight: 'calc(100vh - 2rem)' }}
       >
-        <h2 id="category-modal-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="category-modal-title" className="text-lg font-semibold text-foreground">
           {title}
         </h2>
 
         {isEdit && (
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 text-xs text-muted-foreground">
             The URL slug{' '}
-            <span className="font-mono text-zinc-600">{mode.target.slug}</span>{' '}
+            <span className="font-mono text-muted-foreground">{mode.target.slug}</span>{' '}
             is permanent and won&apos;t change when you rename this category.
           </p>
         )}
@@ -168,10 +168,10 @@ export function CategoryFormModal({
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="category-description"
-              className="text-sm font-medium text-zinc-700"
+              className="text-sm font-medium text-foreground"
             >
               Description{' '}
-              <span className="text-zinc-400">(optional)</span>
+              <span className="text-muted-foreground">(optional)</span>
             </label>
             <textarea
               id="category-description"
@@ -180,7 +180,7 @@ export function CategoryFormModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               disabled={loading}
-              className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+              className="w-full resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -197,17 +197,17 @@ export function CategoryFormModal({
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="category-parent"
-              className="text-sm font-medium text-zinc-700"
+              className="text-sm font-medium text-foreground"
             >
               Parent category{' '}
-              <span className="text-zinc-400">(leave empty for root)</span>
+              <span className="text-muted-foreground">(leave empty for root)</span>
             </label>
             <select
               id="category-parent"
               value={parentId}
               onChange={(e) => setParentId(e.target.value)}
               disabled={loading}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+              className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
             >
               <option value="">— No parent (root category)</option>
               {pickerOptions.map((opt) => {
@@ -221,7 +221,7 @@ export function CategoryFormModal({
               })}
             </select>
             {isEdit && (
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 A category can&apos;t be moved under itself or its own descendants.
               </p>
             )}
@@ -238,7 +238,7 @@ export function CategoryFormModal({
             disabled={loading}
             error={sortOrderError ?? undefined}
           />
-          <p className="-mt-3 text-xs text-zinc-500">
+          <p className="-mt-3 text-xs text-muted-foreground">
             Lower numbers appear first. Default 0.
           </p>
         </div>

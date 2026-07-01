@@ -98,22 +98,22 @@ export function RejectStoreModal({
       role="dialog"
       aria-modal
       aria-labelledby="reject-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative flex w-full max-w-lg flex-col gap-4 rounded-xl bg-white p-6 shadow-xl"
+        className="relative flex w-full max-w-lg flex-col gap-4 rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div>
-          <h2 id="reject-modal-title" className="text-lg font-semibold text-zinc-950">
+          <h2 id="reject-modal-title" className="text-lg font-semibold text-foreground">
             {variant === 'go-live'
               ? `Reject ${storeDisplayName}'s launch?`
               : `Reject ${storeDisplayName}'s application?`}
           </h2>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             {variant === 'go-live'
               ? `${ownerFirstName}'s store will return to APPROVED. They keep their dashboard and MERCHANT role — they just need to address your feedback before requesting launch again.`
               : `${ownerFirstName} will be notified by email and can edit and resubmit. Be specific so they know what to fix.`}
@@ -121,18 +121,18 @@ export function RejectStoreModal({
         </div>
 
         <div className="flex flex-col gap-2">
-          <details className="rounded-lg border border-zinc-200 bg-zinc-50 text-sm">
-            <summary className="cursor-pointer px-3 py-2 font-medium text-zinc-700">
+          <details className="rounded-lg border border-border bg-muted text-sm">
+            <summary className="cursor-pointer px-3 py-2 font-medium text-foreground">
               Templates ▾
             </summary>
-            <div className="border-t border-zinc-200 p-3">
+            <div className="border-t border-border p-3">
               <ul className="flex flex-col gap-1">
                 {templates.map((tpl) => (
                   <li key={tpl.label}>
                     <button
                       type="button"
                       onClick={() => setReason(tpl.text)}
-                      className="w-full rounded-md px-2 py-1.5 text-left text-sm text-zinc-700 transition-colors hover:bg-white"
+                      className="w-full rounded-md px-2 py-1.5 text-left text-sm text-foreground transition-colors hover:bg-accent"
                     >
                       <span className="font-medium">{tpl.label}</span>
                     </button>
@@ -143,7 +143,7 @@ export function RejectStoreModal({
           </details>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="reject-reason" className="text-sm font-medium text-zinc-700">
+            <label htmlFor="reject-reason" className="text-sm font-medium text-foreground">
               Reason (visible to the merchant)
             </label>
             <textarea
@@ -154,21 +154,21 @@ export function RejectStoreModal({
               onChange={(e) => setReason(e.target.value)}
               disabled={loading}
               placeholder="Be specific — they need to know what to fix."
-              className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+              className="w-full resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
             />
             <div className="flex items-center justify-between text-xs">
               <p
                 className={
                   canSubmit
-                    ? 'text-zinc-500'
-                    : 'text-amber-700'
+                    ? 'text-muted-foreground'
+                    : 'text-warning'
                 }
               >
                 {canSubmit
                   ? 'This message goes directly to the merchant.'
                   : `Minimum 10 characters.`}
               </p>
-              <span className="text-zinc-400">
+              <span className="text-muted-foreground">
                 {trimmed.length} / {MAX_REASON_LENGTH}
               </span>
             </div>

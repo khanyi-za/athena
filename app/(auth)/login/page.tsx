@@ -87,8 +87,8 @@ function LoginPageInner() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-950">Sign in</h1>
-        <p className="mt-1 text-sm text-zinc-500">Welcome back. Enter your details to continue.</p>
+        <h1 className="text-xl font-semibold text-foreground">Sign in</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Welcome back. Enter your details to continue.</p>
       </div>
 
       {error && <Alert variant="error">{error}</Alert>}
@@ -111,7 +111,7 @@ function LoginPageInner() {
           labelRight={
             <Link
               href="/auth/forgot-password"
-              className="text-xs text-zinc-500 transition-colors hover:text-zinc-950"
+              className="text-xs text-muted-foreground transition-colors hover:text-brand"
             >
               Forgot password?
             </Link>
@@ -129,7 +129,7 @@ function LoginPageInner() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
         <Link
           href={
@@ -137,7 +137,7 @@ function LoginPageInner() {
               ? `/register?returnUrl=${encodeURIComponent(safeReturnUrl)}`
               : '/register'
           }
-          className="font-medium text-zinc-950 hover:underline"
+          className="font-medium text-brand hover:underline"
         >
           Create one
         </Link>
@@ -151,7 +151,7 @@ function LoadingFallback() {
     <div className="flex flex-col items-center gap-3 py-8">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

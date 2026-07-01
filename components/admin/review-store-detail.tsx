@@ -28,7 +28,7 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
         <Field label="Story" value={store.story} multiline />
         <Field label="Website" value={store.websiteUrl} link />
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Logo
           </p>
           {store.logoUrl ? (
@@ -36,7 +36,7 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
               href={store.logoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block h-32 w-32 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+              className="inline-block h-32 w-32 overflow-hidden rounded-lg border border-border bg-muted"
             >
               <CldImage
                 src={store.logoUrl}
@@ -46,11 +46,11 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
               />
             </a>
           ) : (
-            <p className="text-sm text-zinc-400">No logo uploaded</p>
+            <p className="text-sm text-muted-foreground">No logo uploaded</p>
           )}
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Banner cover
           </p>
           {/* First-review submissions don't require a banner. If the gallery
@@ -61,7 +61,7 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
               href={store.bannerMedia[0].url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block aspect-[4/1] w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+              className="block aspect-[4/1] w-full overflow-hidden rounded-lg border border-border bg-muted"
             >
               <CldImage
                 src={store.bannerMedia[0].url}
@@ -71,7 +71,7 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
               />
             </a>
           ) : (
-            <p className="text-sm text-zinc-400">Not yet uploaded</p>
+            <p className="text-sm text-muted-foreground">Not yet uploaded</p>
           )}
         </div>
       </Section>
@@ -98,7 +98,7 @@ export function ReviewStoreDetail({ store }: ReviewStoreDetailProps) {
       <Section title="Bank / payout">
         <Field label="Bank" value={store.bankName} />
         <div className="flex flex-col gap-1.5">
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Account number
           </p>
           <MaskedBankDisplay value={store.bankAccountNo} />
@@ -142,11 +142,11 @@ export function Section({
     return (
       <details
         open={defaultOpen}
-        className="group rounded-xl border border-zinc-200 bg-white p-5"
+        className="group rounded-xl border border-border bg-card p-5"
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold uppercase tracking-wide text-zinc-500">
+        <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           {title}
-          <span className="text-xs text-zinc-400 transition-transform group-open:rotate-180">
+          <span className="text-xs text-muted-foreground transition-transform group-open:rotate-180">
             ▼
           </span>
         </summary>
@@ -155,8 +155,8 @@ export function Section({
     )
   }
   return (
-    <section className="rounded-xl border border-zinc-200 bg-white p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+    <section className="rounded-xl border border-border bg-card p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h2>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
@@ -180,24 +180,24 @@ export function Field({
   const hasValue = value !== null && value.length > 0
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
       {!hasValue ? (
-        <p className="text-sm text-zinc-400">Not provided</p>
+        <p className="text-sm text-muted-foreground">Not provided</p>
       ) : link ? (
         <a
           href={value as string}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-zinc-950 underline-offset-2 hover:underline"
+          className="text-sm text-foreground underline-offset-2 hover:underline"
         >
           {value}
         </a>
       ) : (
         <p
           className={[
-            'text-sm text-zinc-950',
+            'text-sm text-foreground',
             multiline ? 'whitespace-pre-line leading-relaxed' : '',
             mono ? 'font-mono' : '',
           ].join(' ')}

@@ -109,13 +109,13 @@ function RegisterPageInner() {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Check your email</h1>
-          <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+          <h1 className="text-xl font-semibold text-foreground">Check your email</h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
             We&apos;ve sent a verification link to{' '}
-            <span className="font-medium text-zinc-950">{registeredEmail}</span>. Click the link in
+            <span className="font-medium text-foreground">{registeredEmail}</span>. Click the link in
             the email to activate your account.
           </p>
-          <p className="mt-2 text-xs text-zinc-400">
+          <p className="mt-2 text-xs text-muted-foreground">
             Verification links expire after 24 hours.
             {safeReturnUrl && ' Open the link on this device to continue where you left off.'}
           </p>
@@ -126,7 +126,7 @@ function RegisterPageInner() {
               ? `/login?returnUrl=${encodeURIComponent(safeReturnUrl)}`
               : '/login'
           }
-          className="text-center text-sm font-medium text-zinc-950 hover:underline"
+          className="text-center text-sm font-medium text-brand hover:underline"
         >
           Back to sign in
         </Link>
@@ -137,8 +137,8 @@ function RegisterPageInner() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-950">Create your account</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-xl font-semibold text-foreground">Create your account</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Set up your YIIVA merchant account to get started.
         </p>
       </div>
@@ -184,7 +184,7 @@ function RegisterPageInner() {
             required
           />
           {prefilledEmail && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               This email matches the invite. You can change it if you&apos;d
               rather use a different account.
             </p>
@@ -209,10 +209,10 @@ function RegisterPageInner() {
               return (
                 <li
                   key={req.id}
-                  className={`flex items-center gap-2 text-xs transition-colors ${met ? 'text-zinc-900' : 'text-zinc-400'}`}
+                  className={`flex items-center gap-2 text-xs transition-colors ${met ? 'text-foreground' : 'text-muted-foreground'}`}
                 >
                   <span
-                    className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors ${met ? 'bg-zinc-950' : 'bg-zinc-300'}`}
+                    className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors ${met ? 'bg-brand' : 'bg-border'}`}
                   />
                   {req.label}
                 </li>
@@ -226,7 +226,7 @@ function RegisterPageInner() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
         <Link
           href={
@@ -234,7 +234,7 @@ function RegisterPageInner() {
               ? `/login?returnUrl=${encodeURIComponent(safeReturnUrl)}`
               : '/login'
           }
-          className="font-medium text-zinc-950 hover:underline"
+          className="font-medium text-brand hover:underline"
         >
           Sign in
         </Link>
@@ -248,7 +248,7 @@ function LoadingFallback() {
     <div className="flex flex-col items-center gap-3 py-8">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

@@ -60,10 +60,10 @@ function VerifyEmailInner() {
   if (status === 'loading') {
     return (
       <div className="flex flex-col items-center gap-5 py-4 text-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-brand" />
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Verifying your email</h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <h1 className="text-xl font-semibold text-foreground">Verifying your email</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             Just a moment while we activate your account.
           </p>
         </div>
@@ -74,12 +74,12 @@ function VerifyEmailInner() {
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center gap-5 py-4 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-950">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand">
           <CheckIcon />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Email verified</h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <h1 className="text-xl font-semibold text-foreground">Email verified</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             Your account is active. Redirecting you now&hellip;
           </p>
         </div>
@@ -90,15 +90,15 @@ function VerifyEmailInner() {
   // error state — invalid or expired token
   return (
     <div className="flex flex-col items-center gap-5 py-4 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-zinc-200 text-zinc-400">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border text-muted-foreground">
         <XIcon />
       </div>
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold text-zinc-950">Link expired</h1>
-        <p className="text-sm text-zinc-500">This link is invalid or has expired.</p>
-        <p className="text-xs text-zinc-400">Verification links are valid for 24 hours.</p>
+        <h1 className="text-xl font-semibold text-foreground">Link expired</h1>
+        <p className="text-sm text-muted-foreground">This link is invalid or has expired.</p>
+        <p className="text-xs text-muted-foreground">Verification links are valid for 24 hours.</p>
       </div>
-      <Link href="/register" className="text-sm font-medium text-zinc-950 hover:underline">
+      <Link href="/register" className="text-sm font-medium text-brand hover:underline">
         Request a new verification email
       </Link>
     </div>
@@ -110,8 +110,8 @@ export default function VerifyEmailPage() {
     <Suspense
       fallback={
         <div className="flex flex-col items-center gap-5 py-4 text-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950" />
-          <p className="mt-2 text-sm text-zinc-500">Loading&hellip;</p>
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-border border-t-brand" />
+          <p className="mt-2 text-sm text-muted-foreground">Loading&hellip;</p>
         </div>
       }
     >

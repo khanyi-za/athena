@@ -5,9 +5,10 @@ interface AlertProps {
 }
 
 export function Alert({ variant = 'error', children, className }: AlertProps) {
+  // YIIVA redesign — token-driven, theme-aware. Public API unchanged.
   const styles = {
-    error: 'border-red-200 bg-red-50 text-red-700',
-    info: 'border-zinc-200 bg-zinc-50 text-zinc-600',
+    error: 'border-danger/30 bg-danger/5 text-danger',
+    info: 'border-border bg-muted text-muted-foreground',
   }
 
   return (

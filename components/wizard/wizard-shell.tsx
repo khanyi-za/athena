@@ -171,10 +171,10 @@ function WizardForm({ store }: { store: StoreMe }) {
       )}
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-zinc-950">
+        <h1 className="text-2xl font-semibold text-foreground">
           {store.displayName || 'Your store'}
         </h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground">
           Finish setting up your store and submit it for review when you&apos;re ready.
         </p>
       </header>
@@ -296,8 +296,8 @@ function SectionNav({
   total: { completed: number; total: number }
 }) {
   return (
-    <nav className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Sections</p>
+    <nav className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sections</p>
       <ul className="flex flex-col gap-1">
         {SECTION_ORDER.map((id) => {
           const c = getSectionCompletion(id, values)
@@ -306,11 +306,11 @@ function SectionNav({
             <li key={id}>
               <a
                 href={`#section-${id}`}
-                className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+                className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-accent"
               >
                 <span>{SECTION_LABELS[id]}</span>
                 <span
-                  className={`text-xs font-medium ${isComplete ? 'text-emerald-700' : 'text-zinc-500'}`}
+                  className={`text-xs font-medium ${isComplete ? 'text-success' : 'text-muted-foreground'}`}
                 >
                   {c.completed}/{c.total}
                 </span>
@@ -319,7 +319,7 @@ function SectionNav({
           )
         })}
       </ul>
-      <div className="border-t border-zinc-100 pt-3 text-xs text-zinc-500">
+      <div className="border-t border-border pt-3 text-xs text-muted-foreground">
         {total.completed} of {total.total} required fields complete
       </div>
     </nav>
@@ -349,7 +349,7 @@ function SubmitButton({
       disabled={disabled}
       title={tooltip}
       onClick={onClick}
-      className="w-full rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+      className="w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
     >
       Submit for review
     </button>
@@ -365,7 +365,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -374,8 +374,8 @@ function LoadingState() {
 function ErrorState() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">Couldn&apos;t load your store</h2>
-      <p className="text-sm text-zinc-500">
+      <h2 className="text-lg font-semibold text-foreground">Couldn&apos;t load your store</h2>
+      <p className="text-sm text-muted-foreground">
         Something went wrong on our side. Refresh the page to try again.
       </p>
     </div>

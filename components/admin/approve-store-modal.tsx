@@ -62,22 +62,22 @@ export function ApproveStoreModal({
       role="dialog"
       aria-modal
       aria-labelledby="approve-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-lg rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="approve-modal-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="approve-modal-title" className="text-lg font-semibold text-foreground">
           {variant === 'go-live'
             ? `Approve ${storeDisplayName} to launch?`
             : `Approve ${storeDisplayName}?`}
         </h2>
 
-        <div className="mt-3 flex flex-col gap-2 text-sm leading-relaxed text-zinc-600">
+        <div className="mt-3 flex flex-col gap-2 text-sm leading-relaxed text-muted-foreground">
           <p>Approving will:</p>
           <ul className="ml-1 list-disc pl-5">
             {consequences.map((line, i) => (
@@ -95,7 +95,7 @@ export function ApproveStoreModal({
         <div className="mt-5 flex flex-col gap-1.5">
           <label
             htmlFor="welcome-note"
-            className="text-sm font-medium text-zinc-700"
+            className="text-sm font-medium text-foreground"
           >
             {variant === 'go-live'
               ? 'Optional personal note'
@@ -113,9 +113,9 @@ export function ApproveStoreModal({
                 ? "Congratulations on launching!"
                 : 'Love the brand. Welcome to YIIVA!'
             }
-            className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+            className="w-full resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
           />
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Gets included in the approval email. Leave blank for the default.
           </p>
         </div>

@@ -25,11 +25,11 @@ export function CategoryTree({
 }: CategoryTreeProps) {
   if (tree.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-        <h2 className="text-base font-semibold text-zinc-950">
+      <div className="rounded-xl border border-dashed border-border bg-muted p-12 text-center">
+        <h2 className="text-base font-semibold text-foreground">
           No categories yet
         </h2>
-        <p className="mt-2 text-sm text-zinc-600">
+        <p className="mt-2 text-sm text-muted-foreground">
           Create the first category to start building the platform taxonomy.
         </p>
       </div>
@@ -73,7 +73,7 @@ function CategoryTreeNodeRow({
   return (
     <li>
       <div
-        className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-50"
+        className="group flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-accent"
         style={{ paddingLeft: `${depth * 1.25 + 0.5}rem` }}
       >
         {/* Chevron — invisible placeholder when leaf so labels stay aligned */}
@@ -82,7 +82,7 @@ function CategoryTreeNodeRow({
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? 'Collapse' : 'Expand'}
-            className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-zinc-500 hover:bg-zinc-200"
+            className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-accent"
           >
             <span
               aria-hidden
@@ -97,23 +97,23 @@ function CategoryTreeNodeRow({
           <span aria-hidden className="h-5 w-5 flex-shrink-0" />
         )}
 
-        <span className="flex-1 truncate text-sm text-zinc-950">
+        <span className="flex-1 truncate text-sm text-foreground">
           {node.name}
-          <span className="ml-2 font-mono text-xs text-zinc-400">{node.slug}</span>
+          <span className="ml-2 font-mono text-xs text-muted-foreground">{node.slug}</span>
         </span>
 
         <div className="flex flex-shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
           <button
             type="button"
             onClick={() => onAddChild(node)}
-            className="rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-200"
+            className="rounded-md px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
           >
             + Add child
           </button>
           <button
             type="button"
             onClick={() => onEdit(node)}
-            className="rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-200"
+            className="rounded-md px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-accent"
           >
             Edit
           </button>
@@ -121,7 +121,7 @@ function CategoryTreeNodeRow({
             type="button"
             onClick={() => onDelete(node)}
             aria-label={`Delete ${node.name}`}
-            className="rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+            className="rounded-md px-2 py-1 text-xs font-medium text-danger hover:bg-danger/5"
           >
             ×
           </button>

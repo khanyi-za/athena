@@ -124,17 +124,17 @@ export default function AdminFirstReviewDetailPage({ params }: PageProps) {
       <div>
         <Link
           href="/admin"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back to queue
         </Link>
       </div>
 
       <header className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-950">
+        <h1 className="text-2xl font-semibold text-foreground">
           Review · {store.displayName}
         </h1>
-        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+        <span className="inline-flex items-center rounded-full bg-warning/10 px-2.5 py-0.5 text-xs font-medium text-warning">
           PENDING_REVIEW
         </span>
       </header>
@@ -142,7 +142,7 @@ export default function AdminFirstReviewDetailPage({ params }: PageProps) {
       <ReviewStoreDetail store={store} />
 
       {/* Sticky action bar at the bottom */}
-      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-end gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-end gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
         <Button
           type="button"
           variant="ghost"
@@ -200,7 +200,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -209,17 +209,17 @@ function LoadingState() {
 function NotInQueueState({ reason }: { reason: 'error' | 'not-found' }) {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">
+      <h2 className="text-lg font-semibold text-foreground">
         {reason === 'error' ? "Couldn't load the queue" : 'Not in the queue'}
       </h2>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         {reason === 'error'
           ? 'Refresh the page to try again.'
           : "This store may have already been reviewed by another admin, or the URL is wrong."}
       </p>
       <Link
         href="/admin"
-        className="mt-2 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Back to queue
       </Link>

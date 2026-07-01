@@ -18,13 +18,15 @@ const STORE_STATUS_TONES: Record<StoreStatus, Tone> = {
   CLOSED: 'muted',
 }
 
+// YIIVA redesign — token-driven tones, consistent with the shared Badge and
+// theme-aware. Public API unchanged, so all call-sites keep working.
 const TONE_CLASSES: Record<Tone, string> = {
-  neutral: 'bg-zinc-100 text-zinc-700',
-  amber: 'bg-amber-100 text-amber-800',
-  blue: 'bg-blue-100 text-blue-800',
-  green: 'bg-emerald-100 text-emerald-800',
-  red: 'bg-red-100 text-red-800',
-  muted: 'bg-zinc-100 text-zinc-500 italic',
+  neutral: 'bg-muted text-muted-foreground',
+  amber: 'bg-warning/15 text-warning',
+  blue: 'bg-info/10 text-info',
+  green: 'bg-success/10 text-success',
+  red: 'bg-danger/10 text-danger',
+  muted: 'bg-muted text-muted-foreground italic',
 }
 
 interface StatusPillProps {

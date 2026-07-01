@@ -8,15 +8,15 @@ interface SplashProps {
 
 export function Splash({ message }: SplashProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-white px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4">
       <div className="flex flex-col items-center gap-4">
-        <span className="text-sm font-bold tracking-[0.2em] text-zinc-950">YIIVA</span>
+        <span className="text-sm font-bold tracking-[0.2em] text-foreground">YIIVA</span>
         <div
           aria-hidden
-          className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+          className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
         />
       </div>
-      {message ? <p className="text-sm text-zinc-500">{message}</p> : null}
+      {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
     </div>
   )
 }

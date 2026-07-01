@@ -75,14 +75,14 @@ function ResetPasswordInner() {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Link expired</h1>
-          <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+          <h1 className="text-xl font-semibold text-foreground">Link expired</h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
             This reset link is invalid or has expired. Reset links are valid for 1 hour.
           </p>
         </div>
         <Link
           href="/auth/forgot-password"
-          className="text-center text-sm font-medium text-zinc-950 hover:underline"
+          className="text-center text-sm font-medium text-brand hover:underline"
         >
           Request a new link
         </Link>
@@ -93,12 +93,12 @@ function ResetPasswordInner() {
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center gap-5 py-4 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-950">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand">
           <CheckIcon />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Password updated</h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <h1 className="text-xl font-semibold text-foreground">Password updated</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             Your password has been changed. Redirecting you to sign in&hellip;
           </p>
         </div>
@@ -109,8 +109,8 @@ function ResetPasswordInner() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-950">Set a new password</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-xl font-semibold text-foreground">Set a new password</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Must be at least 8 characters with an uppercase letter, lowercase letter, and number.
         </p>
       </div>
@@ -153,7 +153,7 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={
         <div className="flex justify-center py-8">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-brand" />
         </div>
       }
     >

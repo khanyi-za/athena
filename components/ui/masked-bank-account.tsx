@@ -80,15 +80,15 @@ export function MaskedBankAccount({
   const displayed = revealed ? value : isEmpty ? '' : maskValue(value)
 
   const inputClassName = [
-    'w-full rounded-lg border bg-white px-3 py-2.5 font-mono text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400',
+    'w-full rounded-lg border bg-card px-3 py-2.5 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground',
     error
-      ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-      : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+      ? 'border-danger/30 ring-1 ring-danger/30 focus:border-danger focus:ring-danger'
+      : 'border-border focus:border-ring focus:ring-1 focus:ring-ring',
   ].join(' ')
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-zinc-700">
+      <label htmlFor={id} className="text-sm font-medium text-foreground">
         {label}
       </label>
 
@@ -136,7 +136,7 @@ export function MaskedBankAccount({
         <div className="flex items-center gap-2">
           <div
             id={id}
-            className="flex-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5 font-mono text-sm text-zinc-700"
+            className="flex-1 rounded-lg border border-border bg-muted px-3 py-2.5 font-mono text-sm text-foreground"
           >
             {displayed}
           </div>
@@ -144,7 +144,7 @@ export function MaskedBankAccount({
             type="button"
             onClick={() => setRevealed((r) => !r)}
             disabled={disabled}
-            className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
+            className="text-xs font-medium text-foreground transition-colors hover:text-brand disabled:opacity-50"
           >
             {revealed ? 'Hide' : 'Show'}
           </button>
@@ -152,7 +152,7 @@ export function MaskedBankAccount({
             type="button"
             onClick={startEditing}
             disabled={disabled}
-            className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
+            className="text-xs font-medium text-foreground transition-colors hover:text-brand disabled:opacity-50"
           >
             Edit
           </button>
@@ -160,9 +160,9 @@ export function MaskedBankAccount({
       )}
 
       {error ? (
-        <p className="text-xs text-red-600">{error}</p>
+        <p className="text-xs text-danger">{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-zinc-500">{helperText}</p>
+        <p className="text-xs text-muted-foreground">{helperText}</p>
       ) : null}
     </div>
   )

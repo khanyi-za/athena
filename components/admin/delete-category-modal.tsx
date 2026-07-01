@@ -70,13 +70,13 @@ export function DeleteCategoryModal({
       role="dialog"
       aria-modal
       aria-labelledby="delete-category-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-lg rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {blocked === 'children' ? (
@@ -122,10 +122,10 @@ function ConfirmDeleteBody({
 }) {
   return (
     <>
-      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-zinc-950">
+      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-foreground">
         Delete &quot;{target.name}&quot;?
       </h2>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         No children, products, or store associations are linked here — safe to
         delete. This can&apos;t be undone.
       </p>
@@ -153,7 +153,7 @@ function ConfirmDeleteBody({
             void onConfirm()
           }}
           loading={loading}
-          className="!bg-red-600 hover:!bg-red-700"
+          className="!bg-danger !text-danger-foreground hover:!bg-danger/90"
         >
           Delete category
         </Button>
@@ -173,24 +173,24 @@ function ChildrenBlockedBody({
 }) {
   return (
     <>
-      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-zinc-950">
+      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-foreground">
         Can&apos;t delete &quot;{target.name}&quot;
       </h2>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         This category has {target.children.length} child{' '}
         {target.children.length === 1 ? 'category' : 'categories'}. Move or
         delete the children first, then come back to delete this one.
       </p>
 
-      <ul className="mt-4 flex flex-col divide-y divide-zinc-200 rounded-lg border border-zinc-200">
+      <ul className="mt-4 flex flex-col divide-y divide-border rounded-lg border border-border">
         {target.children.map((child) => (
           <li
             key={child.id}
             className="flex items-center justify-between px-3 py-2 text-sm"
           >
-            <span className="text-zinc-950">
+            <span className="text-foreground">
               {child.name}
-              <span className="ml-2 font-mono text-xs text-zinc-400">
+              <span className="ml-2 font-mono text-xs text-muted-foreground">
                 {child.slug}
               </span>
             </span>
@@ -198,7 +198,7 @@ function ChildrenBlockedBody({
               <button
                 type="button"
                 onClick={() => onEditChild(child)}
-                className="text-xs font-medium text-zinc-600 hover:text-zinc-950 hover:underline"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
               >
                 Edit
               </button>
@@ -225,14 +225,14 @@ function ProductsBlockedBody({
 }) {
   return (
     <>
-      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-zinc-950">
+      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-foreground">
         Can&apos;t delete &quot;{target.name}&quot;
       </h2>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         This category has products linked to it. Re-categorise those products
         first — once nothing is linked here, you&apos;ll be able to delete it.
       </p>
-      <p className="mt-2 text-xs text-zinc-500">
+      <p className="mt-2 text-xs text-muted-foreground">
         Tip: ask the affected merchants to update their products, or
         re-categorise them yourself from the admin product view.
       </p>
@@ -255,14 +255,14 @@ function StoresBlockedBody({
 }) {
   return (
     <>
-      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-zinc-950">
+      <h2 id="delete-category-modal-title" className="text-lg font-semibold text-foreground">
         Can&apos;t delete &quot;{target.name}&quot;
       </h2>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
         Stores are associated with this category. Remove the store associations
         first, then come back to delete it.
       </p>
-      <p className="mt-2 text-xs text-zinc-500">
+      <p className="mt-2 text-xs text-muted-foreground">
         Store-category associations are managed in a separate admin tool that
         isn&apos;t built yet.
       </p>

@@ -173,7 +173,7 @@ export default function AdminCategoriesPage() {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-950">Platform categories</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Platform categories</h1>
         <Button
           type="button"
           fullWidth={false}
@@ -183,7 +183,7 @@ export default function AdminCategoriesPage() {
         </Button>
       </header>
 
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         Categories drive product discovery across YIIVA. Slugs are permanent —
         chosen carefully at creation. Renaming a category doesn&apos;t change its
         slug.
@@ -194,7 +194,7 @@ export default function AdminCategoriesPage() {
       ) : isError ? (
         <ListErrorState />
       ) : (
-        <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <CategoryTree
             tree={tree ?? []}
             onAddChild={(parent) => openCreate(parent)}
@@ -243,7 +243,7 @@ function InlineLoader() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -251,8 +251,8 @@ function InlineLoader() {
 
 function ListErrorState() {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center">
-      <p className="text-sm text-zinc-600">
+    <div className="rounded-xl border border-border bg-card p-8 text-center">
+      <p className="text-sm text-muted-foreground">
         Couldn&apos;t load categories. Refresh to try again.
       </p>
     </div>

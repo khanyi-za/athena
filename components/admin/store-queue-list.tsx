@@ -53,20 +53,20 @@ export function StoreQueueList({
   return (
     <div className="flex flex-col gap-4">
       <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-950">
+        <h1 className="text-2xl font-semibold text-foreground">
           {title}
           {!isLoading && !isError && (
-            <span className="ml-2 text-base font-normal text-zinc-500">
+            <span className="ml-2 text-base font-normal text-muted-foreground">
               · {total} pending
             </span>
           )}
         </h1>
-        <label className="flex items-center gap-2 text-sm text-zinc-600">
+        <label className="flex items-center gap-2 text-sm text-muted-foreground">
           Sort
           <select
             value={sortOrder}
             onChange={(e) => onSortOrderChange(e.target.value as 'asc' | 'desc')}
-            className="rounded-lg border border-zinc-300 bg-white px-2 py-1 text-sm text-zinc-950 outline-none transition-colors focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+            className="rounded-lg border border-border bg-card px-2 py-1 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
           >
             <option value="asc">Oldest first</option>
             <option value="desc">Newest first</option>
@@ -95,12 +95,12 @@ export function StoreQueueList({
       )}
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 pt-4 text-sm text-zinc-600">
+        <div className="flex items-center justify-between border-t border-border pt-4 text-sm text-muted-foreground">
           <button
             type="button"
             onClick={() => onPageChange(Math.max(1, page - 1))}
             disabled={page === 1}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             ← Previous
           </button>
@@ -111,7 +111,7 @@ export function StoreQueueList({
             type="button"
             onClick={() => onPageChange(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             Next →
           </button>
@@ -135,36 +135,36 @@ function QueueRow({
   extraSignals?: ReactNode
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-lg border border-zinc-200 bg-white p-4">
+    <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4">
       {/* Logo */}
-      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
         {store.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={store.logoUrl} alt={store.displayName} className="h-full w-full object-cover" />
         ) : (
-          <span className="text-xs text-zinc-400">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </div>
 
       {/* Brand + owner */}
       <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-        <p className="truncate text-sm font-medium text-zinc-950">{store.displayName}</p>
-        <p className="truncate text-xs text-zinc-500">
+        <p className="truncate text-sm font-medium text-foreground">{store.displayName}</p>
+        <p className="truncate text-xs text-muted-foreground">
           {store.owner.firstName} {store.owner.lastName} · {store.owner.email}
         </p>
         {extraSignals && <div className="mt-1">{extraSignals}</div>}
       </div>
 
       {/* Submission timestamp */}
-      <div className="hidden flex-shrink-0 text-right text-xs text-zinc-500 sm:block">
+      <div className="hidden flex-shrink-0 text-right text-xs text-muted-foreground sm:block">
         <p>Submitted {relativeTime(store.updatedAt)}</p>
-        <p className="text-zinc-400">{absoluteDate(store.updatedAt)}</p>
+        <p className="text-muted-foreground">{absoluteDate(store.updatedAt)}</p>
       </div>
 
       {/* Review */}
       <Link
         href={reviewHref}
-        className="flex-shrink-0 rounded-lg bg-zinc-950 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="flex-shrink-0 rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Review
       </Link>
@@ -178,9 +178,9 @@ function QueueRow({
 
 function EmptyState({ copy }: { copy: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-      <h2 className="text-base font-semibold text-zinc-950">You&apos;re all caught up</h2>
-      <p className="mt-2 text-sm text-zinc-600">{copy}</p>
+    <div className="rounded-xl border border-dashed border-border bg-muted p-12 text-center">
+      <h2 className="text-base font-semibold text-foreground">You&apos;re all caught up</h2>
+      <p className="mt-2 text-sm text-muted-foreground">{copy}</p>
     </div>
   )
 }
@@ -190,7 +190,7 @@ function InlineLoader() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -198,8 +198,8 @@ function InlineLoader() {
 
 function ListErrorState() {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center">
-      <p className="text-sm text-zinc-600">
+    <div className="rounded-xl border border-border bg-card p-8 text-center">
+      <p className="text-sm text-muted-foreground">
         Couldn&apos;t load the queue. Refresh to try again.
       </p>
     </div>

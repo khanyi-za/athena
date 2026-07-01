@@ -48,15 +48,15 @@ export default function ForgotPasswordPage() {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-950">Check your inbox</h1>
-          <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+          <h1 className="text-xl font-semibold text-foreground">Check your inbox</h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
             If an account with that email exists, a password reset link has been sent. Reset links
             expire after 1 hour.
           </p>
         </div>
         <Link
           href="/login"
-          className="text-center text-sm font-medium text-zinc-950 hover:underline"
+          className="text-center text-sm font-medium text-brand hover:underline"
         >
           Back to sign in
         </Link>
@@ -67,8 +67,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-950">Reset your password</h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <h1 className="text-xl font-semibold text-foreground">Reset your password</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
@@ -92,9 +92,9 @@ export default function ForgotPasswordPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-muted-foreground">
         Remembered your password?{' '}
-        <Link href="/login" className="font-medium text-zinc-950 hover:underline">
+        <Link href="/login" className="font-medium text-brand hover:underline">
           Sign in
         </Link>
       </p>

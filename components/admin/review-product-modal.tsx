@@ -58,17 +58,17 @@ export function ReviewProductModal({
       role="dialog"
       aria-modal
       aria-labelledby="review-product-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-xl"
+        className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-card text-card-foreground border border-border shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between gap-3 border-b border-zinc-200 p-5">
+        <header className="flex items-center justify-between gap-3 border-b border-border p-5">
           <h2
             id="review-product-title"
-            className="truncate text-lg font-semibold text-zinc-950"
+            className="truncate text-lg font-semibold text-foreground"
           >
             {product?.title ?? 'Product'}
           </h2>
@@ -76,7 +76,7 @@ export function ReviewProductModal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             ✕
           </button>
@@ -95,12 +95,12 @@ export function ReviewProductModal({
               {/* Status + price line */}
               <div className="flex flex-wrap items-center gap-3">
                 <ProductStatusPill status={product.status} />
-                <span className="text-2xl font-semibold text-zinc-950">
+                <span className="text-2xl font-semibold text-foreground">
                   {formatZAR(product.priceInCents)}
                 </span>
                 {product.comparePriceInCents !== null &&
                   product.comparePriceInCents > product.priceInCents && (
-                    <span className="text-sm text-zinc-400 line-through">
+                    <span className="text-sm text-muted-foreground line-through">
                       {formatZAR(product.comparePriceInCents)}
                     </span>
                   )}
@@ -112,11 +112,11 @@ export function ReviewProductModal({
               {/* Description */}
               <Section title="Description">
                 {product.description ? (
-                  <p className="whitespace-pre-line text-sm leading-relaxed text-zinc-950">
+                  <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">
                     {product.description}
                   </p>
                 ) : (
-                  <p className="text-sm italic text-zinc-400">
+                  <p className="text-sm italic text-muted-foreground">
                     No description provided.
                   </p>
                 )}
@@ -125,10 +125,10 @@ export function ReviewProductModal({
               {/* Stock / variants */}
               <Section title="Stock & variants">
                 {product.variants.length === 0 ? (
-                  <p className="text-sm text-zinc-700">
+                  <p className="text-sm text-foreground">
                     {product.totalStock.toLocaleString('en-ZA')} in stock
                     {product.sku ? (
-                      <span className="ml-2 font-mono text-xs text-zinc-500">
+                      <span className="ml-2 font-mono text-xs text-muted-foreground">
                         SKU {product.sku}
                       </span>
                     ) : null}
@@ -138,16 +138,16 @@ export function ReviewProductModal({
                     {product.variants.map((v) => (
                       <li
                         key={v.id}
-                        className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-zinc-200 bg-zinc-50 p-2 text-sm"
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-muted p-2 text-sm"
                       >
-                        <span className="text-zinc-950">{v.name}</span>
-                        <span className="flex flex-wrap items-center gap-3 text-xs text-zinc-600">
+                        <span className="text-foreground">{v.name}</span>
+                        <span className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                           {v.priceInCents !== null && (
                             <span>{formatZAR(v.priceInCents)}</span>
                           )}
                           <span>{v.stock.toLocaleString('en-ZA')} in stock</span>
                           {v.sku && (
-                            <span className="font-mono text-zinc-500">
+                            <span className="font-mono text-muted-foreground">
                               SKU {v.sku}
                             </span>
                           )}
@@ -176,7 +176,7 @@ export function ReviewProductModal({
                               name: collection.name,
                             })
                           }
-                          className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-sm text-zinc-900 transition-colors hover:border-zinc-400 hover:bg-zinc-100"
+                          className="inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-sm text-foreground transition-colors hover:border-brand hover:bg-accent"
                         >
                           {collection.name}
                         </button>
@@ -205,7 +205,7 @@ export function ReviewProductModal({
 
               {/* Slug — useful for the admin verifying the public URL shape */}
               <Section title="Public URL slug">
-                <span className="font-mono text-sm text-zinc-700">
+                <span className="font-mono text-sm text-foreground">
                   /{product.slug}
                 </span>
               </Section>
@@ -246,7 +246,7 @@ function MediaSection({
   if (!primary) {
     return (
       <Section title="Media">
-        <p className="text-sm italic text-zinc-400">No images uploaded.</p>
+        <p className="text-sm italic text-muted-foreground">No images uploaded.</p>
       </Section>
     )
   }
@@ -259,7 +259,7 @@ function MediaSection({
         href={primary.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+        className="block overflow-hidden rounded-lg border border-border bg-muted"
       >
         <CldImage
           src={primary.url}
@@ -278,7 +278,7 @@ function MediaSection({
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative block h-20 w-20 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50"
+                className="relative block h-20 w-20 overflow-hidden rounded-md border border-border bg-muted"
               >
                 <CldImage
                   src={item.url}
@@ -289,7 +289,7 @@ function MediaSection({
                   className="h-full w-full object-cover"
                 />
                 {item.mediaType === 'VIDEO' && (
-                  <span className="absolute bottom-0.5 right-0.5 rounded-full bg-zinc-950/80 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  <span className="absolute bottom-0.5 right-0.5 rounded-full bg-foreground/80 px-1.5 py-0.5 text-[10px] font-medium text-background">
                     ▶
                   </span>
                 )}
@@ -311,7 +311,7 @@ function Section({
 }) {
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       <div>{children}</div>
@@ -325,7 +325,7 @@ function ChipList({ items }: { items: string[] }) {
       {items.map((name, i) => (
         <li
           key={i}
-          className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-sm text-zinc-900"
+          className="inline-flex items-center rounded-full border border-border bg-muted px-3 py-1 text-sm text-foreground"
         >
           {name}
         </li>
@@ -339,7 +339,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-12">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

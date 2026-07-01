@@ -46,16 +46,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white">
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="bg-card border-b border-border">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <Link
               href="/admin"
-              className="text-sm font-bold tracking-[0.2em] text-zinc-950"
+              className="text-sm font-bold tracking-[0.2em] text-foreground"
             >
               YIIVA
-              <span className="ml-2 text-xs font-medium tracking-wide text-zinc-500">
+              <span className="ml-2 text-xs font-medium tracking-wide text-muted-foreground">
                 ADMIN
               </span>
             </Link>
@@ -78,8 +78,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={[
                       'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                       isActive
-                        ? 'bg-zinc-100 text-zinc-950'
-                        : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950',
+                        ? 'bg-brand-subtle text-brand'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                     ].join(' ')}
                   >
                     {item.label}
@@ -89,7 +89,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-zinc-600">{user.firstName}</span>
+            <span className="text-sm text-muted-foreground">{user.firstName}</span>
             <LogoutButton />
           </div>
         </div>

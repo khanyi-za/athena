@@ -57,17 +57,17 @@ export function ReviewCollectionModal({
       role="dialog"
       aria-modal
       aria-labelledby="review-collection-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-xl"
+        className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-card text-card-foreground border border-border shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between gap-3 border-b border-zinc-200 p-5">
+        <header className="flex items-center justify-between gap-3 border-b border-border p-5">
           <h2
             id="review-collection-title"
-            className="truncate text-lg font-semibold text-zinc-950"
+            className="truncate text-lg font-semibold text-foreground"
           >
             {collection?.name ?? fallbackName ?? 'Collection'}
           </h2>
@@ -75,7 +75,7 @@ export function ReviewCollectionModal({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             ✕
           </button>
@@ -112,7 +112,7 @@ export function ReviewCollectionModal({
                   href={collection.imageUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block aspect-video overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+                  className="block aspect-video overflow-hidden rounded-lg border border-border bg-muted"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -122,7 +122,7 @@ export function ReviewCollectionModal({
                   />
                 </a>
               ) : (
-                <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-zinc-300 bg-zinc-50 text-sm text-zinc-400">
+                <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-border bg-muted text-sm text-muted-foreground">
                   No cover image
                 </div>
               )}
@@ -130,11 +130,11 @@ export function ReviewCollectionModal({
               {/* Description */}
               <Section title="Description">
                 {collection.description ? (
-                  <p className="whitespace-pre-line text-sm leading-relaxed text-zinc-950">
+                  <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">
                     {collection.description}
                   </p>
                 ) : (
-                  <p className="text-sm italic text-zinc-400">
+                  <p className="text-sm italic text-muted-foreground">
                     No description provided.
                   </p>
                 )}
@@ -142,13 +142,13 @@ export function ReviewCollectionModal({
 
               {/* Slug + product count */}
               <Section title="Public URL slug">
-                <span className="font-mono text-sm text-zinc-700">
+                <span className="font-mono text-sm text-foreground">
                   collections/{collection.slug}
                 </span>
               </Section>
 
               <Section title="Products in this collection">
-                <p className="text-sm text-zinc-700">
+                <p className="text-sm text-foreground">
                   {(collection._count?.products ?? 0).toLocaleString('en-ZA')}{' '}
                   active product
                   {(collection._count?.products ?? 0) === 1 ? '' : 's'}
@@ -156,7 +156,7 @@ export function ReviewCollectionModal({
               </Section>
 
               <Section title="Created">
-                <p className="text-sm text-zinc-700">
+                <p className="text-sm text-foreground">
                   {new Date(collection.createdAt).toLocaleDateString('en-ZA', {
                     day: 'numeric',
                     month: 'short',
@@ -181,7 +181,7 @@ function Section({
 }) {
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
       <div>{children}</div>
@@ -194,7 +194,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-12">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

@@ -25,19 +25,19 @@ export function MaskedBankDisplay({ value }: MaskedBankDisplayProps) {
   }, [revealed])
 
   if (!value) {
-    return <span className="text-sm text-zinc-400">Not provided</span>
+    return <span className="text-sm text-muted-foreground">Not provided</span>
   }
 
   return (
     <div className="inline-flex items-center gap-3">
-      <span className="font-mono text-sm text-zinc-950">
+      <span className="font-mono text-sm text-foreground">
         {revealed ? value : maskValue(value)}
       </span>
       <button
         type="button"
         onClick={() => setRevealed((r) => !r)}
         onBlur={() => setRevealed(false)}
-        className="text-xs font-medium text-zinc-700 transition-colors hover:text-zinc-950"
+        className="text-xs font-medium text-foreground transition-colors hover:text-foreground"
       >
         {revealed ? 'Hide' : 'Show'}
       </button>

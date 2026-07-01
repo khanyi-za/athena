@@ -45,7 +45,7 @@ function InlineLoader() {
     <div className="flex items-center justify-center py-12">
       <div
         aria-hidden
-        className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

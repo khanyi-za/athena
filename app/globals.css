@@ -1,13 +1,151 @@
 @import "tailwindcss";
 
+/* Class-based dark mode for Tailwind v4 (next-themes toggles `.dark`). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+ * YIIVA design tokens (athena redesign — see docs/athena-redesign/design-tokens.md).
+ * ADDITIVE: existing screens use built-in Tailwind utilities (bg-white, text-black,
+ * bg-gray-*) and are UNAFFECTED. New semantic utilities (bg-card, text-brand,
+ * text-muted-foreground, ring-ring, bg-success/10, …) are opt-in. Only components
+ * that adopt tokens flip in dark mode.
+ * D1 LOCKED: brand accent = YIIVA Violet oklch(0.55 0.23 285).
+ * ------------------------------------------------------------------------- */
 :root {
   --background: #ffffff;
   --foreground: #09090b;
+
+  --radius: 0.625rem;
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.006 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.006 285);
+
+  --primary: oklch(0.21 0.006 285);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --brand: oklch(0.55 0.23 285);
+  --brand-foreground: oklch(0.985 0 0);
+  --brand-subtle: oklch(0.96 0.03 285);
+
+  --secondary: oklch(0.967 0.001 286);
+  --secondary-foreground: oklch(0.21 0.006 285);
+  --muted: oklch(0.967 0.001 286);
+  --muted-foreground: oklch(0.55 0.014 286);
+  --accent: oklch(0.967 0.001 286);
+  --accent-foreground: oklch(0.21 0.006 285);
+
+  --border: oklch(0.92 0.004 286);
+  --input: oklch(0.92 0.004 286);
+  --ring: oklch(0.55 0.23 285);
+
+  --success: oklch(0.60 0.15 162);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.72 0.16 75);
+  --warning-foreground: oklch(0.21 0.006 285);
+  --danger: oklch(0.58 0.22 27);
+  --danger-foreground: oklch(0.985 0 0);
+  --info: oklch(0.60 0.13 240);
+  --info-foreground: oklch(0.985 0 0);
+
+  --chart-1: oklch(0.55 0.23 285);
+  --chart-2: oklch(0.60 0.15 162);
+  --chart-3: oklch(0.60 0.13 240);
+  --chart-4: oklch(0.72 0.16 75);
+  --chart-5: oklch(0.65 0.20 350);
+}
+
+.dark {
+  --background: oklch(0.16 0.004 285);
+  --foreground: oklch(0.985 0 0);
+
+  --card: oklch(0.21 0.006 285);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285);
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.21 0.006 285);
+
+  --brand: oklch(0.68 0.19 285);
+  --brand-foreground: oklch(0.16 0.004 285);
+  --brand-subtle: oklch(0.27 0.06 285);
+
+  --secondary: oklch(0.27 0.006 286);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.27 0.006 286);
+  --muted-foreground: oklch(0.71 0.01 286);
+  --accent: oklch(0.27 0.006 286);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.68 0.19 285);
+
+  --success: oklch(0.70 0.15 162);
+  --success-foreground: oklch(0.16 0.004 285);
+  --warning: oklch(0.80 0.16 75);
+  --warning-foreground: oklch(0.16 0.004 285);
+  --danger: oklch(0.70 0.19 22);
+  --danger-foreground: oklch(0.985 0 0);
+  --info: oklch(0.70 0.13 240);
+  --info-foreground: oklch(0.16 0.004 285);
+
+  --chart-1: oklch(0.68 0.19 285);
+  --chart-2: oklch(0.70 0.15 162);
+  --chart-3: oklch(0.70 0.13 240);
+  --chart-4: oklch(0.80 0.16 75);
+  --chart-5: oklch(0.72 0.18 350);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-subtle: var(--brand-subtle);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

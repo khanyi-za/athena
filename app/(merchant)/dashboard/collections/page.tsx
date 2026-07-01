@@ -47,8 +47,8 @@ export default function CollectionsPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-950">Collections</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold text-foreground">Collections</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Curated groupings of your products. Buyers browse these on your
             store page.
           </p>
@@ -133,8 +133,8 @@ function CollectionRow({
   })
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4">
-      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+    <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-card p-4">
+      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
         {collection.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -143,25 +143,25 @@ function CollectionRow({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-zinc-400">
+          <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
             No cover
           </div>
         )}
       </div>
 
       <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-        <p className="truncate text-sm font-semibold text-zinc-950">
+        <p className="truncate text-sm font-semibold text-foreground">
           {collection.name}
         </p>
         <p
           className={[
             'truncate text-xs',
-            collection.description ? 'text-zinc-600' : 'italic text-zinc-400',
+            collection.description ? 'text-muted-foreground' : 'italic text-muted-foreground',
           ].join(' ')}
         >
           {collection.description ?? 'no description'}
         </p>
-        <p className="mt-1 text-xs text-zinc-500">
+        <p className="mt-1 text-xs text-muted-foreground">
           {productCount} product{productCount === 1 ? '' : 's'} · created {createdDate} ·{' '}
           <span className="font-mono">collections/{collection.slug}</span>
         </p>
@@ -171,18 +171,18 @@ function CollectionRow({
         <button
           type="button"
           onClick={onEdit}
-          className="font-medium text-zinc-700 transition-colors hover:text-zinc-950"
+          className="font-medium text-foreground transition-colors hover:text-brand"
         >
           Edit
         </button>
-        <span aria-hidden className="text-zinc-300">
+        <span aria-hidden className="text-border">
           ·
         </span>
         <button
           type="button"
           onClick={onDelete}
           aria-label={`Delete ${collection.name}`}
-          className="font-medium text-zinc-500 transition-colors hover:text-red-600"
+          className="font-medium text-muted-foreground transition-colors hover:text-danger"
         >
           Delete
         </button>
@@ -197,9 +197,9 @@ function CollectionRow({
 
 function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-      <h2 className="text-base font-semibold text-zinc-950">No collections yet</h2>
-      <p className="mt-2 text-sm text-zinc-600">
+    <div className="rounded-xl border border-dashed border-border bg-muted p-12 text-center">
+      <h2 className="text-base font-semibold text-foreground">No collections yet</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
         Group your products into collections like &quot;Summer 2026&quot; or
         &quot;Sale&quot;. Buyers see them on your store page.
       </p>
@@ -217,7 +217,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -226,8 +226,8 @@ function LoadingState() {
 function NoStoreState() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">No store yet</h2>
-      <p className="text-sm text-zinc-500">
+      <h2 className="text-lg font-semibold text-foreground">No store yet</h2>
+      <p className="text-sm text-muted-foreground">
         Set up your store first, then come back to organise your products into
         collections.
       </p>

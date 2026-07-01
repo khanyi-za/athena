@@ -237,8 +237,8 @@ export function TeamSection({ storeId, isOwnerView }: TeamSectionProps) {
     <section className="flex flex-col gap-4">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-950">Team</h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h2 className="text-lg font-semibold text-foreground">Team</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             People with access to your store. Owners can invite + manage.
           </p>
         </div>
@@ -330,9 +330,9 @@ function EmptyState({
   onInvite: () => void
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-      <h3 className="text-base font-semibold text-zinc-950">Build your team</h3>
-      <p className="mt-2 text-sm text-zinc-600">
+    <div className="rounded-xl border border-dashed border-border bg-muted p-12 text-center">
+      <h3 className="text-base font-semibold text-foreground">Build your team</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
         {isOwnerView
           ? 'Invite teammates to help you manage your store — add products, edit your story, respond to orders.'
           : 'No teammates yet. Ask the store owner to send you an invite.'}
@@ -353,7 +353,7 @@ function InlineLoader() {
     <div className="flex items-center justify-center py-12">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

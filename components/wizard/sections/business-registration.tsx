@@ -35,8 +35,8 @@ export function BusinessRegistrationSection({
 
   return (
     <section id="section-business" className="flex flex-col gap-6 scroll-mt-6">
-      <header className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">{SECTION_LABELS.business}</h2>
+      <header className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">{SECTION_LABELS.business}</h2>
         <AutosaveIndicator autosave={autosave} />
       </header>
 
@@ -53,7 +53,7 @@ export function BusinessRegistrationSection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 We use this to verify your business is legitimate.
               </p>
             </div>
@@ -72,7 +72,7 @@ export function BusinessRegistrationSection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Only required if your business is VAT-registered (R1m+ annual turnover).
               </p>
             </div>

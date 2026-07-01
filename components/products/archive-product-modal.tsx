@@ -39,25 +39,25 @@ export function ArchiveProductModal({
       role="dialog"
       aria-modal
       aria-labelledby="archive-product-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="archive-product-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="archive-product-title" className="text-lg font-semibold text-foreground">
           Archive &ldquo;{productTitle}&rdquo;?
         </h2>
 
-        <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-zinc-600">
+        <div className="mt-3 flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
           <p>
             Buyers won&apos;t see this product anymore. Your sales history, reviews, and any
             pending orders stay intact.
           </p>
-          <p className="font-medium text-zinc-700">
+          <p className="font-medium text-foreground">
             You can&apos;t reactivate an archived product later — if you want this product
             back, you&apos;ll need to create a new one.
           </p>

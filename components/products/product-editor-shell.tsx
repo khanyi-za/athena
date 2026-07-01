@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation'
 import { useForm, useWatch } from 'react-hook-form'
 
 import { Alert } from '@/components/ui/alert'
-import { ProductStatusPill } from '@/components/ui/status-pill'
+import { Badge } from '@/components/ui/badge'
+import { PRODUCT_STATUS } from '@/lib/product-status'
 import { useProduct, useInvalidateProduct } from '@/hooks/use-product'
 import { useInvalidateProducts } from '@/hooks/use-products'
 import { useInvalidateActiveProductCount } from '@/hooks/use-active-product-count'
@@ -205,21 +206,21 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
       <div>
         <Link
           href="/dashboard/products"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back to products
         </Link>
       </div>
 
       <header className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-950">{product.title}</h1>
-        <ProductStatusPill status={product.status} />
+        <h1 className="text-2xl font-semibold text-foreground">{product.title}</h1>
+        <Badge tone={PRODUCT_STATUS[product.status].tone} dot>{PRODUCT_STATUS[product.status].label}</Badge>
       </header>
 
       {isArchived && (
         <div
           role="alert"
-          className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700"
+          className="rounded-lg border border-border bg-muted p-4 text-sm text-foreground"
         >
           This product is archived. It&apos;s not visible to buyers, and you can&apos;t edit it.
           To bring something similar back, create a new product.
@@ -312,14 +313,14 @@ function SectionNav() {
     { href: '#section-collections', label: 'Collections' },
   ]
   return (
-    <nav className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Sections</p>
+    <nav className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sections</p>
       <ul className="flex flex-col gap-1">
         {items.map((item) => (
           <li key={item.href}>
             <a
               href={item.href}
-              className="block rounded-md px-2 py-1.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+              className="block rounded-md px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-accent"
             >
               {item.label}
             </a>
@@ -339,7 +340,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -348,13 +349,13 @@ function LoadingState() {
 function NotFoundState() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">Product not found</h2>
-      <p className="text-sm text-zinc-500">
+      <h2 className="text-lg font-semibold text-foreground">Product not found</h2>
+      <p className="text-sm text-muted-foreground">
         This product doesn&apos;t exist or has been removed.
       </p>
       <Link
         href="/dashboard/products"
-        className="mt-2 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Back to products
       </Link>

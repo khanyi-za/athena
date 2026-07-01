@@ -1,35 +1,46 @@
 import { ButtonHTMLAttributes } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+// YIIVA redesign — token-driven, theme-aware. Public API preserved:
+// `variant` ('primary' | 'ghost' kept; 'brand' | 'danger' added), `loading`,
+// `fullWidth` (default true). `primary` stays ink so existing screens don't shift.
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center gap-2 rounded-lg py-2.5 px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        brand: 'bg-brand text-brand-foreground hover:bg-brand/90',
+        ghost: 'border border-border bg-transparent text-foreground hover:bg-accent',
+        danger: 'bg-danger text-danger-foreground hover:bg-danger/90',
+      },
+    },
+    defaultVariants: { variant: 'primary' },
+  },
+)
+
+interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   loading?: boolean
-  variant?: 'primary' | 'ghost'
   fullWidth?: boolean
 }
 
 export function Button({
   loading,
-  variant = 'primary',
+  variant,
   fullWidth = true,
   children,
   disabled,
   className,
   ...props
 }: ButtonProps) {
-  const base =
-    'inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium py-2.5 px-4 transition-colors disabled:cursor-not-allowed'
-
-  const variants: Record<string, string> = {
-    primary: 'bg-zinc-950 text-white hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-zinc-500',
-    ghost:
-      'bg-transparent text-zinc-700 border border-zinc-300 hover:bg-zinc-50 disabled:opacity-50',
-  }
-
   return (
     <button
       disabled={disabled || loading}
-      className={[base, variants[variant], fullWidth ? 'w-full' : '', className ?? '']
-        .filter(Boolean)
-        .join(' ')}
+      className={cn(buttonVariants({ variant }), fullWidth && 'w-full', className)}
       {...props}
     >
       {loading && <Spinner />}

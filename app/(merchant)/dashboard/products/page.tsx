@@ -3,21 +3,26 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Plus, Search } from 'lucide-react'
 
-import { ProductStatusPill } from '@/components/ui/status-pill'
 import { CreateProductModal } from '@/components/products/create-product-modal'
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { useStoreMe } from '@/hooks/use-store-me'
 import { useProducts } from '@/hooks/use-products'
 import { useAuthStore } from '@/store/auth-store'
 import { formatZAR } from '@/lib/format-money'
+import { cn } from '@/lib/utils'
+import { PRODUCT_STATUS } from '@/lib/product-status'
 import type {
   ProductListItem,
   ProductListStatusFilter,
   ProductSortBy,
 } from '@/lib/schemas/product'
 
-// Inventory list for MERCHANT in APPROVED+ states. Paginated, filterable,
-// sortable. Per product-frontend-flows §2.
+// Inventory list for MERCHANT in APPROVED+ states — YIIVA redesign (token-driven
+// Cards + unified status Badges). Paginated, filterable, sortable, per
+// product-frontend-flows §2.
 //
 // Status gate: anyone whose role isn't MERCHANT, or whose store isn't in
 // APPROVED / PENDING_GO_LIVE / ACTIVE, is redirected to /dashboard so the
@@ -42,6 +47,9 @@ const SORT_OPTIONS: { value: ProductSortBy; label: string }[] = [
   { value: 'priceDesc', label: 'Price high → low' },
   { value: 'stockAsc', label: 'Stock low → high' },
 ]
+
+const inputCls =
+  'h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring'
 
 export default function ProductsPage() {
   const router = useRouter()
@@ -115,17 +123,17 @@ export default function ProductsPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-950">Products</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Products</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage your catalog. You need at least 7 active products to go live.
           </p>
         </div>
         <button
           type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+          className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
         >
-          + Add product
+          <Plus size={16} /> Add product
         </button>
       </header>
 
@@ -139,12 +147,12 @@ export default function ProductsPage() {
                 key={tab.value}
                 type="button"
                 onClick={() => changeStatusFilter(tab.value)}
-                className={[
+                className={cn(
                   'rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-zinc-950 text-white'
-                    : 'bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-50',
-                ].join(' ')}
+                    ? 'bg-brand text-brand-foreground'
+                    : 'border border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground',
+                )}
               >
                 {tab.label}
               </button>
@@ -153,18 +161,20 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row">
-          <input
-            type="search"
-            placeholder="Search by title or SKU…"
-            value={search}
-            onChange={changeSearch}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 sm:flex-1"
-          />
-          <select
-            value={sortBy}
-            onChange={changeSortBy}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-950 outline-none transition-colors focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950 sm:w-56"
-          >
+          <div className="relative sm:flex-1">
+            <Search
+              size={16}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="search"
+              placeholder="Search by title or SKU…"
+              value={search}
+              onChange={changeSearch}
+              className={cn(inputCls, 'pl-9')}
+            />
+          </div>
+          <select value={sortBy} onChange={changeSortBy} className={cn(inputCls, 'sm:w-56')}>
             {SORT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
@@ -197,24 +207,24 @@ export default function ProductsPage() {
 
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-zinc-200 pt-4 text-sm text-zinc-600">
+        <div className="flex items-center justify-between border-t border-border pt-4 text-sm text-muted-foreground">
           <button
             type="button"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={meta.page === 1}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             ← Previous
           </button>
           <span>
             Page {meta.page} of {meta.totalPages}
-            <span className="ml-2 text-zinc-400">({meta.total} total)</span>
+            <span className="ml-2 text-muted-foreground/70">({meta.total} total)</span>
           </span>
           <button
             type="button"
             onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
             disabled={meta.page === meta.totalPages}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >
             Next →
           </button>
@@ -222,10 +232,7 @@ export default function ProductsPage() {
       )}
 
       {store && isCreateOpen && (
-        <CreateProductModal
-          storeId={store.id}
-          onClose={() => setIsCreateOpen(false)}
-        />
+        <CreateProductModal storeId={store.id} onClose={() => setIsCreateOpen(false)} />
       )}
     </div>
   )
@@ -239,11 +246,12 @@ function ProductRow({ product }: { product: ProductListItem }) {
   const primaryImage = product.images[0]
   const hasComparePrice =
     product.comparePriceInCents !== null && product.comparePriceInCents > product.priceInCents
+  const s = PRODUCT_STATUS[product.status]
 
   return (
-    <div className="flex flex-wrap items-center gap-4 rounded-lg border border-zinc-200 bg-white p-4">
+    <Card className="flex flex-wrap items-center gap-4 p-4 transition-colors hover:border-brand/40">
       {/* Thumbnail */}
-      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+      <div className="flex size-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
         {primaryImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -252,17 +260,19 @@ function ProductRow({ product }: { product: ProductListItem }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="text-xs text-zinc-400">No image</span>
+          <span className="text-xs text-muted-foreground">No image</span>
         )}
       </div>
 
       {/* Title + status */}
-      <div className="flex flex-1 flex-col gap-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-sm font-medium text-zinc-950 truncate">{product.title}</h3>
-          <ProductStatusPill status={product.status} />
+          <h3 className="truncate text-sm font-medium text-foreground">{product.title}</h3>
+          <Badge tone={s.tone} dot>
+            {s.label}
+          </Badge>
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span>
             {product.totalStock} in stock · {product._count.variants}{' '}
             {product._count.variants === 1 ? 'variant' : 'variants'} · {product._count.categories}{' '}
@@ -273,9 +283,11 @@ function ProductRow({ product }: { product: ProductListItem }) {
 
       {/* Price */}
       <div className="flex flex-col items-end text-sm">
-        <span className="font-semibold text-zinc-950">{formatZAR(product.priceInCents)}</span>
+        <span className="font-semibold tabular-nums text-foreground">
+          {formatZAR(product.priceInCents)}
+        </span>
         {hasComparePrice && (
-          <span className="text-xs text-zinc-400 line-through">
+          <span className="text-xs tabular-nums text-muted-foreground line-through">
             {formatZAR(product.comparePriceInCents)}
           </span>
         )}
@@ -284,11 +296,11 @@ function ProductRow({ product }: { product: ProductListItem }) {
       {/* Action */}
       <Link
         href={`/dashboard/products/${product.id}`}
-        className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+        className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
       >
         {product.status === 'ARCHIVED' ? 'View' : 'Edit'}
       </Link>
-    </div>
+    </Card>
   )
 }
 
@@ -307,12 +319,12 @@ function EmptyState({
 }) {
   if (filtered) {
     return (
-      <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-8 text-center">
-        <p className="text-sm text-zinc-600">No products match your filters.</p>
+      <div className="rounded-xl border border-dashed border-border bg-muted/30 p-8 text-center">
+        <p className="text-sm text-muted-foreground">No products match your filters.</p>
         <button
           type="button"
           onClick={onClearFilters}
-          className="mt-3 text-sm font-medium text-zinc-950 underline-offset-2 hover:underline"
+          className="mt-3 text-sm font-medium text-brand underline-offset-2 hover:underline"
         >
           Clear filters
         </button>
@@ -321,18 +333,18 @@ function EmptyState({
   }
 
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-      <h2 className="text-base font-semibold text-zinc-950">Add your first product</h2>
-      <p className="mt-2 text-sm text-zinc-600">
+    <div className="rounded-xl border border-dashed border-border bg-muted/30 p-12 text-center">
+      <h2 className="text-base font-semibold text-foreground">Add your first product</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
         You need at least 7 active products to go live. Start by creating your first one — you
         can save it as a draft and come back later.
       </p>
       <button
         type="button"
         onClick={onAdd}
-        className="mt-5 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
-        + Add your first product
+        <Plus size={16} /> Add your first product
       </button>
     </div>
   )
@@ -340,11 +352,11 @@ function EmptyState({
 
 function ListErrorState() {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center">
-      <p className="text-sm text-zinc-600">
+    <Card className="p-8 text-center">
+      <p className="text-sm text-muted-foreground">
         Couldn&apos;t load your products. Refresh the page to try again.
       </p>
-    </div>
+    </Card>
   )
 }
 
@@ -353,7 +365,7 @@ function InlineLoader() {
     <div className="flex items-center justify-center py-12">
       <div
         aria-hidden
-        className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="size-6 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )

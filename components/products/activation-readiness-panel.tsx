@@ -53,10 +53,10 @@ export function ActivationReadinessPanel({
   // need to activate again. Activation is the moving-to-ACTIVE action only.
   if (product.status === 'ACTIVE') {
     return (
-      <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm">
-        <p className="font-semibold text-emerald-900">Active — visible to buyers</p>
+      <div className="rounded-xl border border-success/30 bg-success/5 p-4 text-sm">
+        <p className="font-semibold text-success">Active — visible to buyers</p>
         {product.publishedAt && (
-          <p className="mt-1 text-xs text-emerald-700">
+          <p className="mt-1 text-xs text-success">
             Published {new Date(product.publishedAt).toLocaleDateString()}
           </p>
         )}
@@ -66,8 +66,8 @@ export function ActivationReadinessPanel({
 
   if (product.status === 'ARCHIVED') {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
-        <p className="font-semibold text-zinc-700">Archived</p>
+      <div className="rounded-xl border border-border bg-muted p-4 text-sm text-muted-foreground">
+        <p className="font-semibold text-foreground">Archived</p>
         <p className="mt-1 text-xs">
           To bring this back, create a new product. Archived items can&apos;t be reactivated.
         </p>
@@ -76,11 +76,11 @@ export function ActivationReadinessPanel({
   }
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4">
+    <div className="rounded-xl border border-border bg-card p-4">
       <header className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-zinc-950">Activation readiness</h3>
+        <h3 className="text-sm font-semibold text-foreground">Activation readiness</h3>
         <span
-          className={`text-xs font-medium ${allReady ? 'text-emerald-700' : 'text-zinc-500'}`}
+          className={`text-xs font-medium ${allReady ? 'text-success' : 'text-muted-foreground'}`}
         >
           {completed} / {total}
         </span>
@@ -103,7 +103,7 @@ export function ActivationReadinessPanel({
               ? 'Ready to launch'
               : 'Fix the missing items above'
         }
-        className="mt-4 w-full rounded-lg bg-zinc-950 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 w-full rounded-lg bg-brand px-3 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isActivating ? 'Launching…' : 'Launch product'}
       </button>
@@ -118,7 +118,7 @@ function ReadinessItem({ checked, label }: { checked: boolean; label: string }) 
         aria-hidden
         className={[
           'mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded',
-          checked ? 'bg-emerald-500 text-white' : 'border border-zinc-300 bg-white',
+          checked ? 'bg-success text-success-foreground' : 'border border-border bg-card',
         ].join(' ')}
       >
         {checked && (
@@ -137,7 +137,7 @@ function ReadinessItem({ checked, label }: { checked: boolean; label: string }) 
           </svg>
         )}
       </span>
-      <span className={checked ? 'text-zinc-500' : 'text-zinc-700'}>{label}</span>
+      <span className={checked ? 'text-muted-foreground' : 'text-foreground'}>{label}</span>
     </li>
   )
 }

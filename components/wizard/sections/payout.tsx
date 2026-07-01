@@ -42,12 +42,12 @@ export function PayoutSection({
 
   return (
     <section id="section-payout" className="flex flex-col gap-6 scroll-mt-6">
-      <header className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">{SECTION_LABELS.payout}</h2>
+      <header className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">{SECTION_LABELS.payout}</h2>
         <AutosaveIndicator autosave={autosave} />
       </header>
 
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         We use these details to pay out your earnings. Make sure they&apos;re accurate.
       </p>
 
@@ -108,17 +108,17 @@ export function PayoutSection({
           name="bankAccountType"
           render={({ field, fieldState }) => (
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="bankAccountType" className="text-sm font-medium text-zinc-700">
+              <label htmlFor="bankAccountType" className="text-sm font-medium text-foreground">
                 Account type
               </label>
               <select
                 id="bankAccountType"
                 {...field}
                 className={[
-                  'w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors',
+                  'w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors',
                   fieldState.error
-                    ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-                    : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+                    ? 'border-danger/30 ring-1 ring-danger/30 focus:border-danger focus:ring-danger'
+                    : 'border-border focus:border-ring focus:ring-1 focus:ring-ring',
                 ].join(' ')}
               >
                 <option value="">Select…</option>
@@ -127,7 +127,7 @@ export function PayoutSection({
                 <option value="Current">Current</option>
               </select>
               {fieldState.error && (
-                <p className="text-xs text-red-600">{fieldState.error.message}</p>
+                <p className="text-xs text-danger">{fieldState.error.message}</p>
               )}
             </div>
           )}

@@ -47,8 +47,8 @@ export function BrandIdentitySection({
 
   return (
     <section id="section-brandIdentity" className="flex flex-col gap-6 scroll-mt-6">
-      <header className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">{SECTION_LABELS.brandIdentity}</h2>
+      <header className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">{SECTION_LABELS.brandIdentity}</h2>
         <AutosaveIndicator autosave={autosave} />
       </header>
 
@@ -80,7 +80,7 @@ export function BrandIdentitySection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">From your CIPC registration.</p>
+              <p className="text-xs text-muted-foreground">From your CIPC registration.</p>
             </div>
           )}
         />
@@ -97,7 +97,7 @@ export function BrandIdentitySection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">What buyers will see.</p>
+              <p className="text-xs text-muted-foreground">What buyers will see.</p>
             </div>
           )}
         />
@@ -152,7 +152,7 @@ export function BrandIdentitySection({
               {...field}
               error={fieldState.error?.message}
             />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               Many SA brands sell only through YIIVA and Instagram — no website needed.
             </p>
           </div>
@@ -177,14 +177,14 @@ function LogoField({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-zinc-700">Logo</label>
+      <label className="text-sm font-medium text-foreground">Logo</label>
       <div className="flex items-center gap-4">
-        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
           {value ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="Store logo" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xs text-zinc-400">No logo yet</span>
+            <span className="text-xs text-muted-foreground">No logo yet</span>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -194,7 +194,7 @@ function LogoField({
             label={value ? 'Replace logo' : 'Upload logo'}
             onUploaded={(secureUrl) => onUploaded(secureUrl)}
           />
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Square image works best. Up to 5 MB. JPG, PNG, or WebP.
           </p>
         </div>
@@ -232,10 +232,10 @@ function TextAreaField({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <label htmlFor={id} className="text-sm font-medium text-zinc-700">
+        <label htmlFor={id} className="text-sm font-medium text-foreground">
           {label}
         </label>
-        <span className="text-xs text-zinc-400">
+        <span className="text-xs text-muted-foreground">
           {count} / {maxLength}
         </span>
       </div>
@@ -247,16 +247,16 @@ function TextAreaField({
         onChange={onChange}
         onBlur={onBlur}
         className={[
-          'w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400',
+          'w-full resize-y rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground',
           error
-            ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-            : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+            ? 'border-danger/30 ring-1 ring-danger/30 focus:border-danger focus:ring-danger'
+            : 'border-border focus:border-ring focus:ring-1 focus:ring-ring',
         ].join(' ')}
       />
       {error ? (
-        <p className="text-xs text-red-600">{error}</p>
+        <p className="text-xs text-danger">{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-zinc-500">{helperText}</p>
+        <p className="text-xs text-muted-foreground">{helperText}</p>
       ) : null}
     </div>
   )

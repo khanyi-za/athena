@@ -8,10 +8,10 @@ import {
   Users,
   Star,
   Plus,
-  TrendingUp,
+  Sparkles,
   MapPin,
   ArrowRight,
-  User,
+  FolderTree,
   Copy,
   Check,
 } from 'lucide-react'
@@ -24,17 +24,22 @@ import { GoLiveCelebrationModal } from '@/components/active/go-live-celebration-
 import { AddressSection } from '@/components/approved/address-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { StatCard } from '@/components/ui/stat-card'
+import { ORDER_STATUS } from '@/lib/order-status'
 import { formatZAR } from '@/lib/format-money'
 import type { StoreAddress } from '@/lib/schemas/store'
-import type { MerchantOrderSummary, OrderStatus } from '@/lib/schemas/order'
+import type { MerchantOrderSummary } from '@/lib/schemas/order'
 
-// MERCHANT + ACTIVE overview — the legacy-dashboard design wired to real data
-// (the LegacyDashboardShell in the dashboard layout provides the sidebar
-// chrome). Stats come from /stores/me; recent orders from the merchant-orders
-// proxy. Top-products insights wait on the Phalo analytics engine.
+// MERCHANT + ACTIVE overview — YIIVA redesign (shadcn-style primitives + tokens).
+// Stats come from /stores/me; recent orders from the merchant-orders proxy.
+// Revenue trends / sparklines / top-products insights wait on the Phalo analytics
+// engine — those slots are honest placeholders, not fabricated numbers.
 //
-// Functionality preserved from the pre-legacy version: locations management
-// (AddressSection + modals) and the one-time go-live celebration modal.
+// Functionality preserved: locations management (AddressSection + modals) and the
+// one-time go-live celebration modal.
 
 type ModalState =
   | { kind: 'none' }
@@ -71,153 +76,144 @@ export function ActiveStoreScreen() {
     return store!.addresses.length === 1 && store!.addresses[0].id === address.id
   }
 
+  const notActiveCount =
+    !isActiveCountLoading && store._count.products > (activeProductCount ?? 0)
+      ? store._count.products - (activeProductCount ?? 0)
+      : 0
+
   return (
-    <div className="space-y-8">
-      {/* Welcome Header */}
-      <div className="bg-black rounded-xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">
-          Welcome back{user ? `, ${user.firstName}` : ''}!
-        </h1>
-        <p className="text-gray-300 mb-1">
-          Here&apos;s what&apos;s happening with {store.displayName} today
-        </p>
-        <PublicUrlLine slug={store.slug} />
-        <div className="flex space-x-4 mt-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Welcome back{user ? `, ${user.firstName}` : ''}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Here&apos;s what&apos;s happening with {store.displayName} today.
+          </p>
+          <div className="mt-2">
+            <PublicUrlLine slug={store.slug} />
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
           <Link
             href="/dashboard/products"
-            className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            <Plus size={16} className="mr-2" />
-            Add New Product
+            <Package size={16} /> Manage products
           </Link>
           <Link
             href="/dashboard/products"
-            className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors border border-gray-600 flex items-center"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
           >
-            <Package size={16} className="mr-2" />
-            Manage My Products
+            <Plus size={16} /> Add product
           </Link>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Orders"
+          label="Orders"
           value={store._count.orders.toLocaleString('en-ZA')}
-          subtitle="All time"
+          hint="All time"
           icon={ShoppingCart}
         />
         <StatCard
-          title="Followers"
+          label="Followers"
           value={store.followerCount.toLocaleString('en-ZA')}
-          subtitle="On your brand"
+          hint="On your brand"
           icon={Users}
         />
         <StatCard
-          title="Active Products"
+          label="Active products"
           value={isActiveCountLoading ? '—' : (activeProductCount ?? 0).toLocaleString('en-ZA')}
-          subtitle={
-            !isActiveCountLoading &&
-            store._count.products > (activeProductCount ?? 0)
-              ? `${store._count.products - (activeProductCount ?? 0)} not active`
-              : 'In catalog'
-          }
+          hint={notActiveCount > 0 ? `${notActiveCount} not active` : 'In catalog'}
           icon={Package}
         />
         <StatCard
-          title="Average Rating"
+          label="Avg rating"
           value={store.averageRating > 0 ? store.averageRating.toFixed(1) : '—'}
-          subtitle={store.averageRating > 0 ? 'Out of 5' : 'No reviews yet'}
+          hint={store.averageRating > 0 ? 'Out of 5' : 'No reviews yet'}
           icon={Star}
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Orders */}
+      {/* Body */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Recent orders */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-            </div>
-            <div className="p-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent orders</CardTitle>
+              <Link
+                href="/dashboard/orders"
+                className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:text-brand/80"
+              >
+                View all <ArrowRight size={14} />
+              </Link>
+            </CardHeader>
+            <CardContent className="pt-2">
               <RecentOrders
                 orders={ordersQuery.data?.orders}
                 isLoading={ordersQuery.isPending}
                 isError={ordersQuery.isError}
               />
-              <div className="mt-6">
-                <Link
-                  href="/dashboard/orders"
-                  className="text-black hover:text-gray-600 font-medium text-sm flex items-center"
-                >
-                  View all orders
-                  <ArrowRight size={16} className="ml-2" />
-                </Link>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Top Products — Phalo analytics placeholder */}
+        {/* Top products — Phalo analytics placeholder */}
         <div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Top Products</h2>
-            </div>
-            <div className="p-6">
-              <div className="flex flex-col items-center text-center py-6">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
-                  <TrendingUp size={20} className="text-gray-500" />
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>Top products</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-center gap-3 py-6 text-center">
+                <span className="grid size-11 place-items-center rounded-xl bg-brand-subtle text-brand">
+                  <Sparkles size={20} />
+                </span>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Insights are on the way</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Product performance rankings arrive with the analytics engine.
+                  </p>
                 </div>
-                <p className="font-medium text-black text-sm mb-1">
-                  Insights are on the way
-                </p>
-                <p className="text-xs text-gray-500">
-                  Product performance rankings arrive with the analytics engine.
-                </p>
+                <Badge tone="neutral">Coming soon</Badge>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-black mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link
+      {/* Quick actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick actions</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-3">
+          <QuickAction
             href="/dashboard/collections"
-            className="p-4 border border-gray-200 rounded-lg hover:border-black hover:bg-gray-50 transition-colors text-center"
-          >
-            <div className="mb-2 flex justify-center">
-              <Package size={24} className="text-gray-600" />
-            </div>
-            <h3 className="font-medium text-black">Curate Collections</h3>
-            <p className="text-sm text-gray-500">Group products into stories</p>
-          </Link>
-          <Link
+            icon={FolderTree}
+            title="Curate collections"
+            sub="Group products into stories"
+          />
+          <QuickAction
             href="/dashboard/team"
-            className="p-4 border border-gray-200 rounded-lg hover:border-black hover:bg-gray-50 transition-colors text-center"
-          >
-            <div className="mb-2 flex justify-center">
-              <Users size={24} className="text-gray-600" />
-            </div>
-            <h3 className="font-medium text-black">Manage Team</h3>
-            <p className="text-sm text-gray-500">Invite people to help run the store</p>
-          </Link>
-          <Link
+            icon={Users}
+            title="Manage team"
+            sub="Invite people to help run the store"
+          />
+          <QuickAction
             href="#section-locations"
-            className="p-4 border border-gray-200 rounded-lg hover:border-black hover:bg-gray-50 transition-colors text-center"
-          >
-            <div className="mb-2 flex justify-center">
-              <MapPin size={24} className="text-gray-600" />
-            </div>
-            <h3 className="font-medium text-black">Locations</h3>
-            <p className="text-sm text-gray-500">Where your brand is based</p>
-          </Link>
-        </div>
-      </div>
+            icon={MapPin}
+            title="Locations"
+            sub="Where your brand is based"
+          />
+        </CardContent>
+      </Card>
 
       {/* Locations */}
       <div id="section-locations">
@@ -262,44 +258,44 @@ export function ActiveStoreScreen() {
 // Pieces
 // ----------------------------------------------------------------------------
 
-function StatCard({
-  title,
-  value,
-  subtitle,
+function QuickAction({
+  href,
   icon: Icon,
+  title,
+  sub,
 }: {
+  href: string
+  icon: React.ComponentType<{ size?: number }>
   title: string
-  value: string | number
-  subtitle: string
-  icon: React.ComponentType<{ size?: number; className?: string }>
+  sub: string
 }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-black">{value}</p>
-          <p className="text-sm text-gray-500">{subtitle}</p>
-        </div>
-        <div className="p-3 bg-gray-100 rounded-lg">
-          <Icon size={24} className="text-gray-600" />
-        </div>
-      </div>
-    </div>
+    <Link
+      href={href}
+      className="group flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:border-brand hover:bg-brand-subtle"
+    >
+      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-subtle text-brand transition-colors group-hover:bg-brand group-hover:text-brand-foreground">
+        <Icon size={17} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-medium text-foreground">{title}</span>
+        <span className="block text-xs text-muted-foreground">{sub}</span>
+      </span>
+      <ArrowRight
+        size={15}
+        className="text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+      />
+    </Link>
   )
 }
 
-const ORDER_STATUS_CHIP: Record<OrderStatus, { label: string; className: string }> = {
-  PENDING: { label: 'Pending', className: 'bg-gray-100 text-gray-800' },
-  CONFIRMED: { label: 'Confirmed', className: 'bg-gray-100 text-gray-800' },
-  PROCESSING: { label: 'Processing', className: 'bg-gray-200 text-gray-800' },
-  READY_FOR_DISPATCH: { label: 'Ready', className: 'bg-gray-200 text-gray-800' },
-  DISPATCHED: { label: 'Dispatched', className: 'bg-black text-white' },
-  IN_TRANSIT: { label: 'In transit', className: 'bg-black text-white' },
-  DELIVERED: { label: 'Delivered', className: 'bg-black text-white' },
-  CANCELLED: { label: 'Cancelled', className: 'bg-red-50 text-red-700' },
-  REFUND_REQUESTED: { label: 'Refund requested', className: 'bg-red-50 text-red-700' },
-  REFUNDED: { label: 'Refunded', className: 'bg-red-50 text-red-700' },
+function initials(name: string) {
+  return name
+    .split(' ')
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
 }
 
 function RecentOrders({
@@ -313,9 +309,16 @@ function RecentOrders({
 }) {
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-14 animate-pulse rounded-lg bg-gray-100" />
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="size-9 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-3.5 w-32" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            <Skeleton className="h-4 w-16" />
+          </div>
         ))}
       </div>
     )
@@ -323,7 +326,7 @@ function RecentOrders({
 
   if (isError) {
     return (
-      <p className="text-sm text-gray-500 py-4">
+      <p className="py-4 text-sm text-muted-foreground">
         Couldn&apos;t load orders right now. Refresh to try again.
       </p>
     )
@@ -331,47 +334,40 @@ function RecentOrders({
 
   if (!orders || orders.length === 0) {
     return (
-      <p className="text-sm text-gray-500 py-4">
+      <p className="py-4 text-sm text-muted-foreground">
         No orders yet — they&apos;ll show up here the moment a buyer checks out.
       </p>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <ul className="divide-y divide-border">
       {orders.map((order) => {
-        const chip = ORDER_STATUS_CHIP[order.status]
+        const s = ORDER_STATUS[order.status]
         return (
-          <div
-            key={order.id}
-            className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-          >
-            <div className="flex-1">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <User size={16} className="text-gray-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-black">{order.buyerName}</p>
-                  <p className="text-sm text-gray-500">
-                    {order.orderNumber} · {order.itemCount}{' '}
-                    {order.itemCount === 1 ? 'item' : 'items'}
-                  </p>
-                </div>
-              </div>
+          <li key={order.id} className="flex items-center gap-3 py-3">
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-subtle text-xs font-semibold text-brand">
+              {initials(order.buyerName)}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-foreground">{order.buyerName}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {order.orderNumber} · {order.itemCount}{' '}
+                {order.itemCount === 1 ? 'item' : 'items'}
+              </p>
             </div>
-            <div className="text-right">
-              <p className="font-semibold text-black">{formatZAR(order.totalInCents)}</p>
-              <span
-                className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${chip.className}`}
-              >
-                {chip.label}
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-sm font-semibold tabular-nums text-foreground">
+                {formatZAR(order.totalInCents)}
               </span>
+              <Badge tone={s.tone} dot>
+                {s.label}
+              </Badge>
             </div>
-          </div>
+          </li>
         )
       })}
-    </div>
+    </ul>
   )
 }
 
@@ -390,7 +386,7 @@ function PublicUrlLine({ slug }: { slug: string }) {
   return (
     <button
       onClick={copy}
-      className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+      className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       title="Copy your public store link"
     >
       <span>{publicUrl}</span>
@@ -456,7 +452,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -465,10 +461,10 @@ function LoadingState() {
 function ErrorState() {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">
+      <h2 className="text-lg font-semibold text-foreground">
         Couldn&apos;t load your store
       </h2>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         Something went wrong on our side. Refresh the page to try again.
       </p>
     </div>

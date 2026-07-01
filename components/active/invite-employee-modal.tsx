@@ -73,7 +73,7 @@ export function InviteEmployeeModal({
       role="dialog"
       aria-modal
       aria-labelledby="invite-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
@@ -81,12 +81,12 @@ export function InviteEmployeeModal({
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
       >
-        <h2 id="invite-modal-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="invite-modal-title" className="text-lg font-semibold text-foreground">
           Invite a teammate
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           We&apos;ll send them an email with a link to join your team. They&apos;ll
           need to sign up or log in to YIIVA to accept.
         </p>
@@ -112,7 +112,7 @@ export function InviteEmployeeModal({
             <button
               type="button"
               onClick={onShowExistingInvite}
-              className="mt-2 text-xs font-medium text-zinc-700 underline-offset-2 hover:underline"
+              className="mt-2 text-xs font-medium text-foreground underline-offset-2 hover:underline"
             >
               Find them in your team list →
             </button>

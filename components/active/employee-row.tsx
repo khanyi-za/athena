@@ -47,8 +47,8 @@ export function EmployeeRow({
       data-employee-id={employee.id}
       className={[
         'flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4 transition-shadow',
-        state === 'deactivated' ? 'bg-zinc-50' : 'bg-white',
-        highlighted ? 'border-zinc-950 ring-2 ring-zinc-200' : 'border-zinc-200',
+        state === 'deactivated' ? 'bg-muted' : 'bg-card',
+        highlighted ? 'border-brand ring-2 ring-border' : 'border-border',
       ].join(' ')}
     >
       <div className="flex flex-col gap-0.5 min-w-0">
@@ -56,20 +56,20 @@ export function EmployeeRow({
           <p
             className={[
               'text-sm font-medium',
-              state === 'deactivated' ? 'text-zinc-500' : 'text-zinc-950',
+              state === 'deactivated' ? 'text-muted-foreground' : 'text-foreground',
               state === 'pending' ? 'italic' : '',
             ].join(' ')}
           >
             {primaryLine}
           </p>
           {employee.employeeNumber && (
-            <span className="font-mono text-xs text-zinc-500">
+            <span className="font-mono text-xs text-muted-foreground">
               {employee.employeeNumber}
             </span>
           )}
           <StatePill state={state} />
         </div>
-        <p className="truncate text-xs text-zinc-500">
+        <p className="truncate text-xs text-muted-foreground">
           {employee.email} · {secondaryLine(employee, state)}
         </p>
       </div>
@@ -134,9 +134,9 @@ function RowButton({
   tone?: 'default' | 'muted' | 'danger'
 }) {
   const colorMap: Record<typeof tone, string> = {
-    default: 'text-zinc-700 hover:text-zinc-950',
-    muted: 'text-zinc-500 hover:text-zinc-700',
-    danger: 'text-zinc-500 hover:text-red-600',
+    default: 'text-foreground hover:text-foreground',
+    muted: 'text-muted-foreground hover:text-foreground',
+    danger: 'text-muted-foreground hover:text-danger',
   }
   return (
     <button

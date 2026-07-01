@@ -170,16 +170,16 @@ export function AddressFormModal({
       role="dialog"
       aria-modal
       aria-labelledby="address-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onClose()
       }}
     >
       <div
-        className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-lg rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="address-modal-title" className="text-lg font-semibold text-zinc-950">
+        <h2 id="address-modal-title" className="text-lg font-semibold text-foreground">
           {isEdit ? 'Edit location' : 'Add a location'}
         </h2>
 

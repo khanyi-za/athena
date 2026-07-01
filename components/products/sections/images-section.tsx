@@ -100,8 +100,8 @@ export function ImagesSection({ storeId, product }: ImagesSectionProps) {
 
   return (
     <section id="section-images" className="scroll-mt-6 flex flex-col gap-6">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">Media</h2>
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">Media</h2>
         {!isArchived && sortedItems.length > 0 && (
           <div className="flex items-center gap-3 text-sm">
             <MediaUploader
@@ -118,14 +118,14 @@ export function ImagesSection({ storeId, product }: ImagesSectionProps) {
                     type="button"
                     onClick={onClick}
                     disabled={disabled || isPreparing}
-                    className="font-medium text-zinc-950 underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                    className="font-medium text-foreground underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isPreparing ? 'Preparing…' : '+ Add image'}
                   </button>
                 )
               }}
             </MediaUploader>
-            <span aria-hidden className="text-zinc-300">
+            <span aria-hidden className="text-muted-foreground">
               |
             </span>
             <MediaUploader
@@ -140,7 +140,7 @@ export function ImagesSection({ storeId, product }: ImagesSectionProps) {
                   type="button"
                   onClick={onClick}
                   disabled={disabled || isPreparing}
-                  className="font-medium text-zinc-950 underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                  className="font-medium text-foreground underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isPreparing ? 'Preparing…' : '+ Add video'}
                 </button>
@@ -173,7 +173,7 @@ export function ImagesSection({ storeId, product }: ImagesSectionProps) {
       )}
 
       {sortedItems.length > 0 && (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-muted-foreground">
           At least one image is required to activate this product. Videos are
           optional and shown alongside images. The primary image is what buyers
           see in search and product cards.
@@ -218,7 +218,7 @@ function MediaCard({
   const isVideo = item.mediaType === 'VIDEO'
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+    <div className="relative overflow-hidden rounded-lg border border-border bg-muted">
       <div className="relative aspect-square w-full">
         {isVideo ? (
           // assetType="video" routes through Cloudinary's video pipeline so
@@ -247,7 +247,7 @@ function MediaCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open video"
-            className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-zinc-950/80 px-2 py-1 text-xs font-medium text-white transition-colors hover:bg-zinc-950"
+            className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full bg-brand/80 px-2 py-1 text-xs font-medium text-brand-foreground transition-colors hover:bg-brand"
           >
             ▶ Play
           </a>
@@ -255,18 +255,18 @@ function MediaCard({
       </div>
 
       {item.isPrimary && (
-        <span className="absolute left-2 top-2 inline-flex items-center rounded-full bg-zinc-950 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+        <span className="absolute left-2 top-2 inline-flex items-center rounded-full bg-brand px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-foreground">
           Primary
         </span>
       )}
 
       {!readOnly && (
-        <div className="flex items-center justify-between gap-2 border-t border-zinc-200 bg-white px-3 py-2 text-xs">
+        <div className="flex items-center justify-between gap-2 border-t border-border bg-card px-3 py-2 text-xs">
           {item.isPrimary ? (
-            <span className="text-zinc-500">Default for buyers</span>
+            <span className="text-muted-foreground">Default for buyers</span>
           ) : isVideo ? (
             <span
-              className="text-zinc-400"
+              className="text-muted-foreground"
               title="Only images can be the primary catalog thumbnail in v1."
             >
               Video
@@ -276,7 +276,7 @@ function MediaCard({
               type="button"
               onClick={onSetPrimary}
               disabled={isBusy}
-              className="font-medium text-zinc-700 transition-colors hover:text-zinc-950 disabled:opacity-50"
+              className="font-medium text-foreground transition-colors hover:text-foreground disabled:opacity-50"
             >
               {isBusy ? 'Setting…' : 'Set primary'}
             </button>
@@ -285,7 +285,7 @@ function MediaCard({
             type="button"
             onClick={onDelete}
             disabled={isBusy}
-            className="font-medium text-zinc-500 transition-colors hover:text-red-600 disabled:opacity-50"
+            className="font-medium text-muted-foreground transition-colors hover:text-danger disabled:opacity-50"
           >
             Remove
           </button>
@@ -311,8 +311,8 @@ function EmptyState({
   disabled: boolean
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-8 text-center">
-      <p className="text-sm text-zinc-600">
+    <div className="rounded-xl border border-dashed border-border bg-muted p-8 text-center">
+      <p className="text-sm text-muted-foreground">
         Add images and videos so buyers can see what they&apos;re buying. At
         least one image is required to activate.
       </p>

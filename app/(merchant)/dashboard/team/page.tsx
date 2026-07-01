@@ -26,7 +26,7 @@ export default function TeamPage() {
       <div>
         <Link
           href="/dashboard"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back to dashboard
         </Link>
@@ -46,7 +46,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -55,17 +55,17 @@ function LoadingState() {
 function ErrorState({ reason }: { reason: 'error' | 'no-store' }) {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">
+      <h2 className="text-lg font-semibold text-foreground">
         {reason === 'no-store' ? 'No store yet' : "Couldn't load your team"}
       </h2>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         {reason === 'no-store'
           ? 'Set up your store first, then invite teammates.'
           : 'Refresh the page to try again.'}
       </p>
       <Link
         href="/dashboard"
-        className="mt-2 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Back to dashboard
       </Link>

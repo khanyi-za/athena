@@ -24,14 +24,14 @@ export function ProductLifecycleActions({
   if (status === 'ARCHIVED') return null
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Actions</p>
+    <div className="rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Actions</p>
       <div className="mt-3 flex flex-col gap-2">
         {status === 'DRAFT' && (
           <button
             type="button"
             onClick={onDelete}
-            className="text-left text-sm font-medium text-red-600 transition-colors hover:text-red-700"
+            className="text-left text-sm font-medium text-danger transition-colors hover:text-danger/80"
           >
             Delete product
           </button>
@@ -40,7 +40,7 @@ export function ProductLifecycleActions({
           <button
             type="button"
             onClick={onArchive}
-            className="text-left text-sm font-medium text-zinc-700 transition-colors hover:text-zinc-950"
+            className="text-left text-sm font-medium text-foreground transition-colors hover:text-foreground"
           >
             Archive product
           </button>

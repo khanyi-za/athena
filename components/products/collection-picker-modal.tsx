@@ -155,17 +155,17 @@ export function CollectionPickerModal({
         role="dialog"
         aria-modal
         aria-labelledby="collection-picker-title"
-        className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
         onClick={() => {
           if (!submitting) onClose()
         }}
       >
         <div
-          className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-xl"
+          className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-xl bg-card text-card-foreground border border-border shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <header className="border-b border-zinc-200 p-5 pb-4">
-            <h2 id="collection-picker-title" className="text-lg font-semibold text-zinc-950">
+          <header className="border-b border-border p-5 pb-4">
+            <h2 id="collection-picker-title" className="text-lg font-semibold text-foreground">
               Add to collections
             </h2>
             <input
@@ -173,7 +173,7 @@ export function CollectionPickerModal({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search your collections…"
-              className="mt-3 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+              className="mt-3 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
               disabled={submitting}
             />
           </header>
@@ -183,7 +183,7 @@ export function CollectionPickerModal({
               <div className="flex items-center justify-center py-12">
                 <div
                   aria-hidden
-                  className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+                  className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-foreground"
                 />
               </div>
             ) : filtered.length === 0 ? (
@@ -202,8 +202,8 @@ export function CollectionPickerModal({
                         className={[
                           'flex items-center gap-3 rounded-md px-2 py-2 text-sm',
                           alreadyLinked
-                            ? 'cursor-not-allowed text-zinc-400'
-                            : 'cursor-pointer hover:bg-zinc-50',
+                            ? 'cursor-not-allowed text-muted-foreground'
+                            : 'cursor-pointer hover:bg-accent',
                         ].join(' ')}
                       >
                         <input
@@ -211,7 +211,7 @@ export function CollectionPickerModal({
                           checked={checked}
                           onChange={() => toggle(c.id)}
                           disabled={alreadyLinked || submitting}
-                          className="h-4 w-4 accent-zinc-950"
+                          className="h-4 w-4 accent-brand"
                         />
                         <span className="flex-1 truncate">
                           {c.name}
@@ -235,12 +235,12 @@ export function CollectionPickerModal({
             )}
           </div>
 
-          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 p-5 pt-4">
+          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-5 pt-4">
             <button
               type="button"
               onClick={() => setCreateOpen(true)}
               disabled={submitting}
-              className="text-sm font-medium text-zinc-950 underline-offset-2 hover:underline disabled:opacity-50"
+              className="text-sm font-medium text-foreground underline-offset-2 hover:underline disabled:opacity-50"
             >
               + Create new collection
             </button>
@@ -292,12 +292,12 @@ function EmptyListState({
 }) {
   if (hasQuery) {
     return (
-      <div className="py-8 text-center text-sm text-zinc-600">
+      <div className="py-8 text-center text-sm text-muted-foreground">
         No matching collections.{' '}
         <button
           type="button"
           onClick={onCreate}
-          className="font-medium text-zinc-950 underline-offset-2 hover:underline"
+          className="font-medium text-foreground underline-offset-2 hover:underline"
         >
           Create new
         </button>
@@ -306,13 +306,13 @@ function EmptyListState({
   }
   return (
     <div className="py-8 text-center">
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         You don&apos;t have any collections yet.
       </p>
       <button
         type="button"
         onClick={onCreate}
-        className="mt-3 text-sm font-medium text-zinc-950 underline-offset-2 hover:underline"
+        className="mt-3 text-sm font-medium text-foreground underline-offset-2 hover:underline"
       >
         + Create your first collection
       </button>

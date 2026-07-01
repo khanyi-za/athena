@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
 import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
 import { useStoreMe } from '@/hooks/use-store-me'
-import { LegacyDashboardShell } from '@/components/legacy-shell/legacy-dashboard-shell'
+import { AppShell } from '@/components/shell/app-shell'
 
 // Dashboard chrome. Two modes:
 // - ACTIVE store → the full operating shell (sidebar nav, ported from the
@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const showMerchantNav = user?.role === 'MERCHANT'
 
   if (user?.role === 'MERCHANT' && store?.status === 'ACTIVE') {
-    return <LegacyDashboardShell store={store}>{children}</LegacyDashboardShell>
+    return <AppShell store={store}>{children}</AppShell>
   }
 
   return (

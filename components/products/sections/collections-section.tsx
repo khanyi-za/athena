@@ -70,10 +70,10 @@ export function CollectionsSection({ storeId, product }: CollectionsSectionProps
 
   return (
     <section id="section-collections" className="flex flex-col gap-6 scroll-mt-6">
-      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">
           Collections{' '}
-          <span className="text-sm font-normal text-zinc-500">
+          <span className="text-sm font-normal text-muted-foreground">
             ({linkedCollections.length})
           </span>
         </h2>
@@ -81,7 +81,7 @@ export function CollectionsSection({ storeId, product }: CollectionsSectionProps
           <button
             type="button"
             onClick={() => setPickerOpen(true)}
-            className="text-sm font-medium text-zinc-950 underline-offset-2 hover:underline"
+            className="text-sm font-medium text-foreground underline-offset-2 hover:underline"
           >
             + Add to collection
           </button>
@@ -115,7 +115,7 @@ export function CollectionsSection({ storeId, product }: CollectionsSectionProps
         </ul>
       )}
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-muted-foreground">
         Collections are your custom groupings — they appear on your store page
         so buyers can browse curated picks. At least one collection is
         required to activate this product.
@@ -156,8 +156,8 @@ function CollectionChip({
 }) {
   const removeDisabled = disabled || !!removeBlockedReason || isRemoving
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-sm">
-      <span className="text-zinc-900">{name}</span>
+    <span className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-sm">
+      <span className="text-foreground">{name}</span>
       {!disabled && (
         <button
           type="button"
@@ -168,8 +168,8 @@ function CollectionChip({
           className={[
             'rounded-full text-xs font-semibold',
             removeDisabled
-              ? 'cursor-not-allowed text-zinc-300'
-              : 'text-zinc-500 hover:text-red-600',
+              ? 'cursor-not-allowed text-muted-foreground'
+              : 'text-muted-foreground hover:text-danger',
           ].join(' ')}
         >
           ×
@@ -187,15 +187,15 @@ function EmptyState({
   onAdd: () => void
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
-      <p className="text-sm text-zinc-600">
+    <div className="rounded-lg border border-dashed border-border bg-muted p-6 text-center">
+      <p className="text-sm text-muted-foreground">
         Not in any collection yet. Activation requires at least one.
       </p>
       {!isArchived && (
         <button
           type="button"
           onClick={onAdd}
-          className="mt-3 text-sm font-medium text-zinc-950 underline-offset-2 hover:underline"
+          className="mt-3 text-sm font-medium text-foreground underline-offset-2 hover:underline"
         >
           + Add to collection
         </button>

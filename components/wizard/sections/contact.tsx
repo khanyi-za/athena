@@ -35,8 +35,8 @@ export function ContactSection({
 
   return (
     <section id="section-contact" className="flex flex-col gap-6 scroll-mt-6">
-      <header className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">{SECTION_LABELS.contact}</h2>
+      <header className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">{SECTION_LABELS.contact}</h2>
         <AutosaveIndicator autosave={autosave} />
       </header>
 
@@ -55,7 +55,7 @@ export function ContactSection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Where buyers reach you. Distinct from your account email.
               </p>
             </div>
@@ -76,7 +76,7 @@ export function ContactSection({
                 {...field}
                 error={fieldState.error?.message}
               />
-              <p className="text-xs text-zinc-500">Used for delivery coordination.</p>
+              <p className="text-xs text-muted-foreground">Used for delivery coordination.</p>
             </div>
           )}
         />

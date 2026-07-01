@@ -99,21 +99,21 @@ export function DeleteAddressModal({
     <div
       role="dialog"
       aria-modal
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onClose()
       }}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {showRecovery ? (
           <>
-            <h2 className="text-lg font-semibold text-zinc-950">
+            <h2 className="text-lg font-semibold text-foreground">
               You can&apos;t remove this location
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Approved stores need at least one location. Add another location first, or close
               this dialog.
             </p>
@@ -129,12 +129,12 @@ export function DeleteAddressModal({
           </>
         ) : (
           <>
-            <h2 className="text-lg font-semibold text-zinc-950">Remove this location?</h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            <h2 className="text-lg font-semibold text-foreground">Remove this location?</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               {address.streetNumber} {address.streetName}
               {address.buildingName ? `, ${address.buildingName}` : ''}, {address.city}
             </p>
-            <p className="mt-2 text-sm text-zinc-500">
+            <p className="mt-2 text-sm text-muted-foreground">
               This won&apos;t be visible on your store profile anymore.
             </p>
 

@@ -90,15 +90,15 @@ function SettingsForm({ store }: { store: StoreMe }) {
       <div>
         <Link
           href="/dashboard"
-          className="text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-950"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back to dashboard
         </Link>
       </div>
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-zinc-950">Store settings</h1>
-        <p className="text-sm text-zinc-500">
+        <h1 className="text-2xl font-semibold text-foreground">Store settings</h1>
+        <p className="text-sm text-muted-foreground">
           Update your brand, contact details, payout info, and locations.
           Changes save automatically.
         </p>
@@ -180,8 +180,8 @@ function SettingsForm({ store }: { store: StoreMe }) {
 
 function SectionNav() {
   return (
-    <nav className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+    <nav className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Sections
       </p>
       <ul className="flex flex-col gap-1">
@@ -189,7 +189,7 @@ function SectionNav() {
           <li key={s.id}>
             <a
               href={`#${s.id}`}
-              className="block rounded-md px-2 py-1.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
+              className="block rounded-md px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-accent"
             >
               {s.label}
             </a>
@@ -209,7 +209,7 @@ function LoadingState() {
     <div className="flex items-center justify-center py-16">
       <div
         aria-hidden
-        className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-950"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-brand"
       />
     </div>
   )
@@ -218,17 +218,17 @@ function LoadingState() {
 function ErrorState({ reason }: { reason: 'error' | 'no-store' }) {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-16 text-center">
-      <h2 className="text-lg font-semibold text-zinc-950">
+      <h2 className="text-lg font-semibold text-foreground">
         {reason === 'no-store' ? 'No store to settings yet' : "Couldn't load your store"}
       </h2>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         {reason === 'no-store'
           ? 'Create your store first, then come back to manage settings.'
           : 'Refresh the page to try again.'}
       </p>
       <Link
         href="/dashboard"
-        className="mt-2 inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
       >
         Back to dashboard
       </Link>

@@ -82,21 +82,21 @@ export function DeleteImageModal({
     <div
       role="dialog"
       aria-modal
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onClose()
       }}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {showRecovery ? (
           <>
-            <h2 className="text-lg font-semibold text-zinc-950">
+            <h2 className="text-lg font-semibold text-foreground">
               You can&apos;t remove this image
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Active products need at least one image. Add a replacement first, or archive
               this product to take it off sale.
             </p>
@@ -112,12 +112,12 @@ export function DeleteImageModal({
           </>
         ) : (
           <>
-            <h2 className="text-lg font-semibold text-zinc-950">
+            <h2 className="text-lg font-semibold text-foreground">
               Remove this {image.mediaType === 'VIDEO' ? 'video' : 'image'}?
             </h2>
 
             <div className="mt-4 flex items-start gap-3">
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
                 {image.mediaType === 'VIDEO' ? (
                   <>
                     <CldImage
@@ -143,7 +143,7 @@ export function DeleteImageModal({
                   />
                 )}
               </div>
-              <p className="text-sm text-zinc-600">
+              <p className="text-sm text-muted-foreground">
                 Buyers won&apos;t see this{' '}
                 {image.mediaType === 'VIDEO' ? 'video' : 'image'} anymore. This
                 can&apos;t be undone.

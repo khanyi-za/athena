@@ -66,21 +66,21 @@ export function DeleteCollectionModal({
     <div
       role="dialog"
       aria-modal
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
     >
       <div
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold text-zinc-950">
+        <h2 className="text-lg font-semibold text-foreground">
           Delete &quot;{collection.name}&quot;?
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           The collection and its product groupings will be removed.{' '}
-          <span className="font-medium text-zinc-700">
+          <span className="font-medium text-foreground">
             Your products themselves will not be deleted
           </span>{' '}
           — only this grouping.
@@ -107,7 +107,7 @@ export function DeleteCollectionModal({
             fullWidth={false}
             onClick={handleConfirm}
             loading={loading}
-            className="!bg-red-600 hover:!bg-red-700"
+            className="!bg-danger !text-danger-foreground hover:!bg-danger/90"
           >
             Delete collection
           </Button>

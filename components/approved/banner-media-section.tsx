@@ -157,12 +157,12 @@ export function BannerMediaSection({ store, onSavedRemote }: BannerMediaSectionP
   return (
     <section
       id="section-banner"
-      className="scroll-mt-6 rounded-xl border border-zinc-200 bg-white p-6"
+      className="scroll-mt-6 rounded-xl border border-border bg-card p-6"
     >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-950">Banner media</h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h2 className="text-lg font-semibold text-foreground">Banner media</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Up to {MAX_ITEMS} images or videos. The first one is your cover.
             Drag to reorder.
           </p>
@@ -205,7 +205,7 @@ export function BannerMediaSection({ store, onSavedRemote }: BannerMediaSectionP
                   <li
                     key={`empty-${i}`}
                     aria-hidden
-                    className="aspect-square rounded-lg border border-dashed border-zinc-200 bg-zinc-50/50"
+                    className="aspect-square rounded-lg border border-dashed border-border bg-muted/50"
                   />
                 ))}
               </ul>
@@ -214,7 +214,7 @@ export function BannerMediaSection({ store, onSavedRemote }: BannerMediaSectionP
         )}
 
         {items.length > 0 && (
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             {items.length} of {MAX_ITEMS} items.
             {lastItemProtected &&
               ' Live stores need at least one banner — add a replacement before removing the last item.'}
@@ -223,7 +223,7 @@ export function BannerMediaSection({ store, onSavedRemote }: BannerMediaSectionP
 
         {/* Add controls — separate buttons for image vs video so the picker
             applies the right Cloudinary preset constraints. */}
-        <div className="flex flex-wrap items-center gap-3 border-t border-zinc-100 pt-4">
+        <div className="flex flex-wrap items-center gap-3 border-t border-border pt-4">
           <MediaUploader
             purpose="store_banner"
             storeId={store.id}
@@ -241,7 +241,7 @@ export function BannerMediaSection({ store, onSavedRemote }: BannerMediaSectionP
             onError={() => setAutosave({ state: 'error' })}
           />
           {isFull && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               Banner is full — remove an item to add another.
             </p>
           )}
@@ -286,9 +286,9 @@ function EmptyState({
   onError: () => void
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
-      <h3 className="text-base font-semibold text-zinc-950">Add your first banner</h3>
-      <p className="mt-2 text-sm text-zinc-600">
+    <div className="rounded-xl border border-dashed border-border bg-muted p-12 text-center">
+      <h3 className="text-base font-semibold text-foreground">Add your first banner</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
         Up to {MAX_ITEMS} images or videos. The first one becomes your store&apos;s
         cover.
       </p>

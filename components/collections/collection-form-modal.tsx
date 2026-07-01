@@ -215,7 +215,7 @@ export function CollectionFormModal({
       role="dialog"
       aria-modal
       aria-labelledby="collection-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={() => {
         if (!loading) onCancel()
       }}
@@ -223,12 +223,12 @@ export function CollectionFormModal({
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-lg overflow-y-auto rounded-xl bg-card text-card-foreground border border-border p-6 shadow-xl"
         style={{ maxHeight: 'calc(100vh - 2rem)' }}
       >
         <h2
           id="collection-modal-title"
-          className="text-lg font-semibold text-zinc-950"
+          className="text-lg font-semibold text-foreground"
         >
           {title}
         </h2>
@@ -254,11 +254,11 @@ export function CollectionFormModal({
               required
               autoFocus={!isEdit}
             />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               {isEdit
                 ? `URL slug is permanent: collections/`
                 : `URL will be collections/`}
-              <span className="font-mono text-zinc-700">{slugPreview}</span>
+              <span className="font-mono text-foreground">{slugPreview}</span>
               {!isEdit && '. Choose the name carefully — it won’t change later.'}
             </p>
           </div>
@@ -266,10 +266,10 @@ export function CollectionFormModal({
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="collection-description"
-              className="text-sm font-medium text-zinc-700"
+              className="text-sm font-medium text-foreground"
             >
               Description{' '}
-              <span className="text-zinc-400">(optional)</span>
+              <span className="text-muted-foreground">(optional)</span>
             </label>
             <textarea
               id="collection-description"
@@ -279,7 +279,7 @@ export function CollectionFormModal({
               onChange={(e) => setDescription(e.target.value)}
               disabled={loading}
               placeholder="Hot picks for the season"
-              className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
+              className="w-full resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -343,17 +343,17 @@ function CollectionImageField({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-zinc-700">
+      <label className="text-sm font-medium text-foreground">
         Cover image{' '}
-        <span className="text-zinc-400">(optional)</span>
+        <span className="text-muted-foreground">(optional)</span>
       </label>
       <div className="flex items-center gap-4">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
           {value ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="Collection cover" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xs text-zinc-400">No cover</span>
+            <span className="text-xs text-muted-foreground">No cover</span>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -370,12 +370,12 @@ function CollectionImageField({
               type="button"
               onClick={() => onChange('')}
               disabled={disabled}
-              className="text-xs font-medium text-zinc-500 transition-colors hover:text-red-600 disabled:opacity-50"
+              className="text-xs font-medium text-muted-foreground transition-colors hover:text-danger disabled:opacity-50"
             >
               Remove cover
             </button>
           )}
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Square image works best. Up to 5 MB. JPG, PNG, or WebP.
           </p>
         </div>
@@ -411,12 +411,12 @@ function DeferredCoverField({
   const inputId = 'collection-cover-file'
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-zinc-700">
+      <label className="text-sm font-medium text-foreground">
         Cover image{' '}
-        <span className="text-zinc-400">(optional)</span>
+        <span className="text-muted-foreground">(optional)</span>
       </label>
       <div className="flex items-center gap-4">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
           {previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -425,7 +425,7 @@ function DeferredCoverField({
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-xs text-zinc-400">No cover</span>
+            <span className="text-xs text-muted-foreground">No cover</span>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -446,10 +446,10 @@ function DeferredCoverField({
             <label
               htmlFor={inputId}
               className={[
-                'inline-flex items-center justify-center rounded-lg bg-zinc-950 px-4 py-2 text-sm font-medium text-white transition-colors',
+                'inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors',
                 disabled
                   ? 'cursor-not-allowed opacity-50'
-                  : 'cursor-pointer hover:bg-zinc-800',
+                  : 'cursor-pointer hover:bg-brand/90',
               ].join(' ')}
             >
               {pendingFile ? 'Replace cover' : 'Choose cover'}
@@ -460,15 +460,15 @@ function DeferredCoverField({
               type="button"
               onClick={() => onPick(null)}
               disabled={disabled}
-              className="text-xs font-medium text-zinc-500 transition-colors hover:text-red-600 disabled:opacity-50"
+              className="text-xs font-medium text-muted-foreground transition-colors hover:text-danger disabled:opacity-50"
             >
               Remove cover
             </button>
           )}
           {error ? (
-            <p className="text-xs text-red-600">{error}</p>
+            <p className="text-xs text-danger">{error}</p>
           ) : (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               Uploaded when you create the collection. Square image works best. Up
               to 5 MB. JPG, PNG, or WebP.
             </p>

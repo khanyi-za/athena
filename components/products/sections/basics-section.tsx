@@ -119,8 +119,8 @@ export function BasicsSection({
 
   return (
     <section id="section-basics" className="scroll-mt-6 flex flex-col gap-6">
-      <header className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <h2 className="text-lg font-semibold text-zinc-950">Basics</h2>
+      <header className="flex items-center justify-between gap-3 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold text-foreground">Basics</h2>
         <AutosaveIndicator autosave={autosave} />
       </header>
 
@@ -205,7 +205,7 @@ export function BasicsSection({
                 error={fieldState.error?.message}
                 disabled={isArchived}
               />
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Internal identifier. We don&apos;t show this to buyers.
               </p>
             </div>
@@ -227,7 +227,7 @@ export function BasicsSection({
                 error={fieldState.error?.message}
                 disabled={isArchived}
               />
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Once you add variants, stock is managed per variant instead.
               </p>
             </div>
@@ -259,10 +259,10 @@ function DescriptionField({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <label htmlFor="description" className="text-sm font-medium text-zinc-700">
+        <label htmlFor="description" className="text-sm font-medium text-foreground">
           Description
         </label>
-        <span className="text-xs text-zinc-400">
+        <span className="text-xs text-muted-foreground">
           {value?.length ?? 0} / {maxLength}
         </span>
       </div>
@@ -276,16 +276,16 @@ function DescriptionField({
         disabled={disabled}
         placeholder="Materials, sizing, care instructions — anything that helps buyers decide…"
         className={[
-          'w-full resize-y rounded-lg border bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 disabled:bg-zinc-50 disabled:text-zinc-500',
+          'w-full resize-y rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground disabled:bg-muted disabled:text-muted-foreground',
           error
-            ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-            : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+            ? 'border-danger/30 ring-1 ring-danger/30 focus:border-danger focus:ring-danger'
+            : 'border-border focus:border-ring focus:ring-1 focus:ring-ring',
         ].join(' ')}
       />
       {error ? (
-        <p className="text-xs text-red-600">{error}</p>
+        <p className="text-xs text-danger">{error}</p>
       ) : (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-muted-foreground">
           Tell buyers about this product. Materials, sizing notes, care instructions.
         </p>
       )}
@@ -316,11 +316,11 @@ function ZARField({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-zinc-700">
+      <label htmlFor={id} className="text-sm font-medium text-foreground">
         {label}
       </label>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-zinc-500">R</span>
+        <span className="text-sm text-muted-foreground">R</span>
         <input
           id={id}
           type="text"
@@ -335,17 +335,17 @@ function ZARField({
           }}
           disabled={disabled}
           className={[
-            'w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 disabled:bg-zinc-50 disabled:text-zinc-500',
+            'w-full rounded-lg border bg-card px-3 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground disabled:bg-muted disabled:text-muted-foreground',
             error
-              ? 'border-red-400 ring-1 ring-red-400 focus:border-red-500 focus:ring-red-500'
-              : 'border-zinc-300 focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950',
+              ? 'border-danger/30 ring-1 ring-danger/30 focus:border-danger focus:ring-danger'
+              : 'border-border focus:border-ring focus:ring-1 focus:ring-ring',
           ].join(' ')}
         />
       </div>
       {error ? (
-        <p className="text-xs text-red-600">{error}</p>
+        <p className="text-xs text-danger">{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-zinc-500">{helperText}</p>
+        <p className="text-xs text-muted-foreground">{helperText}</p>
       ) : null}
     </div>
   )

@@ -17,6 +17,9 @@ import {
   BadgeCheck,
   Camera,
   MessageCircle,
+  DollarSign,
+  Tag,
+  RotateCcw,
 } from 'lucide-react'
 
 import { useAuthStore } from '@/store/auth-store'
@@ -37,6 +40,9 @@ const NAV = [
   { name: 'Products', href: '/dashboard/products', icon: Package },
   { name: 'Collections', href: '/dashboard/collections', icon: Layers },
   { name: 'Orders', href: '/dashboard/orders', icon: ShoppingCart },
+  { name: 'Returns', href: '/dashboard/returns', icon: RotateCcw },
+  { name: 'Earnings', href: '/dashboard/earnings', icon: DollarSign },
+  { name: 'Promotions', href: '/dashboard/promotions', icon: Tag },
   { name: 'Messages', href: '/dashboard/messages', icon: Mail },
   { name: 'Analytics', href: '/dashboard/analytics', icon: TrendingUp },
   { name: 'Team', href: '/dashboard/team', icon: Users },

@@ -22,6 +22,7 @@ import { useActiveProductCount } from '@/hooks/use-active-product-count'
 import { useStoreOrders } from '@/hooks/use-store-orders'
 import { useAuthStore } from '@/store/auth-store'
 import { GoLiveCelebrationModal } from '@/components/active/go-live-celebration-modal'
+import { LowStockCard } from '@/components/dashboard/low-stock-card'
 import { AddressSection } from '@/components/approved/address-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
@@ -170,8 +171,16 @@ export function ActiveStoreScreen() {
               </div>
               <div className="flex items-center gap-2">
                 {analytics.isSample && <Badge tone="brand">Sample</Badge>}
-                <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
-                  <TrendingUp size={12} /> +{analytics.revenue.trendPct}%
+                <span
+                  className={
+                    analytics.revenue.trendPct < 0
+                      ? 'inline-flex items-center gap-1 rounded-full bg-danger/10 px-2 py-0.5 text-xs font-medium text-danger'
+                      : 'inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success'
+                  }
+                >
+                  <TrendingUp size={12} />
+                  {analytics.revenue.trendPct >= 0 ? '+' : ''}
+                  {analytics.revenue.trendPct}%
                 </span>
               </div>
             </CardHeader>
@@ -201,9 +210,10 @@ export function ActiveStoreScreen() {
           </Card>
         </div>
 
-        {/* Top products — Phalo analytics placeholder */}
-        <div>
-          <Card className="h-full">
+        {/* Low-stock alerts + Top products */}
+        <div className="space-y-6">
+          <LowStockCard storeId={store.id} />
+          <Card>
             <CardHeader>
               <CardTitle>Top products</CardTitle>
             </CardHeader>

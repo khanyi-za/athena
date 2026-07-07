@@ -2,19 +2,25 @@ import { apiFetch } from '@/lib/api-client'
 import {
   addProductImageBodySchema,
   createProductBodySchema,
+  createVariantBodySchema,
   paginatedProductsResponseSchema,
   productImageSchema,
   productSchema,
+  productVariantSchema,
   reorderProductImagesBodySchema,
   updateProductBodySchema,
+  updateVariantBodySchema,
   type AddProductImageBody,
   type CreateProductBody,
+  type CreateVariantBody,
   type PaginatedProductsResponse,
   type Product,
   type ProductImage,
   type ProductListFilters,
+  type ProductVariant,
   type ReorderProductImagesBody,
   type UpdateProductBody,
+  type UpdateVariantBody,
 } from '@/lib/schemas/product'
 
 // Typed client for the product module. Calls Next.js proxy routes under
@@ -223,6 +229,68 @@ export async function deleteProductImage(
 ): Promise<void> {
   await apiFetch<unknown>(
     `/api/stores/${storeId}/products/${productId}/images/${imageId}`,
+    { method: 'DELETE' },
+  )
+}
+
+// ----------------------------------------------------------------------------
+// Variants
+// ----------------------------------------------------------------------------
+// A variant's stock is independent of the product's totalStock: once a product
+// has variants, carts sell from variant stock and the bare totalStock is
+// ignored. Store must be APPROVED/PENDING_GO_LIVE/ACTIVE; archived products 409.
+
+/**
+ * Add a variant. Omit priceInCents to inherit the product's base price.
+ * sortOrder defaults to the end of the list.
+ */
+export async function createProductVariant(
+  storeId: string,
+  productId: string,
+  body: CreateVariantBody,
+): Promise<ProductVariant> {
+  const validated = createVariantBodySchema.parse(body)
+  const data = await apiFetch<unknown>(
+    `/api/stores/${storeId}/products/${productId}/variants`,
+    {
+      method: 'POST',
+      body: JSON.stringify(validated),
+    },
+  )
+  return productVariantSchema.parse(data)
+}
+
+/**
+ * Partial update. Pass priceInCents: null to clear a price override (variant
+ * falls back to the product's base price).
+ */
+export async function updateProductVariant(
+  storeId: string,
+  productId: string,
+  variantId: string,
+  body: UpdateVariantBody,
+): Promise<ProductVariant> {
+  const validated = updateVariantBodySchema.parse(body)
+  const data = await apiFetch<unknown>(
+    `/api/stores/${storeId}/products/${productId}/variants/${variantId}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(validated),
+    },
+  )
+  return productVariantSchema.parse(data)
+}
+
+/**
+ * Delete a variant. Backend renumbers the remaining variants' sortOrder.
+ */
+export async function deleteProductVariant(
+  storeId: string,
+  productId: string,
+  variantId: string,
+): Promise<void> {
+  await apiFetch<unknown>(
+    `/api/stores/${storeId}/products/${productId}/variants/${variantId}`,
     { method: 'DELETE' },
   )
 }

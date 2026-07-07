@@ -22,6 +22,7 @@ import {
 import { ActivationReadinessPanel } from '@/components/products/activation-readiness-panel'
 import { ProductLifecycleActions } from '@/components/products/product-lifecycle-actions'
 import { BasicsSection } from '@/components/products/sections/basics-section'
+import { VariantsSection } from '@/components/products/sections/variants-section'
 import { ImagesSection } from '@/components/products/sections/images-section'
 import { CollectionsSection } from '@/components/products/sections/collections-section'
 import { ActivateProductModal } from '@/components/products/activate-product-modal'
@@ -264,6 +265,7 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
             product={product}
             onSavedRemote={handleSavedRemote}
           />
+          <VariantsSection storeId={storeId} product={product} />
           <ImagesSection storeId={storeId} product={product} />
           <CollectionsSection storeId={storeId} product={product} />
         </main>
@@ -309,6 +311,7 @@ function ProductEditorForm({ product, storeId }: { product: Product; storeId: st
 function SectionNav() {
   const items = [
     { href: '#section-basics', label: 'Basics' },
+    { href: '#section-variants', label: 'Variants' },
     { href: '#section-images', label: 'Media' },
     { href: '#section-collections', label: 'Collections' },
   ]

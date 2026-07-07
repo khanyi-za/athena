@@ -25,8 +25,9 @@ export const productImageSchema = z.object({
   createdAt: z.string(),
 })
 
-// Variants are out of scope for M5 (deferred to M6), but we type them so the
-// full product response still validates cleanly when a product has them.
+// Variant editing shipped 2026-07 (was deferred to M6). A variant's stock is
+// independent of the product's totalStock — a product WITH variants sells from
+// variant stock; the bare totalStock is ignored by carts/checkout.
 export const productVariantSchema = z.object({
   id: z.string(),
   productId: z.string(),
@@ -181,6 +182,7 @@ export const updateProductBodySchema = z.object({
   comparePriceInCents: z.number().int().min(0).optional(),
   sku: z.string().max(80).optional(),
   totalStock: z.number().int().min(0).optional(),
+  lowStockThreshold: z.number().int().min(0).optional(),
 })
 
 // POST /stores/:storeId/products/:productId/images — url is the Cloudinary
@@ -197,6 +199,32 @@ export const addProductImageBodySchema = z.object({
 // rejects any miscount or unknown ID.
 export const reorderProductImagesBodySchema = z.object({
   imageIds: z.array(z.string()).min(1),
+})
+
+// POST /stores/:storeId/products/:productId/variants — priceInCents omitted =
+// variant inherits the product's base price.
+export const createVariantBodySchema = z.object({
+  name: z.string().min(2).max(80),
+  sku: z.string().max(80).optional(),
+  priceInCents: z.number().int().min(0).optional(),
+  stock: z.number().int().min(0),
+  color: z.string().optional(),
+  size: z.string().optional(),
+  material: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+})
+
+// PATCH …/variants/:variantId — all optional; priceInCents: null clears the
+// override so the variant falls back to the product's base price.
+export const updateVariantBodySchema = z.object({
+  name: z.string().min(2).max(80).optional(),
+  sku: z.string().max(80).optional(),
+  priceInCents: z.number().int().min(0).nullable().optional(),
+  stock: z.number().int().min(0).optional(),
+  color: z.string().optional(),
+  size: z.string().optional(),
+  material: z.string().optional(),
+  sortOrder: z.number().int().optional(),
 })
 
 // ----------------------------------------------------------------------------
@@ -237,6 +265,8 @@ export type CreateProductBody = z.infer<typeof createProductBodySchema>
 export type UpdateProductBody = z.infer<typeof updateProductBodySchema>
 export type AddProductImageBody = z.infer<typeof addProductImageBodySchema>
 export type ReorderProductImagesBody = z.infer<typeof reorderProductImagesBodySchema>
+export type CreateVariantBody = z.infer<typeof createVariantBodySchema>
+export type UpdateVariantBody = z.infer<typeof updateVariantBodySchema>
 export type ProductSortBy = z.infer<typeof productSortBySchema>
 export type ProductListStatusFilter = z.infer<typeof productListStatusFilterSchema>
 

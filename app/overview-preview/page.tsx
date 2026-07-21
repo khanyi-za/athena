@@ -79,7 +79,7 @@ export default function OverviewPreviewPage() {
               sparkColor="var(--chart-2)"
             />
             <StatCard
-              label="Followers"
+              label="Subscribers"
               value={stats.followers.toLocaleString('en-ZA')}
               trendPct={stats.followersTrendPct}
               icon={Users}

@@ -124,7 +124,7 @@ export function ActiveStoreScreen() {
           spark={analytics.orders.spark}
         />
         <StatCard
-          label="Followers"
+          label="Subscribers"
           value={store.followerCount.toLocaleString('en-ZA')}
           icon={Users}
           trend={{ pct: analytics.followers.trendPct }}

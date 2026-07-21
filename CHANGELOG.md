@@ -4,6 +4,22 @@ All notable changes to the Athena merchant dashboard are documented here.
 
 ---
 
+## [uncommitted] — 2026-07-07
+
+### "Subscribe" vocabulary (UI copy only)
+
+Product decision (2026-07-07): buyer-facing copy says **Subscribe/Subscribers**
+instead of Follow/Followers (matches the brands' own site conventions). In
+athena: the Overview "Followers" StatCard → **"Subscribers"**
+(`components/phase-screens/active-store.tsx`) and the matching card on
+`app/overview-preview/page.tsx`. Everything functional keeps the "follow"
+vocabulary — `followerCount`, the analytics wire shape's `followers` block,
+`StoreFollower` — do NOT rename those. maya got the same pass (buttons/pills);
+nuwa has no user-facing follower copy yet (NEW_FOLLOWER is enum-only — write
+its copy as "subscriber" when it ships).
+
+---
+
 ## [uncommitted] — 2026-07-06
 
 ### Merchant-demo feature round: admin orders + variants + live analytics + earnings/promotions/low-stock/returns

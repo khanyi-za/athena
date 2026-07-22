@@ -149,20 +149,20 @@ export type ReconcileVerdict = z.infer<typeof reconcileVerdictSchema>
 export const reconcileResultSchema = z.object({
   paymentGroup: z.object({
     id: z.string(),
-    mPaymentId: z.string(),
+    reference: z.string(),
     status: paymentGroupStatusSchema,
     amountGrossInCents: z.coerce.number(),
     createdAt: z.coerce.date(),
   }),
-  payfast: z.object({
+  paystack: z.object({
     found: z.boolean(),
-    pfPaymentId: z.string().optional(),
-    paymentStatus: z.string().optional(),
-    amountGross: z.string().optional(),
-    raw: z.record(z.string(), z.string()).optional(),
+    transactionId: z.coerce.number().optional(),
+    status: z.string().optional(),
+    amountInCents: z.coerce.number().optional(),
+    paidAt: z.string().nullable().optional(),
+    channel: z.string().optional(),
   }),
   verdict: reconcileVerdictSchema,
-  window: z.object({ from: z.string(), to: z.string() }),
 })
 
 export type ReconcileResult = z.infer<typeof reconcileResultSchema>

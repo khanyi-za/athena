@@ -4,6 +4,30 @@ All notable changes to the Athena merchant dashboard are documented here.
 
 ---
 
+## [uncommitted] — 2026-07-21 — Paystack migration (admin refund + reconcile)
+
+Backend swapped PayFast → Paystack (nuwa cutover 2026-07-21; decision record
+in nuwa/docs/payments-module/paystack-migration-foundation.md). Athena
+changes, all in the admin orders surface:
+
+- **Refund modal:** the "Buyer bank account type" (current/savings) field is
+  GONE — that was a PayFast disbursement requirement; Paystack refunds to the
+  original payment method. `use-admin-orders` + `lib/api/admin-orders` types
+  updated (no `accType`). Copy: "Refund via Paystack", confirms via webhook,
+  and refunds now WORK in test mode (no more production-only caveat).
+- **Reconcile panel:** rewritten for nuwa's new response shape —
+  `paystack { found, transactionId, status, amountInCents, paidAt, channel }`
+  + `paymentGroup.reference` (was `payfast {…}` + `mPaymentId` + date
+  window). Zod schema (`reconcileResultSchema`) updated to match; panel shows
+  Status / Amount (ZAR) / Transaction / Channel; the ±7-day "window searched"
+  footer is gone (Paystack verifies directly by reference).
+- Fee row label "PayFast fee" → "Paystack fee"; comment sweep across routes/
+  hooks/returns pages. Zero PayFast references remain. tsc clean.
+
+⚠ BFF routes are unchanged (same nuwa paths) — no env or deploy action needed.
+
+---
+
 ## [uncommitted] — 2026-07-07
 
 ### "Subscribe" vocabulary (UI copy only)

@@ -15,7 +15,7 @@ import type { ReturnRequest, ReturnStatus } from '@/lib/schemas/returns'
 // Returns — merchant queue for buyer return requests (30-day window from
 // delivery). Lifecycle here: approve/reject a request, mark the parcel
 // received, then close once the refund/exchange is settled (the refund itself
-// runs through YIIVA's admin PayFast tool — merchants never move money).
+// runs through YIIVA's admin Paystack tool — merchants never move money).
 
 const RETURN_STATUS: Record<ReturnStatus, { label: string; tone: BadgeTone }> = {
   REQUESTED: { label: 'Requested', tone: 'warning' },

@@ -84,21 +84,19 @@ export function useAdminRefundOrder() {
       orderId,
       amountInCents,
       reason,
-      accType,
       notifyBuyer,
     }: {
       orderId: string
       amountInCents: number
       reason: string
-      accType: 'current' | 'savings'
       notifyBuyer?: boolean
-    }) => refundAdminOrder(orderId, { amountInCents, reason, accType, notifyBuyer }),
+    }) => refundAdminOrder(orderId, { amountInCents, reason, notifyBuyer }),
     onSuccess: (_data, vars) => invalidate(vars.orderId),
   })
 }
 
 /**
- * PayFast reconcile — hits PayFast's transactions/history API, so it only runs
+ * Paystack reconcile — hits Paystack's transaction/verify API, so it only runs
  * when the operator opens the panel (`enabled`), and never auto-retries.
  */
 export function useReconcilePaymentGroup(paymentGroupId: string | null, enabled: boolean) {

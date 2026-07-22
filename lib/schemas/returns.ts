@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 // Wire shapes of nuwa /stores/:storeId/returns — merchant returns queue.
 // Lifecycle: REQUESTED → approve/reject; APPROVED → received; RECEIVED →
-// close (after the admin PayFast refund tool has moved the money).
+// close (after the admin Paystack refund tool has moved the money).
 
 export const returnStatusSchema = z.enum([
   'REQUESTED',

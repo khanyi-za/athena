@@ -57,7 +57,7 @@ import type {
 import type { OrderStatus } from '@/lib/schemas/order'
 
 // Admin Orders — cross-store list + full-power detail modal (force-confirm,
-// cancel-with-admin-reason, shipping/notes edit, PayFast refund, reconcile).
+// cancel-with-admin-reason, shipping/notes edit, Paystack refund, reconcile).
 // Mirrors the merchant Orders page conventions (DataTable, unified status
 // badges, token-styled server filters, cursor "Load more").
 
@@ -100,7 +100,7 @@ const RECONCILE_VERDICT: Record<ReconcileVerdict, { label: string; tone: BadgeTo
   MATCH: {
     label: 'Match',
     tone: 'success',
-    hint: 'PayFast and YIIVA agree on the terminal state.',
+    hint: 'Paystack and YIIVA agree on the terminal state.',
   },
   MATCH_PENDING: {
     label: 'Both pending',
@@ -110,12 +110,12 @@ const RECONCILE_VERDICT: Record<ReconcileVerdict, { label: string; tone: BadgeTo
   MISMATCH: {
     label: 'Mismatch',
     tone: 'danger',
-    hint: 'PayFast and YIIVA disagree — investigate before touching this order.',
+    hint: 'Paystack and YIIVA disagree — investigate before touching this order.',
   },
   NOT_FOUND: {
-    label: 'Not found at PayFast',
+    label: 'Not found at Paystack',
     tone: 'warning',
-    hint: 'PayFast has no record of this m_payment_id in the ±7-day window.',
+    hint: 'Paystack has no transaction for this reference.',
   },
 }
 
@@ -590,7 +590,7 @@ function AdminOrderDetailModal({ orderId, onClose }: { orderId: string; onClose:
                     </span>
                   </div>
                   <Row label="Gross (this store)" value={formatZAR(order.payment.amountGrossInCents)} />
-                  <Row label="PayFast fee" value={`−${formatZAR(order.payment.amountFeeInCents)}`} />
+                  <Row label="Paystack fee" value={`−${formatZAR(order.payment.amountFeeInCents)}`} />
                   <Row label="Net" value={formatZAR(order.payment.amountNetInCents)} />
                   <Row
                     label="Platform commission (5.5%)"
@@ -830,7 +830,6 @@ function RefundPanel({
   const remainingInCents = payment.amountGrossInCents - payment.refundedAmountInCents
   const [amountRands, setAmountRands] = useState((remainingInCents / 100).toFixed(2))
   const [reason, setReason] = useState('')
-  const [accType, setAccType] = useState<'current' | 'savings'>('current')
   const [notifyBuyer, setNotifyBuyer] = useState(true)
 
   const amountInCents = Math.round(parseFloat(amountRands || '0') * 100)
@@ -839,12 +838,12 @@ function RefundPanel({
   return (
     <div className="space-y-3 rounded-lg border border-warning/40 bg-warning/5 p-4">
       <p className="text-sm font-medium text-foreground">
-        Refund via PayFast — {formatZAR(remainingInCents)} refundable
+        Refund via Paystack — {formatZAR(remainingInCents)} refundable
         {payment.refundedAmountInCents > 0 &&
           ` (${formatZAR(payment.refundedAmountInCents)} already refunded)`}
       </p>
       <p className="text-xs text-muted-foreground">
-        Synchronous: PayFast is called immediately, then confirms by ITN. Sandbox credentials
+        Synchronous: Paystack is called immediately, then confirms by webhook. Test-mode credentials
         always reject refunds — production only.
       </p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -858,19 +857,6 @@ function RefundPanel({
             onChange={(e) => setAmountRands(e.target.value)}
             className={cn(inputBase, 'w-full')}
           />
-        </label>
-        <label className="space-y-1">
-          <span className="text-xs font-medium text-muted-foreground">
-            Buyer bank account type
-          </span>
-          <select
-            value={accType}
-            onChange={(e) => setAccType(e.target.value as 'current' | 'savings')}
-            className={cn(inputBase, 'w-full')}
-          >
-            <option value="current">Current (cheque)</option>
-            <option value="savings">Savings</option>
-          </select>
         </label>
         <label className="space-y-1 sm:col-span-2">
           <span className="text-xs font-medium text-muted-foreground">
@@ -892,19 +878,19 @@ function RefundPanel({
             onChange={(e) => setNotifyBuyer(e.target.checked)}
             className="size-4 accent-[var(--brand)]"
           />
-          PayFast emails the buyer a refund confirmation
+          Paystack notifies the buyer of the refund
         </label>
       </div>
       {refund.isError && <PanelError message={(refund.error as Error).message} />}
       {refund.isSuccess && (
         <p className="text-sm text-success">
           Refund submitted (id {refund.data.refundId}). Cumulative refunded:{' '}
-          {formatZAR(refund.data.cumulativeRefundedInCents)}. PayFast will confirm via ITN.
+          {formatZAR(refund.data.cumulativeRefundedInCents)}. Paystack will confirm via webhook.
         </p>
       )}
       <button
         onClick={() =>
-          refund.mutate({ orderId, amountInCents, reason: reason.trim(), accType, notifyBuyer })
+          refund.mutate({ orderId, amountInCents, reason: reason.trim(), notifyBuyer })
         }
         disabled={refund.isPending || !amountValid || !reason.trim()}
         className={btnBrand}
@@ -921,7 +907,7 @@ function ReconcilePanel({ paymentGroupId }: { paymentGroupId: string }) {
   return (
     <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-foreground">PayFast reconcile</p>
+        <p className="text-sm font-medium text-foreground">Paystack reconcile</p>
         <button
           onClick={() => reconcile.refetch()}
           disabled={reconcile.isFetching}
@@ -958,17 +944,28 @@ function ReconcilePanel({ paymentGroupId }: { paymentGroupId: string }) {
                 label="Gross"
                 value={formatZAR(reconcile.data.paymentGroup.amountGrossInCents)}
               />
-              <Row label="m_payment_id" value={reconcile.data.paymentGroup.mPaymentId} />
+              <Row label="Reference" value={reconcile.data.paymentGroup.reference} />
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                PayFast
+                Paystack
               </p>
-              {reconcile.data.payfast.found ? (
+              {reconcile.data.paystack.found ? (
                 <>
-                  <Row label="Status" value={reconcile.data.payfast.paymentStatus ?? '—'} />
-                  <Row label="Gross" value={`R${reconcile.data.payfast.amountGross ?? '—'}`} />
-                  <Row label="pf_payment_id" value={reconcile.data.payfast.pfPaymentId ?? '—'} />
+                  <Row label="Status" value={reconcile.data.paystack.status ?? '—'} />
+                  <Row
+                    label="Amount"
+                    value={
+                      reconcile.data.paystack.amountInCents !== undefined
+                        ? formatZAR(reconcile.data.paystack.amountInCents)
+                        : '—'
+                    }
+                  />
+                  <Row
+                    label="Transaction"
+                    value={String(reconcile.data.paystack.transactionId ?? '—')}
+                  />
+                  <Row label="Channel" value={reconcile.data.paystack.channel ?? '—'} />
                 </>
               ) : (
                 <p className="py-1 text-sm text-muted-foreground">
@@ -978,8 +975,7 @@ function ReconcilePanel({ paymentGroupId }: { paymentGroupId: string }) {
             </div>
           </div>
           <p className="text-xs text-muted-foreground">
-            Window searched: {reconcile.data.window.from} → {reconcile.data.window.to}. Read-only —
-            nothing was changed.
+            Looked up directly by reference at Paystack. Read-only — nothing was changed.
           </p>
         </div>
       ) : null}

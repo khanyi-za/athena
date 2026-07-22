@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { backendFetch } from '@/lib/backend-client'
 
-// GET /admin/payments/groups/:id/reconcile — read-only Paystack investigation
-// for a stuck PaymentGroup. Proxies to nuwa, which queries Paystack's
-// transactions/history for a ±7-day window and reports a verdict.
+// GET /stores/:id/payout-account/banks — SA bank list (name + Paystack code)
+// for the settlement-account form.
 
 export async function GET(
   req: NextRequest,
@@ -11,18 +10,15 @@ export async function GET(
 ) {
   const { id } = await params
   const authorization = req.headers.get('Authorization')
-
   if (!authorization) {
     return NextResponse.json(
       { statusCode: 401, message: 'Authentication required', error: 'Unauthorized' },
       { status: 401 },
     )
   }
-
-  const { status, data } = await backendFetch(`/admin/payments/groups/${id}/reconcile`, {
-    method: 'GET',
-    headers: { Authorization: authorization },
-  })
-
+  const { status, data } = await backendFetch(
+    `/stores/${id}/payout-account/banks`,
+    { method: 'GET', headers: { Authorization: authorization } },
+  )
   return NextResponse.json(data, { status })
 }

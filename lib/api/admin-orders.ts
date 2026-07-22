@@ -80,16 +80,15 @@ export async function cancelAdminOrder(
 }
 
 /**
- * PayFast refund (synchronous on the admin side; PayFast confirms via ITN).
+ * Paystack refund (synchronous on the admin side; Paystack confirms via webhook).
  * Partial refunds allowed while cumulative ≤ gross. Sandbox always rejects —
- * refunds only work against production PayFast credentials.
+ * Paystack refunds work in test mode too (migration 2026-07).
  */
 export async function refundAdminOrder(
   orderId: string,
   input: {
     amountInCents: number
     reason: string
-    accType: 'current' | 'savings'
     notifyBuyer?: boolean
   },
 ): Promise<AdminRefundResponse> {
@@ -101,7 +100,7 @@ export async function refundAdminOrder(
 }
 
 /**
- * Read-only PayFast reconcile for a stuck PaymentGroup — scans PayFast's
+ * Read-only Paystack reconcile for a stuck PaymentGroup — queries Paystack's
  * transaction history around the group's createdAt and reports a verdict.
  */
 export async function reconcilePaymentGroup(

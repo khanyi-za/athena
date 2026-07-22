@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { backendFetch } from '@/lib/backend-client'
 
-// POST /admin/orders/:orderId/refund — synchronous PayFast refund (partial or
+// POST /admin/orders/:orderId/refund — synchronous Paystack refund (partial or
 // full). nuwa validates cumulative ≤ gross and transitions the order status.
 
 export async function POST(

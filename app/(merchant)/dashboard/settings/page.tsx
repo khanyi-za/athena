@@ -13,6 +13,7 @@ import { PayoutSection } from '@/components/wizard/sections/payout'
 import { BannerMediaSection } from '@/components/approved/banner-media-section'
 import { AddressSection } from '@/components/approved/address-section'
 import { SettlementAccountSection } from '@/components/approved/settlement-account-section'
+import { ShopifySection } from '@/components/approved/shopify-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
 import type { StoreAddress, StoreMe } from '@/lib/schemas/store'
@@ -43,6 +44,7 @@ const SECTIONS = [
   { id: 'section-business', label: 'Business registration' },
   { id: 'section-payout', label: 'Bank & payout' },
   { id: 'section-settlement', label: 'Automatic payouts' },
+  { id: 'section-shopify', label: 'Shopify sync' },
   { id: 'section-locations', label: 'Locations' },
 ]
 
@@ -143,6 +145,8 @@ function SettingsForm({ store }: { store: StoreMe }) {
           />
 
           <SettlementAccountSection store={store} />
+
+          <ShopifySection />
 
           <div id="section-locations" className="scroll-mt-6">
             <AddressSection

@@ -207,13 +207,13 @@ export default function OnboardingPage() {
 
   // mode === 'picker'
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-10">
+    <div className="flex w-full max-w-3xl flex-col gap-10">
       <div className="text-center">
         <h1 className="text-2xl font-semibold text-foreground">Welcome, {user.firstName}.</h1>
         <p className="mt-2 text-sm text-muted-foreground">Ready to start selling on YIIVA?</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <button
           type="button"
           onClick={() => {
@@ -229,6 +229,25 @@ export default function OnboardingPage() {
             <h2 className="text-base font-semibold text-foreground">Start my store</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Set up your store, list your products, and start reaching buyers across South Africa.
+            </p>
+          </div>
+          <span className="mt-auto text-sm font-medium text-foreground group-hover:underline">
+            Continue →
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push('/onboarding/shopify')}
+          className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-6 text-left transition-all hover:border-brand hover:shadow-sm"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted transition-colors group-hover:bg-brand">
+            <ImportIcon className="text-muted-foreground transition-colors group-hover:text-brand-foreground" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-base font-semibold text-foreground">Import from Shopify</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Already selling on Shopify? Bring your products, images and collections across in minutes.
             </p>
           </div>
           <span className="mt-auto text-sm font-medium text-foreground group-hover:underline">
@@ -276,6 +295,27 @@ export default function OnboardingPage() {
 function cleanValidationMessage(raw: string): string {
   const trimmed = raw.replace(/\.$/, '')
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1) + '.'
+}
+
+function ImportIcon({ className }: { className?: string }) {
+  // Download-into-tray — "bring your catalogue in".
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M12 15V3" />
+    </svg>
+  )
 }
 
 function BagIcon({ className }: { className?: string }) {

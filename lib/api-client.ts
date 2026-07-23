@@ -24,8 +24,19 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
   let response = await doFetch(url, options, accessToken)
 
   if (response.status === 401) {
-    const data = await response.json().catch(() => ({})) as { message?: string }
+    const data = await response.json().catch(() => ({})) as { message?: string; code?: string }
     const message = data?.message ?? ''
+
+    if (data?.code === 'SHOPIFY_TOKEN_INVALID') {
+      // A 401 about the merchant's SHOPIFY credential, not our session —
+      // nuwa rejects a bad/revoked pasted Admin token this way. Logging the
+      // user out of YIIVA for it would be wrong; surface it like a normal
+      // request error instead.
+      throw Object.assign(new Error(message || 'Shopify rejected the access token'), {
+        status: 401,
+        data,
+      })
+    }
 
     if (message === 'Access token has expired') {
       // Attempt a single silent refresh then retry. The refresh response carries a

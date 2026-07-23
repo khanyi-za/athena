@@ -4,6 +4,51 @@ All notable changes to the Athena merchant dashboard are documented here.
 
 ---
 
+## [uncommitted] — 2026-07-23 — Shopify onboarding UI (import wizard + settings sync section)
+
+The merchant-facing UI for nuwa's Shopify app (backend Phases 1a–2, complete).
+Two surfaces:
+
+- **Onboarding flow — `/onboarding/shopify`:** third card on the intent
+  picker ("Import from Shopify"), then connect → preview → importing → done.
+  Connect form (domain + `shpat_` token + optional API secret) with a
+  collapsible create-the-custom-app guide; preview shows counts, per-warning
+  alerts, a 10-product sample and the **default-gender picker** (applies to
+  gender-silent products); import progress polls `GET /shopify/import/latest`
+  every 2.5s (the app's FIRST poller — TanStack v5 function-form
+  `refetchInterval`, stops on terminal status); done hands over to the store
+  wizard (nuwa's import created the DRAFT store, prefilled). The step is
+  **derived from server state** (connection + latest job), not stored — a
+  reload resumes in the right place for free, and the guard allows BOTH
+  `onboarding-intent` and `wizard-draft` (the DRAFT store appears mid-flow).
+- **Settings — "Shopify sync" section** (`components/approved/
+  shopify-section.tsx`): connect status + shop card, latest-import block
+  (same status-aware progress panel), inline import flow (preview → confirm →
+  progress; disabled while a job runs), Update token (reconnect upserts),
+  two-step inline Disconnect (auto-resets after 5s).
+- **Plumbing:** 4 user-scoped BFF routes under `app/api/shopify/*` (no
+  `[id]` — auth/me pattern; preview route sets `maxDuration = 60`),
+  `lib/schemas/shopify.ts` (defensive: job `summary` all-optional
+  `.catch(null)`; GET-connection omits productsCount/websiteDomain),
+  `lib/api/shopify.ts` (404 → null on the GETs; `shopifyErrorCode()` helper),
+  `hooks/use-shopify.ts`, shared components in `components/shopify/`.
+- **⚠ `lib/api-client.ts` fix:** 401s with `code: SHOPIFY_TOKEN_INVALID` no
+  longer trigger the hard clearAuth+redirect — pasting a bad Shopify token
+  was logging the merchant OUT of YIIVA. Now surfaces as a normal field error.
+- **nuwa companion fix (committed there):** nonexistent `*.myshopify.com`
+  subdomains (typo'd domain) now return 400 `SHOP_NOT_FOUND` instead of an
+  opaque 500; the connect form maps it onto the domain field.
+- Verified live through the full BFF chain against dev nuwa (:3000): 401
+  guard, NO_SHOPIFY_CONNECTION/NO_IMPORT_JOB → null, INVALID_SHOP_DOMAIN,
+  SHOP_NOT_FOUND, DTO validation arrays. tsc + lint clean (remaining lint
+  errors are pre-existing `dashboard-legacy/`).
+- **⚠ `.env.local` now points at DEV nuwa (:3000/ayana)** — switched from the
+  demo backend (:3005) to exercise the new endpoints; flip back for sales
+  demos. Full e2e (real shop + webhooks) still needs the owner's Partner dev
+  store + `shpat_` token, and `SHOPIFY_WEBHOOK_BASE_URL` on nuwa for sync.
+
+---
+
 ## [uncommitted] — 2026-07-21 — Paystack migration (admin refund + reconcile)
 
 Backend swapped PayFast → Paystack (nuwa cutover 2026-07-21; decision record

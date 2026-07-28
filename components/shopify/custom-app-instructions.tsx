@@ -21,7 +21,9 @@ const STEPS: React.ReactNode[] = [
   <>
     Open <strong>Configuration → Admin API integration → Configure</strong>{' '}
     and tick these scopes: <code>read_products</code>,{' '}
-    <code>read_inventory</code>, <code>read_locations</code> and{' '}
+    <code>read_inventory</code>, <code>read_locations</code>,{' '}
+    <code>read_legal_policies</code> (shows your own returns policy on your
+    YIIVA product pages) and{' '}
     <code>write_inventory</code> (lets YIIVA reduce your Shopify stock when
     something sells here). Save.
   </>,

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
+import { VerifyCodeForm } from '@/components/auth/verify-code-form'
 import {
   isSafeReturnUrl,
   persistPendingReturnUrl,
@@ -89,10 +90,8 @@ function RegisterPageInner() {
         return
       }
 
-      // Persist returnUrl so verify-email can honour it after the user clicks
-      // the link in their email. The link itself can't carry the returnUrl
-      // (it's generated server-side without that context), so we stash it
-      // locally and the verify-email page consumes it on success.
+      // Persist returnUrl so the verify step can honour it after the code is
+      // entered (the invite-accept flow). VerifyCodeForm consumes it on success.
       if (safeReturnUrl) {
         persistPendingReturnUrl(safeReturnUrl)
       }
@@ -111,15 +110,13 @@ function RegisterPageInner() {
         <div>
           <h1 className="text-xl font-semibold text-foreground">Check your email</h1>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            We&apos;ve sent a verification link to{' '}
-            <span className="font-medium text-foreground">{registeredEmail}</span>. Click the link in
-            the email to activate your account.
+            Enter the 6-digit code we sent to{' '}
+            <span className="font-medium text-foreground">{registeredEmail}</span> to activate your
+            account.
           </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Verification links expire after 24 hours.
-            {safeReturnUrl && ' Open the link on this device to continue where you left off.'}
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">Codes expire after 10 minutes.</p>
         </div>
+        <VerifyCodeForm email={registeredEmail} />
         <Link
           href={
             safeReturnUrl

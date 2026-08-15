@@ -57,6 +57,11 @@ function LoginPageInner() {
         } else if (res.status === 401) {
           setError('Incorrect email or password.')
         } else if (res.status === 403) {
+          if (/verify your email/i.test(data.message ?? '')) {
+            // Unverified account — send them to code entry with a resend button
+            router.push(`/auth/verify-email?email=${encodeURIComponent(email)}`)
+            return
+          }
           setError(data.message)
         } else {
           setError('Something went wrong. Please try again.')

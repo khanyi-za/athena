@@ -27,20 +27,19 @@ export const connectShopifyInputSchema = z.object({
     .trim()
     .min(3, 'Enter your myshopify.com store domain')
     .max(120),
-  accessToken: z
+  // Dev Dashboard app credentials (Shopify retired in-admin custom apps
+  // 2026-01-01 — permanent shpat_ tokens no longer exist for new apps; nuwa
+  // exchanges these for auto-refreshed 24h access tokens).
+  clientId: z
     .string()
     .trim()
-    .regex(
-      /^shpat_[a-fA-F0-9]{16,}$/,
-      'Paste the Admin API access token — it starts with shpat_',
-    ),
-  // '' is mapped to undefined by the form before parsing.
-  apiSecret: z
+    .min(10, 'Paste the Client ID from your app’s Settings page')
+    .max(120),
+  clientSecret: z
     .string()
     .trim()
-    .min(20, 'The API secret key is at least 20 characters')
-    .max(200)
-    .optional(),
+    .min(20, 'Paste the Client secret from your app’s Settings page')
+    .max(200),
 })
 export type ConnectShopifyInput = z.infer<typeof connectShopifyInputSchema>
 

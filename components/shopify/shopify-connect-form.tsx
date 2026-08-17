@@ -12,6 +12,10 @@ import { CustomAppInstructions } from './custom-app-instructions'
 // Shared by the onboarding flow and the settings section. The parent decides
 // what happens after a successful connect (incl. the non-ZAR blocked case —
 // the connection IS saved server-side either way).
+//
+// Auth model: Dev Dashboard app Client ID + Client secret. Nuwa validates
+// them live (client-credentials exchange + shop query) before storing, and
+// auto-refreshes the 24h access tokens from then on.
 
 interface Props {
   onConnected: (view: ShopifyConnection) => void
@@ -22,9 +26,9 @@ export function ShopifyConnectForm({ onConnected, submitLabel = 'Connect my Shop
   const connect = useConnectShopify()
 
   const [shopDomain, setShopDomain] = useState('')
-  const [accessToken, setAccessToken] = useState('')
-  const [apiSecret, setApiSecret] = useState('')
-  const [fieldErrors, setFieldErrors] = useState<{ shopDomain?: string; accessToken?: string; apiSecret?: string }>({})
+  const [clientId, setClientId] = useState('')
+  const [clientSecret, setClientSecret] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<{ shopDomain?: string; clientId?: string; clientSecret?: string }>({})
   const [bannerError, setBannerError] = useState<string | null>(null)
 
   function handleSubmit(e: React.FormEvent) {
@@ -34,8 +38,8 @@ export function ShopifyConnectForm({ onConnected, submitLabel = 'Connect my Shop
 
     const parsed = connectShopifyInputSchema.safeParse({
       shopDomain,
-      accessToken,
-      apiSecret: apiSecret.trim() === '' ? undefined : apiSecret,
+      clientId,
+      clientSecret,
     })
     if (!parsed.success) {
       const errs: typeof fieldErrors = {}
@@ -59,10 +63,13 @@ export function ShopifyConnectForm({ onConnected, submitLabel = 'Connect my Shop
                 ? message
                 : "Enter the store's myshopify.com domain (from your Shopify admin URL), not your public website domain.",
           })
-        } else if (code === 'SHOPIFY_TOKEN_INVALID') {
+        } else if (
+          code === 'INVALID_SHOPIFY_CREDENTIALS' ||
+          code === 'SHOPIFY_TOKEN_INVALID'
+        ) {
           setFieldErrors({
-            accessToken:
-              'Shopify rejected this token. Re-copy the Admin API access token (shpat_…) — if you no longer have it, uninstall and reinstall the custom app to get a new one.',
+            clientSecret:
+              'Shopify rejected these credentials. Re-copy the Client ID and Client secret from your app’s Settings page, and make sure the app is installed on this store (Home → Install app).',
           })
         } else if (code === 'SHOP_ALREADY_CONNECTED') {
           setBannerError(
@@ -91,25 +98,24 @@ export function ShopifyConnectForm({ onConnected, submitLabel = 'Connect my Shop
       />
 
       <Input
-        id="shopify-token"
-        label="Admin API access token"
-        type="password"
-        placeholder="shpat_…"
-        value={accessToken}
-        onChange={(e) => setAccessToken(e.target.value)}
-        error={fieldErrors.accessToken}
+        id="shopify-client-id"
+        label="Client ID"
+        placeholder="From your app’s Settings page on dev.shopify.com"
+        value={clientId}
+        onChange={(e) => setClientId(e.target.value)}
+        error={fieldErrors.clientId}
         autoComplete="off"
         spellCheck={false}
       />
 
       <Input
-        id="shopify-api-secret"
-        label="API secret key (recommended)"
+        id="shopify-client-secret"
+        label="Client secret"
         type="password"
-        placeholder="Lets YIIVA verify stock updates from Shopify"
-        value={apiSecret}
-        onChange={(e) => setApiSecret(e.target.value)}
-        error={fieldErrors.apiSecret}
+        placeholder="Kept encrypted — used to authenticate with Shopify"
+        value={clientSecret}
+        onChange={(e) => setClientSecret(e.target.value)}
+        error={fieldErrors.clientSecret}
         autoComplete="off"
         spellCheck={false}
       />

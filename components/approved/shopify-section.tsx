@@ -100,12 +100,12 @@ export function ShopifySection() {
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-4">
           {showConnectForm && (
             <p className="text-sm text-muted-foreground">
-              Paste a fresh Admin API token to update the connection — the shop
-              stays linked and nothing is re-imported.
+              Paste your app&apos;s Client ID and Client secret to update the
+              connection — the shop stays linked and nothing is re-imported.
             </p>
           )}
           <ShopifyConnectForm
-            submitLabel={conn ? 'Update token' : 'Connect Shopify'}
+            submitLabel={conn ? 'Update credentials' : 'Connect Shopify'}
             onConnected={() => setShowConnectForm(false)}
           />
           {showConnectForm && (
@@ -150,7 +150,7 @@ export function ShopifySection() {
               onClick={() => setShowConnectForm(true)}
               className="shrink-0 text-sm font-medium text-primary transition-colors hover:underline"
             >
-              Update token
+              Update credentials
             </button>
           </div>
 

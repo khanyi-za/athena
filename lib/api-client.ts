@@ -18,8 +18,37 @@ function redirectToLogin() {
   if (typeof window !== 'undefined') window.location.href = '/login'
 }
 
+// ── Single-flight silent refresh ──────────────────────────────────────────────
+// Refresh tokens are SINGLE-USE (nuwa rotates on every /auth/refresh). When the
+// access token expires on a busy page, many requests 401 simultaneously — if
+// each ran its own refresh, the first would rotate the token and every other
+// would present the now-revoked one, logging the user out mid-action (and
+// racing cookie writes). So ALL concurrent callers share one refresh promise.
+// Resolves the new access token, or null when the session is truly dead.
+let refreshInFlight: Promise<string | null> | null = null
+
+function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight
+
+  refreshInFlight = (async () => {
+    try {
+      const res = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
+      if (!res.ok) return null
+      const { accessToken } = (await res.json()) as { accessToken: string }
+      useAuthStore.getState().setAccessToken(accessToken)
+      return accessToken
+    } catch {
+      return null
+    } finally {
+      refreshInFlight = null
+    }
+  })()
+
+  return refreshInFlight
+}
+
 export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const { accessToken, setAccessToken, clearAuth } = useAuthStore.getState()
+  const { accessToken, clearAuth } = useAuthStore.getState()
 
   let response = await doFetch(url, options, accessToken)
 
@@ -39,15 +68,14 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
     }
 
     if (message === 'Access token has expired') {
-      // Attempt a single silent refresh then retry. The refresh response carries a
-      // slim user — we deliberately do NOT overwrite the full /auth/me user already
-      // in the store. Components that need fresh profile data refetch /auth/me
-      // explicitly (e.g., on tab focus while in PENDING_REVIEW).
-      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
+      // Silent refresh (single-flight — concurrent 401s share one rotation)
+      // then retry. The refresh response carries a slim user — we deliberately
+      // do NOT overwrite the full /auth/me user already in the store.
+      // Components that need fresh profile data refetch /auth/me explicitly
+      // (e.g., on tab focus while in PENDING_REVIEW).
+      const newToken = await refreshAccessToken()
 
-      if (refreshRes.ok) {
-        const { accessToken: newToken } = await refreshRes.json()
-        setAccessToken(newToken)
+      if (newToken) {
         response = await doFetch(url, options, newToken)
       } else {
         clearAuth()
@@ -85,7 +113,7 @@ export async function apiFetch<T>(url: string, options: RequestInit = {}): Promi
  * silent-refresh behaviour; returns the raw Blob instead of parsing JSON.
  */
 export async function apiFetchBlob(url: string, options: RequestInit = {}): Promise<Blob> {
-  const { accessToken, setAccessToken, clearAuth } = useAuthStore.getState()
+  const { accessToken, clearAuth } = useAuthStore.getState()
 
   let response = await doFetch(url, options, accessToken)
 
@@ -94,10 +122,8 @@ export async function apiFetchBlob(url: string, options: RequestInit = {}): Prom
     const message = data?.message ?? ''
 
     if (message === 'Access token has expired') {
-      const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' })
-      if (refreshRes.ok) {
-        const { accessToken: newToken } = await refreshRes.json()
-        setAccessToken(newToken)
+      const newToken = await refreshAccessToken()
+      if (newToken) {
         response = await doFetch(url, options, newToken)
       } else {
         clearAuth()

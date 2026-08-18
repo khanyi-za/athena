@@ -8,6 +8,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useAuthMeRefresh } from '@/hooks/use-auth-me-refresh'
 import { useStoreMe } from '@/hooks/use-store-me'
 import { AppShell } from '@/components/shell/app-shell'
+import { StatusPill } from '@/components/ui/status-pill'
 
 // Dashboard chrome. Two modes:
 // - ACTIVE store → the full operating shell (sidebar nav, ported from the
@@ -33,7 +34,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
   const { data: store } = useStoreMe()
 
-  const showMerchantNav = user?.role === 'MERCHANT'
+  // PENDING_REVIEW users are still role BUYER (the merchant upgrade fires at
+  // approval), but review runs in parallel with setup (Paystack model) — so
+  // nav keys off store status too, not role alone. Team stays merchant-only.
+  const underReview = user?.store?.status === 'PENDING_REVIEW'
+  const showMerchantNav = user?.role === 'MERCHANT' || underReview
+  const navItems = underReview
+    ? MERCHANT_NAV_ITEMS.filter((item) => item.label !== 'Team')
+    : MERCHANT_NAV_ITEMS
 
   if (user?.role === 'MERCHANT' && store?.status === 'ACTIVE') {
     return <AppShell store={store}>{children}</AppShell>
@@ -52,7 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Link>
             {showMerchantNav && (
               <nav className="flex items-center gap-1">
-                {MERCHANT_NAV_ITEMS.map((item) => {
+                {navItems.map((item) => {
                   // Home matches only the exact /dashboard path; other tabs
                   // claim their full subtree with a `/` boundary so a
                   // hypothetical /dashboard/teamish couldn't false-match Team.
@@ -80,6 +88,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
           </div>
           <div className="flex items-center gap-3">
+            {underReview && <StatusPill status="PENDING_REVIEW" />}
             <ThemeToggle />
             {user ? (
               <>

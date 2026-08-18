@@ -16,6 +16,7 @@ import { SettlementAccountSection } from '@/components/approved/settlement-accou
 import { ShopifySection } from '@/components/approved/shopify-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
+import { ReviewLockedDetails } from '@/components/review/review-locked-details'
 import type { StoreAddress, StoreMe } from '@/lib/schemas/store'
 
 // Settings page for ACTIVE merchants per store-frontend-flows §2.8. Composes
@@ -48,6 +49,16 @@ const SECTIONS = [
   { id: 'section-locations', label: 'Locations' },
 ]
 
+// PENDING_REVIEW: the reviewed fields collapse into one read-only summary
+// (backend rejects PATCH in that status); operational sections stay live.
+const REVIEW_LOCKED_SECTIONS = [
+  { id: 'section-review-locked', label: 'Business details' },
+  { id: 'section-banner', label: 'Banner image' },
+  { id: 'section-settlement', label: 'Automatic payouts' },
+  { id: 'section-shopify', label: 'Shopify sync' },
+  { id: 'section-locations', label: 'Locations' },
+]
+
 export default function SettingsPage() {
   const { data: store, isLoading, isError } = useStoreMe()
 
@@ -60,6 +71,7 @@ export default function SettingsPage() {
 
 function SettingsForm({ store }: { store: StoreMe }) {
   const invalidateStoreMe = useInvalidateStoreMe()
+  const reviewLocked = store.status === 'PENDING_REVIEW'
 
   const initialValues = storeToFormValues(store)
   const form = useForm<WizardFormValues>({
@@ -103,46 +115,55 @@ function SettingsForm({ store }: { store: StoreMe }) {
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold text-foreground">Store settings</h1>
         <p className="text-sm text-muted-foreground">
-          Update your brand, contact details, payout info, and locations.
-          Changes save automatically.
+          {reviewLocked
+            ? 'Your business details are locked while under review — everything else stays editable and saves automatically.'
+            : 'Update your brand, contact details, payout info, and locations. Changes save automatically.'}
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
         <aside className="lg:sticky lg:top-6 lg:self-start">
-          <SectionNav />
+          <SectionNav sections={reviewLocked ? REVIEW_LOCKED_SECTIONS : SECTIONS} />
         </aside>
 
         <main className="flex flex-col gap-12">
-          <BrandIdentitySection
-            control={form.control}
-            storeId={store.id}
-            initialValues={initialValues}
-            onSavedRemote={handleSavedRemote}
-          />
+          {reviewLocked ? (
+            <ReviewLockedDetails store={store} />
+          ) : (
+            <BrandIdentitySection
+              control={form.control}
+              storeId={store.id}
+              initialValues={initialValues}
+              onSavedRemote={handleSavedRemote}
+            />
+          )}
 
           <BannerMediaSection store={store} onSavedRemote={handleSavedRemote} />
 
-          <ContactSection
-            control={form.control}
-            storeId={store.id}
-            initialValues={initialValues}
-            onSavedRemote={handleSavedRemote}
-          />
+          {!reviewLocked && (
+            <>
+              <ContactSection
+                control={form.control}
+                storeId={store.id}
+                initialValues={initialValues}
+                onSavedRemote={handleSavedRemote}
+              />
 
-          <BusinessRegistrationSection
-            control={form.control}
-            storeId={store.id}
-            initialValues={initialValues}
-            onSavedRemote={handleSavedRemote}
-          />
+              <BusinessRegistrationSection
+                control={form.control}
+                storeId={store.id}
+                initialValues={initialValues}
+                onSavedRemote={handleSavedRemote}
+              />
 
-          <PayoutSection
-            control={form.control}
-            storeId={store.id}
-            initialValues={initialValues}
-            onSavedRemote={handleSavedRemote}
-          />
+              <PayoutSection
+                control={form.control}
+                storeId={store.id}
+                initialValues={initialValues}
+                onSavedRemote={handleSavedRemote}
+              />
+            </>
+          )}
 
           <SettlementAccountSection store={store} />
 
@@ -186,14 +207,14 @@ function SettingsForm({ store }: { store: StoreMe }) {
 // Sticky section nav
 // ----------------------------------------------------------------------------
 
-function SectionNav() {
+function SectionNav({ sections }: { sections: { id: string; label: string }[] }) {
   return (
     <nav className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Sections
       </p>
       <ul className="flex flex-col gap-1">
-        {SECTIONS.map((s) => (
+        {sections.map((s) => (
           <li key={s.id}>
             <a
               href={`#${s.id}`}

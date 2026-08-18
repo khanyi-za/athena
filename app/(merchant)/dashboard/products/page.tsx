@@ -66,12 +66,16 @@ export default function ProductsPage() {
   // Gate access: only MERCHANTs with APPROVED+ stores belong here.
   useEffect(() => {
     if (isInitializing || !user) return
-    if (user.role !== 'MERCHANT') {
-      router.replace('/dashboard')
-      return
-    }
+    // PENDING_REVIEW admitted (2026-08-18): catalogue management stays open
+    // while the store is under review — the user is still role BUYER then
+    // (merchant upgrade fires at approval), so gate on store status alone.
     const status = user.store?.status
-    if (status !== 'APPROVED' && status !== 'PENDING_GO_LIVE' && status !== 'ACTIVE') {
+    if (
+      status !== 'PENDING_REVIEW' &&
+      status !== 'APPROVED' &&
+      status !== 'PENDING_GO_LIVE' &&
+      status !== 'ACTIVE'
+    ) {
       router.replace('/dashboard')
     }
   }, [isInitializing, user, router])

@@ -54,6 +54,24 @@
   --chart-3: oklch(0.60 0.13 240);
   --chart-4: oklch(0.72 0.16 75);
   --chart-5: oklch(0.65 0.20 350);
+
+  /* Chrome panels — deliberately distinct from the content canvas. The topbar
+   * is a very light lavender with deep-violet text; the sidebar is off-white
+   * with a light-purple active pill. The .dark block below swaps both to dark
+   * panel treatments. */
+  --topbar: oklch(0.95 0.035 295);
+  --topbar-foreground: oklch(0.28 0.11 295);
+  --topbar-muted: oklch(0.5 0.07 295);
+  --topbar-accent: oklch(0.55 0.23 295 / 8%);
+  --topbar-active: oklch(0.55 0.23 295 / 14%);
+  --topbar-border: oklch(0.55 0.23 295 / 18%);
+
+  --sidebar: oklch(0.965 0.002 286);
+  --sidebar-foreground: oklch(0.21 0.006 285);
+  --sidebar-muted: oklch(0.5 0.014 286);
+  --sidebar-accent: oklch(0 0 0 / 4%);
+  --sidebar-active: oklch(0.93 0.05 295);
+  --sidebar-border: oklch(0 0 0 / 8%);
 }
 
 .dark {
@@ -97,6 +115,20 @@
   --chart-3: oklch(0.70 0.13 240);
   --chart-4: oklch(0.80 0.16 75);
   --chart-5: oklch(0.72 0.18 350);
+
+  --topbar: oklch(0.25 0.12 295);
+  --topbar-foreground: oklch(0.985 0 0);
+  --topbar-muted: oklch(0.79 0.05 295);
+  --topbar-accent: oklch(1 0 0 / 8%);
+  --topbar-active: oklch(1 0 0 / 15%);
+  --topbar-border: oklch(1 0 0 / 12%);
+
+  --sidebar: oklch(0.23 0.005 285);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-muted: oklch(0.72 0.01 286);
+  --sidebar-accent: oklch(1 0 0 / 8%);
+  --sidebar-active: oklch(0.68 0.19 295 / 22%);
+  --sidebar-border: oklch(1 0 0 / 10%);
 }
 
 @theme inline {
@@ -140,6 +172,20 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  --color-topbar: var(--topbar);
+  --color-topbar-foreground: var(--topbar-foreground);
+  --color-topbar-muted: var(--topbar-muted);
+  --color-topbar-accent: var(--topbar-accent);
+  --color-topbar-active: var(--topbar-active);
+  --color-topbar-border: var(--topbar-border);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-border: var(--sidebar-border);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

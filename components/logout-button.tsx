@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
 
-export function LogoutButton() {
+export function LogoutButton({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { accessToken, clearAuth } = useAuthStore()
@@ -38,7 +38,13 @@ export function LogoutButton() {
   }
 
   return (
-    <Button variant="ghost" fullWidth={false} loading={loading} onClick={handleLogout}>
+    <Button
+      variant="ghost"
+      fullWidth={false}
+      loading={loading}
+      onClick={handleLogout}
+      className={className}
+    >
       Sign out
     </Button>
   )

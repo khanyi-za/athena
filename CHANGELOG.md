@@ -4,7 +4,112 @@ All notable changes to the Athena merchant dashboard are documented here.
 
 ---
 
-## [uncommitted] — 2026-07-23 — Shopify onboarding UI (import wizard + settings sync section)
+## [uncommitted] — 2026-09-02 — Overview redesign · floating chrome · "sales" vocabulary · mobile nav
+
+Three interleaved threads (2026-08-28 → 09-01) plus a 09-02 fix session, all
+in the working tree together:
+
+- **Overview redesign (`components/phase-screens/active-store.tsx`):**
+  sparklines REMOVED from the KPI cards (flat/meaningless until Phalo ships
+  daily stats — they can return then). KPI row is now Sales · Subscribers ·
+  **Avg sale value** (NEW: revenue ÷ orders, "Last 14 days") · Avg rating;
+  the Active-products card is gone. Cards use new `StatCard` props `compact`
+  + `iconClassName`. **Azure `#0ea5e9` accents** (icon chips, gradient
+  Add-product CTA, `RevenueChart color` prop) — deliberate crossover from
+  maya's merchant-dashboard hero (owner call); raw hex, intentionally outside
+  the token layer. **Top products card is REAL** — 14d best-sellers from the
+  new analytics `topProducts` field (additive in nuwa; schema guards with
+  `.catch([])` so older backends parse). `PublicUrlLine` removed.
+- **"Sales" vocabulary sweep** (merchant UI copy ONLY — code/API stay
+  "orders"): orders page h1 + empty states, overview "Recent sales", earnings
+  "No paid sales this month".
+- **Commission copy fix** (inconsistency-audit #1): earnings subtitle is now
+  rate-less; admin order detail DERIVES the rate from the payment row
+  (`platformCommissionInCents / amountGrossInCents`) — commission is locked
+  at order time (5.5% before 2026-07-22, 2.5% after), so a hard-coded label
+  lied about old orders. Zero hard-coded rates remain in UI copy.
+- **Floating-chrome shell redesign (owner):** new `--topbar-*` / `--sidebar-*`
+  token families in `globals.css` (both themes); `AppShell` inverted to a
+  `p-3` inset canvas with a sticky rounded topbar joined to the sidebar
+  below; store brand identity moved from the sidebar footer to the topbar;
+  quick-actions block removed; theme toggle → sidebar footer; `LogoutButton`
+  accepts `className`.
+- **2026-09-02 fixes:** (a) mobile nav restored — below `lg` a topbar
+  hamburger opens a slide-over drawer (sidebar tokens, shared
+  `NavList`/`ThemeRow` so sidebar and drawer can't drift; Escape/overlay/
+  route-change close, body scroll lock) — the redesign had left NO nav or
+  theme toggle under `lg`; topbar avatar moved into the right-hand cluster;
+  inert notifications bell hidden below `sm`. (b) `lib/api-client.ts`: the
+  401 ladder extracted into a shared `resolve401` used by BOTH `apiFetch`
+  and `apiFetchBlob` — the blob path (waybill PDFs) was missing the
+  SHOPIFY_TOKEN_INVALID carve-out and the suspended-account redirect.
+- ⚠ `.env.local` points at the DEMO backend (:3005/yiiva_demo) for landing
+  screenshots — `topProducts` only exists on backends running current code.
+- tsc clean; lint clean outside `dashboard-legacy/`.
+
+---
+
+## [9a7b6c7] — 2026-08-18 — Under-review dashboard (Paystack-style parallel review)
+
+PENDING_REVIEW is no longer a dead-end screen — review runs in parallel with
+setup (companion nuwa change adds PENDING_REVIEW to the catalogue
+manage-allowlists; store profile stays review-locked, buyer surfaces
+unchanged):
+
+- Dashboard layout shows the merchant nav (minus Team) for PENDING_REVIEW
+  stores (the user is still role BUYER at that point!) + an amber
+  `StatusPill` in the header.
+- `under-review-first` phase screen rebuilt as a working home: review banner,
+  quick links (Products/Collections/Settings), `SettlementAccountSection`
+  with a go-live-gate nudge, banner media, locations.
+- Settings: reviewed business fields collapse into a read-only
+  `ReviewLockedDetails` card (`components/review/`) with a PENDING pill;
+  operational sections stay live.
+- Both product-page gates admit PENDING_REVIEW (status-based, not role).
+
+---
+
+## [3579643] — 2026-08-18 — Single-flight silent refresh (prod bug fix)
+
+Real production bug found by slow human testing: on a busy page, parallel
+401s each raced `/api/auth/refresh`, whose tokens are SINGLE-USE — the first
+rotation revoked the token the others presented → random logout mid-autosave.
+Fix ports maya's pattern to `lib/api-client.ts`: a module-level shared
+promise so all concurrent 401s await ONE rotation. The refresh response's
+slim user deliberately does NOT overwrite the full `/auth/me` user in the
+store.
+
+---
+
+## [c2bbba4] — 2026-08-17 — Shopify connect: Client ID + Secret (Dev Dashboard era)
+
+Shopify retired in-admin custom apps 2026-01-01 — new apps live in the Dev
+Dashboard and use Client ID + Secret with 24h client-credentials tokens
+(nuwa companion: `ShopifyTokenService` with lazy refresh; legacy `shpat_`
+tokens still accepted). Athena: connect form gains Client ID + Client secret
+fields (XOR legacy token), the custom-app guide is rewritten as a Dev
+Dashboard walkthrough, schema + settings copy updated.
+
+---
+
+## [f41821f] — 2026-08-15 — Auth OTP flow (6-digit codes replace emailed links)
+
+Register panel becomes code entry (`VerifyCodeForm`; invite returnUrl +
+cookie auto-login preserved), standalone `/auth/verify-email?email=` page,
+login 403 redirects there, forgot-password is a 2-step code+password flow,
+legacy reset URLs redirect, resend BFF route (60s cooldown). Verified live
+end-to-end in production 2026-08-15.
+
+---
+
+## [074c9ce] — 2026-07-28 — Shopify connect instructions: read_legal_policies scope
+
+Custom-app guide adds the `read_legal_policies` scope (per-store returns
+policy capture during import).
+
+---
+
+## [367a1c1] — 2026-07-23 — Shopify onboarding UI (import wizard + settings sync section)
 
 The merchant-facing UI for nuwa's Shopify app (backend Phases 1a–2, complete).
 Two surfaces:
@@ -49,7 +154,7 @@ Two surfaces:
 
 ---
 
-## [uncommitted] — 2026-07-21 — Paystack migration (admin refund + reconcile)
+## [24c00ff] — 2026-07-21 — Paystack migration (admin refund + reconcile)
 
 Backend swapped PayFast → Paystack (nuwa cutover 2026-07-21; decision record
 in nuwa/docs/payments-module/paystack-migration-foundation.md). Athena
@@ -73,7 +178,7 @@ changes, all in the admin orders surface:
 
 ---
 
-## [uncommitted] — 2026-07-07
+## [982fef7] — 2026-07-07
 
 ### "Subscribe" vocabulary (UI copy only)
 
@@ -89,7 +194,7 @@ its copy as "subscriber" when it ships).
 
 ---
 
-## [uncommitted] — 2026-07-06
+## [fc121b7] — 2026-07-06
 
 ### Merchant-demo feature round: admin orders + variants + live analytics + earnings/promotions/low-stock/returns
 

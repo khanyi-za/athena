@@ -48,13 +48,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="border-b border-border bg-card">
+    <div className="flex min-h-screen flex-col bg-background p-3">
+      <header className="rounded-2xl border border-topbar-border bg-topbar text-topbar-foreground shadow-sm">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <Link
               href="/dashboard"
-              className="text-sm font-bold tracking-[0.2em] text-foreground"
+              className="text-sm font-bold tracking-[0.2em] text-topbar-foreground"
             >
               YIIVA
             </Link>
@@ -76,8 +76,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       className={[
                         'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                         isActive
-                          ? 'bg-brand-subtle text-brand'
-                          : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                          ? 'bg-topbar-active text-topbar-foreground'
+                          : 'text-topbar-muted hover:bg-topbar-accent hover:text-topbar-foreground',
                       ].join(' ')}
                     >
                       {item.label}
@@ -89,11 +89,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <div className="flex items-center gap-3">
             {underReview && <StatusPill status="PENDING_REVIEW" />}
-            <ThemeToggle />
+            <ThemeToggle className="text-topbar-muted hover:bg-topbar-accent hover:text-topbar-foreground" />
             {user ? (
               <>
-                <span className="text-sm text-muted-foreground">{user.firstName}</span>
-                <LogoutButton />
+                <span className="text-sm text-topbar-muted">{user.firstName}</span>
+                <LogoutButton className="border-topbar-border text-topbar-foreground hover:bg-topbar-accent" />
               </>
             ) : null}
           </div>

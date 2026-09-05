@@ -41,14 +41,20 @@ export function Sparkline({
 }
 
 /* Revenue hero area chart with gradient fill + themed tooltip. */
-export function RevenueChart({ data }: { data: { label: string; valueInRands: number }[] }) {
+export function RevenueChart({
+  data,
+  color = 'var(--chart-1)',
+}: {
+  data: { label: string; valueInRands: number }[]
+  color?: string
+}) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 8 }}>
         <defs>
           <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+            <stop offset="0%" stopColor={color} stopOpacity={0.35} />
+            <stop offset="100%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
         <XAxis
@@ -80,7 +86,7 @@ export function RevenueChart({ data }: { data: { label: string; valueInRands: nu
         <Area
           type="monotone"
           dataKey="valueInRands"
-          stroke="var(--chart-1)"
+          stroke={color}
           strokeWidth={2}
           fill="url(#revFill)"
           isAnimationActive={false}

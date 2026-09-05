@@ -12,13 +12,12 @@ import {
   MapPin,
   ArrowRight,
   FolderTree,
-  Copy,
-  Check,
   TrendingUp,
 } from 'lucide-react'
 
+import { CldImage } from 'next-cloudinary'
+import { INVENTORY_THUMB_200_RECIPE } from '@/lib/cloudinary-transforms'
 import { useStoreMe, useInvalidateStoreMe } from '@/hooks/use-store-me'
-import { useActiveProductCount } from '@/hooks/use-active-product-count'
 import { useStoreOrders } from '@/hooks/use-store-orders'
 import { useAuthStore } from '@/store/auth-store'
 import { GoLiveCelebrationModal } from '@/components/active/go-live-celebration-modal'
@@ -47,6 +46,10 @@ import type { MerchantOrderSummary } from '@/lib/schemas/order'
 // Functionality preserved: locations management (AddressSection + modals) and the
 // one-time go-live celebration modal.
 
+// Azure #0ea5e9 — matched to maya's merchant-dashboard hero (owner call, with
+// the revenue chart + Add product button below).
+const AZURE_ICON = 'bg-[#0ea5e9]/10 text-[#0ea5e9]'
+
 type ModalState =
   | { kind: 'none' }
   | { kind: 'addingAddress' }
@@ -56,8 +59,6 @@ type ModalState =
 export function ActiveStoreScreen() {
   const user = useAuthStore((s) => s.user)
   const { data: store, isLoading, isError } = useStoreMe()
-  const { data: activeProductCount, isLoading: isActiveCountLoading } =
-    useActiveProductCount(store?.id)
   const ordersQuery = useStoreOrders(store?.id, { take: 5 })
   const invalidateStoreMe = useInvalidateStoreMe()
   const analytics = useStoreAnalytics(store)
@@ -94,20 +95,17 @@ export function ActiveStoreScreen() {
           <p className="mt-1 text-sm text-muted-foreground">
             Here&apos;s what&apos;s happening with {store.displayName} today.
           </p>
-          <div className="mt-2">
-            <PublicUrlLine slug={store.slug} />
-          </div>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/dashboard/products"
             className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            <Package size={16} /> Manage products
+            <Package size={16} /> Manage inventory
           </Link>
           <Link
             href="/dashboard/products"
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-gradient-to-br from-[#0ea5e9] to-[#0369a1] px-4 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <Plus size={16} /> Add product
           </Link>
@@ -115,37 +113,40 @@ export function ActiveStoreScreen() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
-          label="Orders"
+          label="Sales"
           value={store._count.orders.toLocaleString('en-ZA')}
           icon={ShoppingCart}
           trend={{ pct: analytics.orders.trendPct }}
-          spark={analytics.orders.spark}
+          compact
+          iconClassName={AZURE_ICON}
         />
         <StatCard
           label="Subscribers"
           value={store.followerCount.toLocaleString('en-ZA')}
           icon={Users}
-          trend={{ pct: analytics.followers.trendPct }}
-          spark={analytics.followers.spark}
-          sparkColor="var(--chart-2)"
+          compact
+          iconClassName={AZURE_ICON}
         />
         <StatCard
-          label="Active products"
-          value={isActiveCountLoading ? '—' : (activeProductCount ?? 0).toLocaleString('en-ZA')}
-          icon={Package}
-          trend={{ pct: analytics.activeProducts.trendPct }}
-          spark={analytics.activeProducts.spark}
-          sparkColor="var(--chart-3)"
+          label="Avg sale value"
+          value={
+            analytics.orders.count > 0
+              ? formatZAR(Math.round(analytics.revenue.valueInCents / analytics.orders.count))
+              : '—'
+          }
+          hint="Last 14 days"
+          icon={TrendingUp}
+          compact
+          iconClassName={AZURE_ICON}
         />
         <StatCard
           label="Avg rating"
           value={store.averageRating > 0 ? store.averageRating.toFixed(1) : '—'}
           icon={Star}
-          trend={{ pct: analytics.rating.trendPct }}
-          spark={analytics.rating.spark}
-          sparkColor="var(--chart-4)"
+          compact
+          iconClassName={AZURE_ICON}
         />
       </div>
 
@@ -185,14 +186,15 @@ export function ActiveStoreScreen() {
               </div>
             </CardHeader>
             <CardContent>
-              <RevenueChart data={analytics.revenue.series} />
+              {/* Azure #0ea5e9 — matched to maya's merchant-dashboard hero (owner call). */}
+              <RevenueChart data={analytics.revenue.series} color="#0ea5e9" />
             </CardContent>
           </Card>
 
           {/* Recent orders */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent orders</CardTitle>
+              <CardTitle>Recent sales</CardTitle>
               <Link
                 href="/dashboard/orders"
                 className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:text-brand/80"
@@ -216,20 +218,48 @@ export function ActiveStoreScreen() {
           <Card>
             <CardHeader>
               <CardTitle>Top products</CardTitle>
+              <span className="text-xs text-muted-foreground">Last 14 days</span>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center gap-3 py-6 text-center">
-                <span className="grid size-11 place-items-center rounded-xl bg-brand-subtle text-brand">
-                  <Sparkles size={20} />
-                </span>
-                <div>
-                  <p className="text-sm font-medium text-foreground">Insights are on the way</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Product performance rankings arrive with the analytics engine.
+              {analytics.topProducts.length > 0 ? (
+                <ul className="space-y-3">
+                  {analytics.topProducts.map((p, rank) => (
+                    <li key={p.productId} className="flex items-center gap-3">
+                      <span className="w-4 text-xs font-medium tabular-nums text-muted-foreground">
+                        {rank + 1}
+                      </span>
+                      <div className="size-10 shrink-0 overflow-hidden rounded-md bg-muted">
+                        {p.imageUrl && (
+                          <CldImage
+                            src={p.imageUrl}
+                            {...INVENTORY_THUMB_200_RECIPE}
+                            alt={p.title}
+                            className="h-full w-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-foreground">{p.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {p.unitsSold} sold
+                        </p>
+                      </div>
+                      <span className="text-sm font-semibold tabular-nums text-foreground">
+                        {formatZAR(p.revenueInCents)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex flex-col items-center gap-3 py-6 text-center">
+                  <span className="grid size-11 place-items-center rounded-xl bg-brand-subtle text-brand">
+                    <Sparkles size={20} />
+                  </span>
+                  <p className="text-sm text-muted-foreground">
+                    No sales in the last 14 days yet — your best sellers will rank here.
                   </p>
                 </div>
-                <Badge tone="neutral">Coming soon</Badge>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -374,7 +404,7 @@ function RecentOrders({
   if (isError) {
     return (
       <p className="py-4 text-sm text-muted-foreground">
-        Couldn&apos;t load orders right now. Refresh to try again.
+        Couldn&apos;t load sales right now. Refresh to try again.
       </p>
     )
   }
@@ -382,7 +412,7 @@ function RecentOrders({
   if (!orders || orders.length === 0) {
     return (
       <p className="py-4 text-sm text-muted-foreground">
-        No orders yet — they&apos;ll show up here the moment a buyer checks out.
+        No sales yet — they&apos;ll show up here the moment a buyer checks out.
       </p>
     )
   }
@@ -415,30 +445,6 @@ function RecentOrders({
         )
       })}
     </ul>
-  )
-}
-
-function PublicUrlLine({ slug }: { slug: string }) {
-  const [copied, setCopied] = useState(false)
-  const base = process.env.NEXT_PUBLIC_PUBLIC_STORE_URL_BASE ?? ''
-  const publicUrl = `${base}/${slug}`
-
-  function copy() {
-    void navigator.clipboard.writeText(publicUrl).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
-  return (
-    <button
-      onClick={copy}
-      className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      title="Copy your public store link"
-    >
-      <span>{publicUrl}</span>
-      {copied ? <Check size={14} /> : <Copy size={14} />}
-    </button>
   )
 }
 

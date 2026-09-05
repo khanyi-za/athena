@@ -34,6 +34,19 @@ export const storeAnalyticsResponseSchema = z.object({
     trendPct: z.coerce.number(),
     spark: z.array(z.coerce.number()),
   }),
+  // Additive (2026-09-01): window best-sellers by revenue. `.catch([])` keeps
+  // older backends (field absent) parsing cleanly.
+  topProducts: z
+    .array(
+      z.object({
+        productId: z.string(),
+        title: z.string(),
+        imageUrl: z.string().nullable(),
+        unitsSold: z.coerce.number(),
+        revenueInCents: z.coerce.number(),
+      }),
+    )
+    .catch([]),
 })
 
 export type StoreAnalyticsResponse = z.infer<typeof storeAnalyticsResponseSchema>

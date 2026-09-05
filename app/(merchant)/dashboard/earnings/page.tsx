@@ -62,7 +62,7 @@ export default function EarningsPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">Earnings</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            What you&apos;ve earned per order — sales, YIIVA&apos;s 5.5% commission, and your payout.
+            What you&apos;ve earned per sale — gross, YIIVA&apos;s commission, and your payout.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function EarningsPage() {
             <span className="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand-subtle text-brand">
               <Wallet size={20} />
             </span>
-            <p className="font-medium text-foreground">No paid orders this month</p>
+            <p className="font-medium text-foreground">No paid sales this month</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Every paid order lands here the moment the payment clears.
             </p>

@@ -18,6 +18,8 @@ export function StatCard({
   trend,
   spark,
   sparkColor,
+  compact,
+  iconClassName,
 }: {
   label: string
   value: string
@@ -26,14 +28,24 @@ export function StatCard({
   trend?: { pct: number }
   spark?: { value: number }[]
   sparkColor?: string
+  /** Tighter padding + smaller value type for dense KPI rows. */
+  compact?: boolean
+  /** Overrides the icon chip's color classes (default: brand violet). */
+  iconClassName?: string
 }) {
   const up = trend ? trend.pct >= 0 : false
   return (
-    <Card className="p-5">
+    <Card className={compact ? 'p-3' : 'p-5'}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          <span className="grid size-7 place-items-center rounded-lg bg-brand-subtle text-brand">
-            <Icon size={15} />
+          <span
+            className={cn(
+              'grid place-items-center rounded-lg',
+              compact ? 'size-6' : 'size-7',
+              iconClassName ?? 'bg-brand-subtle text-brand',
+            )}
+          >
+            <Icon size={compact ? 13 : 15} />
           </span>
           {label}
         </div>
@@ -50,7 +62,14 @@ export function StatCard({
         )}
       </div>
 
-      <p className="mt-3 text-2xl font-semibold tabular-nums text-foreground">{value}</p>
+      <p
+        className={cn(
+          'font-semibold tabular-nums text-foreground',
+          compact ? 'mt-1.5 text-lg' : 'mt-3 text-2xl',
+        )}
+      >
+        {value}
+      </p>
 
       {spark ? (
         <div className="mt-2 -mx-1">

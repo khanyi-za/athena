@@ -131,6 +131,18 @@ function formatDate(date: Date): string {
   })
 }
 
+// Commission is locked on the Payment row at order time (5.5% before 2026-07-22,
+// 2.5% after), so derive the rate from the row instead of hardcoding it.
+function commissionRateLabel(payment: {
+  platformCommissionInCents: number
+  amountGrossInCents: number
+}): string {
+  if (payment.amountGrossInCents <= 0) return ''
+  const pct = (payment.platformCommissionInCents / payment.amountGrossInCents) * 100
+  const rounded = pct.toFixed(1).replace(/\.0$/, '')
+  return ` (${rounded}%)`
+}
+
 const btnBrand =
   'inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 disabled:opacity-50'
 const btnOutline =
@@ -593,7 +605,7 @@ function AdminOrderDetailModal({ orderId, onClose }: { orderId: string; onClose:
                   <Row label="Paystack fee" value={`−${formatZAR(order.payment.amountFeeInCents)}`} />
                   <Row label="Net" value={formatZAR(order.payment.amountNetInCents)} />
                   <Row
-                    label="Platform commission (5.5%)"
+                    label={`Platform commission${commissionRateLabel(order.payment)}`}
                     value={`−${formatZAR(order.payment.platformCommissionInCents)}`}
                   />
                   <Row

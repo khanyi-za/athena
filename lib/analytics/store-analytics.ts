@@ -46,10 +46,17 @@ export interface StoreAnalytics {
     trendPct: number
     series: RevenueSeriesPoint[]
   }
-  orders: MetricTrend
+  orders: MetricTrend & { count: number }
   followers: MetricTrend
   activeProducts: MetricTrend
   rating: MetricTrend
+  topProducts: {
+    productId: string
+    title: string
+    imageUrl: string | null
+    unitsSold: number
+    revenueInCents: number
+  }[]
 }
 
 // ---------------------------------------------------------------------------
@@ -81,10 +88,11 @@ function mapResponse(data: StoreAnalyticsResponse): StoreAnalytics {
         valueInRands: p.valueInCents / 100,
       })),
     },
-    orders: toTrend(data.orders),
+    orders: { ...toTrend(data.orders), count: data.orders.count },
     followers: toTrend(data.followers),
     activeProducts: toTrend(data.activeProducts),
     rating: { trendPct: data.rating.trendPct, spark: spark(data.rating.spark) },
+    topProducts: data.topProducts,
   }
 }
 
@@ -126,8 +134,9 @@ const SAMPLE_ANALYTICS: StoreAnalytics = {
       valueInRands,
     })),
   },
-  orders: { trendPct: 8.1, spark: ORDERS_SPARK },
+  orders: { trendPct: 8.1, spark: ORDERS_SPARK, count: 294 },
   followers: { trendPct: 3.2, spark: FOLLOWERS_SPARK },
   activeProducts: { trendPct: 5.6, spark: PRODUCTS_SPARK },
   rating: { trendPct: -0.3, spark: RATING_SPARK },
+  topProducts: [],
 }

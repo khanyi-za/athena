@@ -204,8 +204,8 @@ export default function OrdersPage() {
     <div className="max-w-full space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Orders</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage and fulfil customer orders.</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Sales</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Manage and fulfil your sales.</p>
       </div>
 
       {/* Filters */}
@@ -266,11 +266,11 @@ export default function OrdersPage() {
             <span className="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand-subtle text-brand">
               <Package size={20} />
             </span>
-            <p className="font-medium text-foreground">No orders found</p>
+            <p className="font-medium text-foreground">No sales found</p>
             <p className="mt-1 text-sm text-muted-foreground">
               {search || statusFilter !== 'all'
                 ? 'Try adjusting your filters.'
-                : 'Orders appear here the moment a buyer checks out.'}
+                : 'Sales appear here the moment a buyer checks out.'}
             </p>
           </div>
         ) : (

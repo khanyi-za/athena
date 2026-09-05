@@ -6,9 +6,11 @@ import { cn } from '@/lib/utils'
 
 // Dark/light toggle (YIIVA redesign finale). next-themes toggles the `.dark`
 // class on <html>; the whole app is token-driven so it flips cleanly. No mounted
-// guard needed — with enableSystem=false + defaultTheme=light, server and first
-// client render agree (Moon), and next-themes' pre-hydration script + the
-// suppressHydrationWarning on <html> handle the class swap.
+// guard needed — with enableSystem=false + defaultTheme=dark (default flipped
+// 2026-09-05), server and first client render agree (Sun), and next-themes'
+// pre-hydration script + the suppressHydrationWarning on <html> handle the
+// class swap. Still used by the admin/onboarding/thin-topbar chromes; the
+// merchant AppShell now routes theme through Settings → Appearance instead.
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme()

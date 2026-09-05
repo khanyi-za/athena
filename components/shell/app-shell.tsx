@@ -25,7 +25,6 @@ import {
 import { useBodyScrollLock } from '@/lib/use-body-scroll-lock'
 import { useAuthStore } from '@/store/auth-store'
 import { LogoutButton } from '@/components/logout-button'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { cn } from '@/lib/utils'
 import type { StoreMe } from '@/lib/schemas/store'
 
@@ -47,7 +46,6 @@ const NAV = [
   { name: 'Messages', href: '/dashboard/messages', icon: Mail },
   { name: 'Analytics', href: '/dashboard/analytics', icon: TrendingUp },
   { name: 'Team', href: '/dashboard/team', icon: Users },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
 function isActivePath(pathname: string, href: string): boolean {
@@ -92,13 +90,33 @@ function NavList({
   )
 }
 
-// Theme-preference row — footer of both the sidebar and the mobile drawer.
-function ThemeRow() {
+// Settings row — footer of both the sidebar and the mobile drawer (same boxed
+// style the theme row used; the theme preference itself now lives inside the
+// Settings page).
+function SettingsRow({
+  pathname,
+  onNavigate,
+}: {
+  pathname: string
+  onNavigate?: () => void
+}) {
+  const active = isActivePath(pathname, '/dashboard/settings')
   return (
-    <div className="m-3 flex items-center justify-between rounded-lg border border-sidebar-border p-2">
-      <span className="pl-1 text-xs font-medium text-sidebar-muted">Theme</span>
-      <ThemeToggle className="text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-foreground" />
-    </div>
+    <Link
+      href="/dashboard/settings"
+      onClick={onNavigate}
+      className={cn(
+        'm-3 flex items-center justify-between rounded-lg border border-sidebar-border p-2 transition-colors',
+        active
+          ? 'bg-sidebar-active text-brand'
+          : 'text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-foreground',
+      )}
+    >
+      <span className="pl-1 text-xs font-medium">Settings</span>
+      <span className="grid size-9 place-items-center rounded-lg">
+        <Settings size={18} />
+      </span>
+    </Link>
   )
 }
 
@@ -147,7 +165,7 @@ function MobileNavDrawer({
         <nav className="flex-1 overflow-y-auto px-3 py-3">
           <NavList pathname={pathname} onNavigate={onClose} />
         </nav>
-        <ThemeRow />
+        <SettingsRow pathname={pathname} onNavigate={onClose} />
       </div>
     </div>
   )
@@ -165,9 +183,12 @@ export function AppShell({
   const [navOpen, setNavOpen] = useState(false)
 
   // Any navigation closes the drawer (covers back/forward too, not just taps).
-  useEffect(() => {
-    setNavOpen(false)
-  }, [pathname])
+  // State-adjustment-during-render idiom — no effect, no cascading render.
+  const [prevPathname, setPrevPathname] = useState(pathname)
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname)
+    if (navOpen) setNavOpen(false)
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background p-3 text-foreground">
@@ -264,8 +285,8 @@ export function AppShell({
             <NavList pathname={pathname} />
           </nav>
 
-          {/* Sidebar footer — theme preference */}
-          <ThemeRow />
+          {/* Sidebar footer — settings entry (theme lives inside Settings now) */}
+          <SettingsRow pathname={pathname} />
         </aside>
 
         {/* Main column */}

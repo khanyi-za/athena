@@ -17,6 +17,7 @@ import { ShopifySection } from '@/components/approved/shopify-section'
 import { AddressFormModal } from '@/components/approved/address-form-modal'
 import { DeleteAddressModal } from '@/components/approved/delete-address-modal'
 import { ReviewLockedDetails } from '@/components/review/review-locked-details'
+import { AppearanceSection } from '@/components/approved/appearance-section'
 import type { StoreAddress, StoreMe } from '@/lib/schemas/store'
 
 // Settings page for ACTIVE merchants per store-frontend-flows §2.8. Composes
@@ -47,6 +48,7 @@ const SECTIONS = [
   { id: 'section-settlement', label: 'Automatic payouts' },
   { id: 'section-shopify', label: 'Shopify sync' },
   { id: 'section-locations', label: 'Locations' },
+  { id: 'section-appearance', label: 'Appearance' },
 ]
 
 // PENDING_REVIEW: the reviewed fields collapse into one read-only summary
@@ -57,6 +59,7 @@ const REVIEW_LOCKED_SECTIONS = [
   { id: 'section-settlement', label: 'Automatic payouts' },
   { id: 'section-shopify', label: 'Shopify sync' },
   { id: 'section-locations', label: 'Locations' },
+  { id: 'section-appearance', label: 'Appearance' },
 ]
 
 export default function SettingsPage() {
@@ -177,6 +180,8 @@ function SettingsForm({ store }: { store: StoreMe }) {
               onDelete={openDeleteAddress}
             />
           </div>
+
+          <AppearanceSection />
         </main>
       </div>
 

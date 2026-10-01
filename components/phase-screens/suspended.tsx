@@ -5,7 +5,7 @@ import type { UserStore } from '@/types/auth'
 // "reserved for a future moderation feature"). UI is still worth designing.
 
 export function SuspendedScreen({ store }: { store: UserStore }) {
-  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'support@yiiva.co.za'
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'khanyi@yiiva.co.za'
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4 py-10">

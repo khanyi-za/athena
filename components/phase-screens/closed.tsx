@@ -4,7 +4,7 @@ import type { UserStore } from '@/types/auth'
 // no backend endpoint sets this state in v1.
 
 export function ClosedScreen({ store }: { store: UserStore }) {
-  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'support@yiiva.co.za'
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? 'khanyi@yiiva.co.za'
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4 py-10">

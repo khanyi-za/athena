@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Internal working notes — local only (repo is public)
+CLAUDE.md
+CHANGELOG.md
+.claude/
